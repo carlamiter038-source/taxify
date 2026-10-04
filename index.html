@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Táxify - Gestão Financeira para Taxistas</title>
+   
+    <!-- Configurações PWA (Progressive Web App) -->
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Táxify">
+   
+    <!-- Bibliotecas externas: Chart.js para gráficos e jsPDF para exportação de PDFs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 15px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #f1c40f;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #ecf0f1;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-top: 4px solid #f1c40f;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        /* Formulários e Inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #f1c40f;
+        }
+
+        /* Botões */
+        .btn {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #1a252f;
+        }
+
+        .btn-warning {
+            background-color: #f1c40f;
+            color: #2c3e50;
+        }
+
+        .btn-warning:hover {
+            background-color: #d4ac0d;
+        }
+
+        .btn-voz {
+            background-color: #e67e22;
+            color: #fff;
+        }
+
+        .btn-voz:hover {
+            background-color: #d35400;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-wsp {
+            background-color: #25d366;
+            color: #fff;
+        }
+
+        .btn-wsp:hover {
+            background-color: #1eb954;
+        }
+
+        .btn-admin {
+            background-color: #8e44ad;
+            color: #fff;
+        }
+
+        .btn-admin:hover {
+            background-color: #732d91;
+        }
+
+        /* Botão Flutuante de Instalação PWA */
+        #btn-instalar-pwa {
+            display: none;
+            background-color: #27ae60;
+            color: white;
+            width: 100%;
+            margin-bottom: 12px;
+            font-size: 0.95rem;
+            animation: pulsar 2s infinite;
+        }
+
+        @keyframes pulsar {
+            0% { opacity: 1; }
+            50% { opacity: 0.85; }
+            100% { opacity: 1; }
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* Resumo Dashboard */
+        .dash-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dash-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dash-box h3 {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .dash-box p {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .val-entrada { color: #2ecc71; }
+        .val-saida { color: #e74c3c; }
+        .val-lucro { color: #2980b9; }
+
+        /* Modais */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Abas na Área Restrita */
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+
+        .tab-btn.active {
+            background: #8e44ad;
+            color: #fff;
+        }
+
+        .db-section {
+            display: none;
+        }
+
+        .db-section.active {
+            display: block;
+        }
+
+        /* Foto e Preview */
+        .preview-img {
+            width: 100px;
+            height: 80px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .preview-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ai-insight-item {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- TELA DE LOGIN & BOTÕES DE ACESSO -->
+    <div id="login-screen" class="card" style="max-width: 450px; margin: 50px auto;">
+        <h2 style="text-align: center;">🚕 Login - Táxify</h2>
+       
+        <!-- Botão de Instalação do Aplicativo PWA -->
+        <button type="button" id="btn-instalar-pwa" class="btn" onclick="instalarAppPWA()">
+            📲 Instalar Aplicativo no Celular
+        </button>
+
+        <!-- Botão Área Restrita Suporte Técnico -->
+        <button type="button" class="btn btn-admin" style="width: 100%; margin-bottom: 12px;" onclick="abrirModalAdmin()">
+            🔐 Área Restrita Suporte Técnico
+        </button>
+
+        <!-- Botão de Suporte / WhatsApp Business com o número (31 97564-4571) -->
+        <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Gostaria de adquirir o Táxify, tirar dúvidas ou obter os dados para pagamento." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
+            💬 Comprar / Suporte (WhatsApp)
+        </a>
+
+        <form id="form-login">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label for="login-email">E-mail do Cliente</label>
+                <input type="email" id="login-email" required placeholder="Digite seu e-mail cadastrado">
+            </div>
+
+            <div style="font-size: 0.8rem; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px;">
+                <input type="checkbox" id="aceite-termos" style="width: auto; margin-top: 3px;" onchange="validarAceiteTermos()">
+                <label for="aceite-termos" style="font-weight: normal;">
+                    Li e concordo com os <a href="#" onclick="abrirModalLegal()">Termos de Uso e Política de Privacidade (LGPD)</a>.
+                </label>
+            </div>
+
+            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Acessar Sistema</button>
+            <p id="login-msg" style="color: red; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;"></p>
+        </form>
+    </div>
+
+    <!-- TELA PRINCIPAL DO SISTEMA DO CLIENTE -->
+    <div id="app-content" style="display: none;">
+       
+        <header>
+            <h1>🚖 TÁXIFY</h1>
+            <p>Sistema de Gestão Financeira e Emissão de Recibos para Taxistas</p>
+            <button class="btn btn-danger" style="margin-top: 10px; padding: 5px 10px; font-size: 0.8rem;" onclick="sairDoApp()">Sair / Trocar Conta</button>
+        </header>
+
+        <!-- PERFIL DO TAXISTA & VEÍCULO -->
+        <div class="card">
+            <h2>👤 Perfil do Taxista & Veículo</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Motorista</label>
+                    <input type="text" id="taxista-nome" placeholder="Ex: João da Silva">
+                </div>
+                <div class="form-group">
+                    <label>CPF/CNPJ / Alvará</label>
+                    <input type="text" id="taxista-doc" placeholder="Ex: 000.000.000-00">
+                </div>
+                <div class="form-group">
+                    <label>Foto do Veículo (para Recibos)</label>
+                    <input type="file" id="taxista-foto" accept="image/*" onchange="carregarFotoVeiculo(event)">
+                </div>
+                <div class="form-group">
+                    <label>Preview</label>
+                    <div class="preview-img" id="box-preview-img">
+                        <span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="salvarPerfilTaxista()">💾 Salvar Perfil</button>
+                <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Limpar Perfil</button>
+            </div>
+        </div>
+
+        <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
+        <div class="card">
+            <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Quilometragem (KM)</label>
+                    <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
+                </div>
+                <div class="form-group">
+                    <label>Comando por Voz</label>
+                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância (KM)</button>
+                </div>
+                <div class="form-group">
+                    <label>Valor Estimado</label>
+                    <p style="font-size: 1.4rem; font-weight: bold; color: #27ae60; padding-top: 5px;">
+                        R$ <span id="calc-resultado">0,00</span>
+                    </p>
+                </div>
+            </div>
+            <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
+        </div>
+
+        <div class="grid-2col">
+            <!-- LANÇAMENTO FINANCEIRO -->
+            <div class="card">
+                <h2>💸 Novo Lançamento Financeiro</h2>
+                <form id="form-transacao">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Data</label>
+                        <input type="date" id="trans-data" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Tipo</label>
+                        <select id="trans-tipo">
+                            <option value="Entrada">Entrada (Receita)</option>
+                            <option value="Saída">Saída (Despesa)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Categoria</label>
+                        <select id="trans-categoria">
+                            <option value="Corrida">Corrida de Táxi</option>
+                            <option value="Combustível">Combustível</option>
+                            <option value="Manutenção">Manutenção / Oficina</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Empréstimo">Empréstimo</option>
+                            <option value="Fundo de Emergência">Fundo de Emergência</option>
+                            <option value="Investimentos">Investimentos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Descrição</label>
+                        <input type="text" id="trans-desc" placeholder="Ex: Abastecimento Posto Shell" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Valor (R$)</label>
+                        <input type="number" step="0.01" id="trans-valor" placeholder="0.00" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">➕ Registrar Movimentação</button>
+                </form>
+            </div>
+
+            <!-- AGENDA DE CLIENTES -->
+            <div class="card">
+                <h2>📇 Agenda de Clientes VIP</h2>
+                <form id="form-agenda">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="ag-nome" placeholder="Nome do cliente">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="ag-tel" placeholder="(00) 00000-0000">
+                    </div>
+                    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                        <button type="submit" class="btn" style="flex:1;">💾 Salvar</button>
+                        <button type="button" class="btn btn-voz" id="btn-voz-agenda" onclick="vozCadastrarCliente()">🎤 Falar Nome</button>
+                    </div>
+                </form>
+
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Buscar Cliente na Agenda</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="busca-agenda" placeholder="Digite para filtrar..." oninput="filtrarAgenda()">
+                        <button class="btn btn-voz" id="btn-voz-busca-ag" onclick="vozBuscarAgenda()">🎤</button>
+                    </div>
+                </div>
+
+                <div style="max-height: 180px; overflow-y: auto;">
+                    <table id="tabela-agenda">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Contato</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
+        <div class="card">
+            <h2>📊 Resumo Financeiro & Indicadores</h2>
+            <div class="dash-summary">
+                <div class="dash-box">
+                    <h3>TOTAL ENTRADAS</h3>
+                    <p class="val-entrada">R$ <span id="dash-entradas">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>TOTAL SAÍDAS</h3>
+                    <p class="val-saida">R$ <span id="dash-saidas">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>LUCRO LÍQUIDO</h3>
+                    <p class="val-lucro">R$ <span id="dash-lucro">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>RESERVAS / METAS</h3>
+                    <p style="color: #8e44ad;">R$ <span id="dash-metas">0,00</span></p>
+                </div>
+            </div>
+
+            <div style="max-width: 350px; margin: 0 auto 20px auto;">
+                <canvas id="meuGrafico"></canvas>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-warning" onclick="analisarComIA()">🤖 Gerar Diagnóstico com Inteligência Artificial</button>
+            </div>
+
+            <div id="ai-painel" style="display: none; margin-top: 15px;">
+                <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
+                <div id="ai-conteudo"></div>
+            </div>
+        </div>
+
+        <!-- TABELA DE EXIBIÇÃO DAS TRANSAÇÕES -->
+        <div class="card">
+            <h2>📜 Histórico de Transações</h2>
+            <div style="overflow-x: auto;">
+                <table id="tabela-transacoes">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Categoria</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
+        <div class="card">
+            <h2>📈 Relatórios Financeiros & Exportação</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Filtrar Período</label>
+                    <select id="rel-periodo">
+                        <option value="hoje">Hoje</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp de Destino</label>
+                    <input type="text" id="rel-wsp" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group">
+                    <label>E-mail de Destino</label>
+                    <input type="email" id="rel-email" placeholder="cliente@email.com">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                <button class="btn" onclick="gerarRelatorio()">🔍 Visualizar Resumo</button>
+                <button class="btn btn-voz" id="btn-voz-rel" onclick="vozPreencherRelatorio()">🎤 Ditador de Dados</button>
+                <button class="btn" onclick="gerarPDFRelatorio(true)">📄 Baixar Relatório PDF</button>
+                <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar WhatsApp</button>
+                <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar E-mail</button>
+            </div>
+
+            <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                <small id="rel-data-emissao" style="color: #7f8c8d;"></small>
+                <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período.</div>
+            </div>
+        </div>
+
+        <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
+        <div class="card" id="area-recibo">
+            <h2>🧾 Emissão de Recibo de Corrida</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Motorista ou Empresa</label>
+                    <input type="text" id="rec-motorista" placeholder="Ex: João da Silva / Táxi VIP Ltda">
+                </div>
+                <div class="form-group">
+                    <label>CPF ou CNPJ</label>
+                    <input type="text" id="rec-doc-motorista" placeholder="Ex: 00.000.000/0001-00">
+                </div>
+                <div class="form-group">
+                    <label>Veículo (Modelo e Placa)</label>
+                    <input type="text" id="rec-veiculo" placeholder="Ex: Chevrolet Spin - ABC-1234">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Passageiro</label>
+                    <input type="text" id="cliente-nome" placeholder="Ex: Maria Oliveira">
+                </div>
+                <div class="form-group">
+                    <label>Valor da Corrida (R$)</label>
+                    <input type="number" step="0.01" id="corrida-valor" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp do Passageiro</label>
+                    <input type="text" id="cliente-wsp" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group">
+                    <label>E-mail do Passageiro</label>
+                    <input type="email" id="cliente-email" placeholder="passageiro@email.com">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Trajeto / Observações</label>
+                <textarea id="corrida-obs" rows="2" placeholder="Ex: Corrida do Aeroporto ao Centro"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-voz" id="btn-voz-recibo" onclick="vozPreencherRecibo()">🎤 Ditar Trajeto por Voz</button>
+                <button class="btn btn-warning" onclick="gerarPDFRecibo(true)">📄 Baixar Recibo PDF</button>
+                <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar por WhatsApp</button>
+                <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar por E-mail</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: ÁREA RESTRITA SUPORTE TÉCNICO -->
+<div id="modal-admin" class="modal">
+    <div class="modal-content" style="max-width: 950px;">
+        <h3 style="color:#8e44ad; margin-bottom: 5px;">🔐 Área Restrita Suporte Técnico</h3>
+       
+        <div id="admin-login-box">
+            <div class="form-grid" style="max-width: 400px; margin: 0 auto; margin-top: 15px;">
+                <div class="form-group">
+                    <label>E-mail da Autora</label>
+                    <input type="password" id="admin-email" placeholder="Digite seu e-mail">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="admin-senha" placeholder="Digite sua senha">
+                </div>
+                <button class="btn btn-admin" onclick="fazerLoginAdmin()" style="grid-column: 1 / -1;">Entrar no Painel</button>
+                <p id="admin-login-erro" style="color:red; font-size:0.8rem; text-align:center; display:none; grid-column: 1 / -1;">Credenciais incorretas.</p>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn btn-danger" onclick="fecharModalAdmin()">Fechar</button>
+            </div>
+        </div>
+
+        <div id="admin-painel-box" style="display: none;">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">➕ Cadastrar Novo Comprador</h4>
+                <form id="form-novo-comprador" onsubmit="cadastrarComprador(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome do Comprador</label>
+                            <input type="text" id="novo-comp-nome" required placeholder="Nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail de Acesso</label>
+                            <input type="email" id="novo-comp-email" required placeholder="cliente@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone / WhatsApp</label>
+                            <input type="text" id="novo-comp-tel" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Período de Licença (Banco de Dados)</label>
+                            <select id="novo-comp-dias">
+                                <option value="7">7 Dias</option>
+                                <option value="30" selected>30 Dias</option>
+                                <option value="60">60 Dias</option>
+                                <option value="90">90 Dias</option>
+                                <option value="365">1 Ano (365 Dias)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Data da Compra</label>
+                            <input type="date" id="novo-comp-data" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">💾 Cadastrar no Banco Selecionado</button>
+                </form>
+            </div>
+
+            <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
+            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados por Período de Licença</h4>
+            <div class="admin-tabs">
+                <button type="button" class="tab-btn active" onclick="trocarAbaAdmin('7')">Banco 7 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('30')">Banco 30 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('60')">Banco 60 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('90')">Banco 90 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('365')">Banco 1 Ano</button>
+            </div>
+
+            <!-- SEÇÕES DE CADA BANCO -->
+            <div id="db-sec-7" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 7 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-30" class="db-section active">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 30 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-60" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 60 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-90" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 90 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-365" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 1 Ano (365 Dias)</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn btn-danger" onclick="fecharModalAdmin()">Sair da Área Restrita</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE TERMOS LEGAIS E PRIVACIDADE (LGPD) -->
+<div id="modal-legal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#2c3e50; margin-bottom: 10px;">Termos de Uso, Licenciamento e Privacidade (LGPD)</h3>
+        <div style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>1. TITULARIDADE E PROPRIEDADE INTELECTUAL:</strong><br>
+                Este aplicativo ("Táxify") é de autoria e propriedade intelectual exclusiva de <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todo o código-fonte, design visual, logotipos, estruturação de banco de dados e marcas associadas são protegidos pelas leis de direitos autorais e propriedade industrial brasileira. É expressamente proibida a cópia, engenharia reversa, redistribuição ou comercialização não autorizada.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
+                O direito de acesso ao sistema é concedido mediante licença de uso pessoal, intransferível e temporária, vinculada diretamente ao e-mail comercial do comprador. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso sem direito a reembolso.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>3. POLÍTICA DE PAGAMENTOS E REEMBOLSO:</strong><br>
+                A aquisição e renovação das licenças (planos de 7 dias, 30 dias, 60 dias, 90 dias ou 1 ano) são realizadas estritamente através dos canais oficiais de suporte técnico (WhatsApp Business). Uma vez liberado e ativado o acesso digital, os valores pagos referentes a licenças digitais não são reembolsáveis.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
+                Em conformidade com a LGPD (Lei nº 13.709/2018), informamos que os dados financeiros, agenda de clientes e perfis inseridos no aplicativo são armazenados localmente no navegador e dispositivo do próprio usuário. Os desenvolvedores não mantêm cópias centralizadas dos registros financeiros dos clientes. Portanto, é de inteira responsabilidade do usuário realizar backups periódicos de suas informações.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
+                O e-mail e os dados informados no momento da aquisição são armazenados no banco de dados restrito do suporte técnico unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software. Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
+                O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador, instabilidades na rede de internet ou mau uso das ferramentas de cálculo e emissão de recibos.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>7. ATUALIZAÇÕES DOS TERMOS:</strong><br>
+                Estes termos poderão ser revistos e atualizados periodicamente para refletir melhorias no sistema ou adequações legais. O uso continuado da aplicação implica na concordância automática com a versão vigente.
+            </p>
+        </div>
+        <div style="text-align: right; margin-top: 15px;">
+            <button class="btn btn-warning" onclick="aceitarPeloModal()">Concordar e Continuar</button>
+            <button class="btn btn-danger" onclick="fecharModalLegal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- REGISTRO AUTOMÁTICO DO PWA (Manifest e Service Worker dinâmicos) ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            // Criação do Manifesto PWA via Blob
+            const manifestData = {
+                "name": "Táxify - Gestão para Taxistas",
+                "short_name": "Táxify",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#f4f6f9",
+                "theme_color": "#2c3e50",
+                "icons": [
+                    {
+                        "src": "https://cdn-icons-png.flaticon.com/512/3202/3202926.png",
+                        "sizes": "512x512",
+                        "type": "image/png"
+                    }
+                ]
+            };
+            const stringManifest = JSON.stringify(manifestData);
+            const blobManifest = new Blob([stringManifest], {type: 'application/json'});
+            const manifestURL = URL.createObjectURL(blobManifest);
+           
+            const linkTag = document.createElement('linkTransformei o **Táxify** em um **Progressive Web App (PWA) completo**!
+
+Agora o seu aplicativo conta com:
+1. **Manifesto Nativo (`manifest.json`):** Configurado para exibir o nome correto, cores oficiais, modo tela cheia (`standalone`) e ícones responsivos para instalação na tela inicial de celulares Android e iOS.
+2. **Service Worker Embutido (`sw.js`):** Garante o cache dos componentes essenciais para que o sistema funcione de forma fluida.
+3. **Instalação Automática:** Adicionei um botão flutuante inteligente na tela de login (**📱 Instalar Aplicativo Táxify**) que aparece automaticamente caso o taxista queira adicionar o app direto na tela inicial do celular como um aplicativo nativo.
+
+---
+
+### Código Completo Atualizado e Pronto (`index.html`)
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Táxify - Gestão Financeira para Taxistas</title>
+   
+    <!-- Configurações PWA -->
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Táxify">
+   
+    <!-- Manifesto dinâmico embutido -->
+    <link rel="manifest" id="dynamic-manifest">
+
+    <!-- Bibliotecas externas: Chart.js para gráficos e jsPDF para exportação de PDFs -->
+    <script src="[https://cdn.jsdelivr.net/npm/chart.js](https://cdn.jsdelivr.net/npm/chart.js)"></script>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js](https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js)"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f6f9;
+            color: #333;
+            padding: 15px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: #f1c40f;
+            padding: 20px;
+            text-align: center;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        header p {
+            color: #ecf0f1;
+            font-size: 0.9rem;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-top: 4px solid #f1c40f;
+        }
+
+        .card h2 {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 8px;
+        }
+
+        /* Formulários e Inputs */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #34495e;
+        }
+
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #f1c40f;
+        }
+
+        /* Botões */
+        .btn {
+            background-color: #2c3e50;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background-color: #1a252f;
+        }
+
+        .btn-warning {
+            background-color: #f1c40f;
+            color: #2c3e50;
+        }
+
+        .btn-warning:hover {
+            background-color: #d4ac0d;
+        }
+
+        .btn-voz {
+            background-color: #e67e22;
+            color: #fff;
+        }
+
+        .btn-voz:hover {
+            background-color: #d35400;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-success {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 0.8rem;
+        }
+
+        .btn-wsp {
+            background-color: #25d366;
+            color: #fff;
+        }
+
+        .btn-wsp:hover {
+            background-color: #1eb954;
+        }
+
+        .btn-admin {
+            background-color: #8e44ad;
+            color: #fff;
+        }
+
+        .btn-admin:hover {
+            background-color: #732d91;
+        }
+
+        .btn-install {
+            background-color: #3498db;
+            color: #fff;
+            display: none;
+        }
+
+        .btn-install:hover {
+            background-color: #2980b9;
+        }
+
+        /* Tabelas */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+        }
+
+        /* Resumo Dashboard */
+        .dash-summary {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dash-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .dash-box h3 {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            margin-bottom: 5px;
+        }
+
+        .dash-box p {
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .val-entrada { color: #2ecc71; }
+        .val-saida { color: #e74c3c; }
+        .val-lucro { color: #2980b9; }
+
+        /* Modais */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 900px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        /* Abas na Área Restrita */
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+
+        .tab-btn.active {
+            background: #8e44ad;
+            color: #fff;
+        }
+
+        .db-section {
+            display: none;
+        }
+
+        .db-section.active {
+            display: block;
+        }
+
+        /* Foto e Preview */
+        .preview-img {
+            width: 100px;
+            height: 80px;
+            border: 1px dashed #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .preview-img img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: cover;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2col {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .ai-insight-item {
+            background: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- TELA DE LOGIN & BOTÕES DE ACESSO -->
+    <div id="login-screen" class="card" style="max-width: 450px; margin: 50px auto;">
+        <h2 style="text-align: center;">🚕 Login - Táxify</h2>
+       
+        <!-- Botão de Instalação PWA -->
+        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 12px;" onclick="instalarPWAApp()">
+            📱 Instalar Aplicativo Táxify
+        </button>
+
+        <!-- Botão Área Restrita Suporte Técnico -->
+        <button type="button" class="btn btn-admin" style="width: 100%; margin-bottom: 12px;" onclick="abrirModalAdmin()">
+            🔐 Área Restrita Suporte Técnico
+        </button>
+
+        <!-- Botão de Suporte / WhatsApp Business com o número (31 97564-4571) -->
+        <a href="[https://api.whatsapp.com/send?phone=5531975644571&text=Olá](https://api.whatsapp.com/send?phone=5531975644571&text=Olá)! Gostaria de adquirir o Táxify, tirar dúvidas ou obter os dados para pagamento." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
+            💬 Comprar / Suporte (WhatsApp)
+        </a>
+
+        <form id="form-login">
+            <div class="form-group" style="margin-bottom: 12px;">
+                <label for="login-email">E-mail do Cliente</label>
+                <input type="email" id="login-email" required placeholder="Digite seu e-mail cadastrado">
+            </div>
+
+            <div style="font-size: 0.8rem; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px;">
+                <input type="checkbox" id="aceite-termos" style="width: auto; margin-top: 3px;" onchange="validarAceiteTermos()">
+                <label for="aceite-termos" style="font-weight: normal;">
+                    Li e concordo com os <a href="#" onclick="abrirModalLegal()">Termos de Uso e Política de Privacidade (LGPD)</a>.
+                </label>
+            </div>
+
+            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Acessar Sistema</button>
+            <p id="login-msg" style="color: red; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;"></p>
+        </form>
+    </div>
+
+    <!-- TELA PRINCIPAL DO SISTEMA DO CLIENTE -->
+    <div id="app-content" style="display: none;">
+       
+        <header>
+            <h1>🚖 TÁXIFY</h1>
+            <p>Sistema de Gestão Financeira e Emissão de Recibos para Taxistas</p>
+            <button class="btn btn-danger" style="margin-top: 10px; padding: 5px 10px; font-size: 0.8rem;" onclick="sairDoApp()">Sair / Trocar Conta</button>
+        </header>
+
+        <!-- PERFIL DO TAXISTA & VEÍCULO -->
+        <div class="card">
+            <h2>👤 Perfil do Taxista & Veículo</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Motorista</label>
+                    <input type="text" id="taxista-nome" placeholder="Ex: João da Silva">
+                </div>
+                <div class="form-group">
+                    <label>CPF/CNPJ / Alvará</label>
+                    <input type="text" id="taxista-doc" placeholder="Ex: 000.000.000-00">
+                </div>
+                <div class="form-group">
+                    <label>Foto do Veículo (para Recibos)</label>
+                    <input type="file" id="taxista-foto" accept="image/*" onchange="carregarFotoVeiculo(event)">
+                </div>
+                <div class="form-group">
+                    <label>Preview</label>
+                    <div class="preview-img" id="box-preview-img">
+                        <span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>
+                    </div>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" onclick="salvarPerfilTaxista()">💾 Salvar Perfil</button>
+                <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Limpar Perfil</button>
+            </div>
+        </div>
+
+        <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
+        <div class="card">
+            <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Quilometragem (KM)</label>
+                    <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
+                </div>
+                <div class="form-group">
+                    <label>Comando por Voz</label>
+                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância (KM)</button>
+                </div>
+                <div class="form-group">
+                    <label>Valor Estimado</label>
+                    <p style="font-size: 1.4rem; font-weight: bold; color: #27ae60; padding-top: 5px;">
+                        R$ <span id="calc-resultado">0,00</span>
+                    </p>
+                </div>
+            </div>
+            <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
+        </div>
+
+        <div class="grid-2col">
+            <!-- LANÇAMENTO FINANCEIRO -->
+            <div class="card">
+                <h2>💸 Novo Lançamento Financeiro</h2>
+                <form id="form-transacao">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Data</label>
+                        <input type="date" id="trans-data" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Tipo</label>
+                        <select id="trans-tipo">
+                            <option value="Entrada">Entrada (Receita)</option>
+                            <option value="Saída">Saída (Despesa)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Categoria</label>
+                        <select id="trans-categoria">
+                            <option value="Corrida">Corrida de Táxi</option>
+                            <option value="Combustível">Combustível</option>
+                            <option value="Manutenção">Manutenção / Oficina</option>
+                            <option value="Alimentação">Alimentação</option>
+                            <option value="Cartão de Crédito">Cartão de Crédito</option>
+                            <option value="Empréstimo">Empréstimo</option>
+                            <option value="Fundo de Emergência">Fundo de Emergência</option>
+                            <option value="Investimentos">Investimentos</option>
+                            <option value="Outros">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Descrição</label>
+                        <input type="text" id="trans-desc" placeholder="Ex: Abastecimento Posto Shell" required>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label>Valor (R$)</label>
+                        <input type="number" step="0.01" id="trans-valor" placeholder="0.00" required>
+                    </div>
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">➕ Registrar Movimentação</button>
+                </form>
+            </div>
+
+            <!-- AGENDA DE CLIENTES -->
+            <div class="card">
+                <h2>📇 Agenda de Clientes VIP</h2>
+                <form id="form-agenda">
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Nome do Cliente</label>
+                        <input type="text" id="ag-nome" placeholder="Nome do cliente">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 10px;">
+                        <label>Telefone / WhatsApp</label>
+                        <input type="text" id="ag-tel" placeholder="(00) 00000-0000">
+                    </div>
+                    <div style="display: flex; gap: 5px; margin-bottom: 15px;">
+                        <button type="submit" class="btn" style="flex:1;">💾 Salvar</button>
+                        <button type="button" class="btn btn-voz" id="btn-voz-agenda" onclick="vozCadastrarCliente()">🎤 Falar Nome</button>
+                    </div>
+                </form>
+
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label>Buscar Cliente na Agenda</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="busca-agenda" placeholder="Digite para filtrar..." oninput="filtrarAgenda()">
+                        <button class="btn btn-voz" id="btn-voz-busca-ag" onclick="vozBuscarAgenda()">🎤</button>
+                    </div>
+                </div>
+
+                <div style="max-height: 180px; overflow-y: auto;">
+                    <table id="tabela-agenda">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Contato</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
+        <div class="card">
+            <h2>📊 Resumo Financeiro & Indicadores</h2>
+            <div class="dash-summary">
+                <div class="dash-box">
+                    <h3>TOTAL ENTRADAS</h3>
+                    <p class="val-entrada">R$ <span id="dash-entradas">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>TOTAL SAÍDAS</h3>
+                    <p class="val-saida">R$ <span id="dash-saidas">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>LUCRO LÍQUIDO</h3>
+                    <p class="val-lucro">R$ <span id="dash-lucro">0,00</span></p>
+                </div>
+                <div class="dash-box">
+                    <h3>RESERVAS / METAS</h3>
+                    <p style="color: #8e44ad;">R$ <span id="dash-metas">0,00</span></p>
+                </div>
+            </div>
+
+            <div style="max-width: 350px; margin: 0 auto 20px auto;">
+                <canvas id="meuGrafico"></canvas>
+            </div>
+
+            <div style="text-align: center;">
+                <button class="btn btn-warning" onclick="analisarComIA()">🤖 Gerar Diagnóstico com Inteligência Artificial</button>
+            </div>
+
+            <div id="ai-painel" style="display: none; margin-top: 15px;">
+                <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
+                <div id="ai-conteudo"></div>
+            </div>
+        </div>
+
+        <!-- TABELA DE EXIBIÇÃO DAS TRANSAÇÕES -->
+        <div class="card">
+            <h2>📜 Histórico de Transações</h2>
+            <div style="overflow-x: auto;">
+                <table id="tabela-transacoes">
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Tipo</th>
+                            <th>Categoria</th>
+                            <th>Descrição</th>
+                            <th>Valor</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
+        <div class="card">
+            <h2>📈 Relatórios Financeiros & Exportação</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Filtrar Período</label>
+                    <select id="rel-periodo">
+                        <option value="hoje">Hoje</option>
+                        <option value="semana">Esta Semana</option>
+                        <option value="mes">Este Mês</option>
+                        <option value="todos">Todo o Histórico</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp de Destino</label>
+                    <input type="text" id="rel-wsp" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group">
+                    <label>E-mail de Destino</label>
+                    <input type="email" id="rel-email" placeholder="cliente@email.com">
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                <button class="btn" onclick="gerarRelatorio()">🔍 Visualizar Resumo</button>
+                <button class="btn btn-voz" id="btn-voz-rel" onclick="vozPreencherRelatorio()">🎤 Ditador de Dados</button>
+                <button class="btn" onclick="gerarPDFRelatorio(true)">📄 Baixar Relatório PDF</button>
+                <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar WhatsApp</button>
+                <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar E-mail</button>
+            </div>
+
+            <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                <small id="rel-data-emissao" style="color: #7f8c8d;"></small>
+                <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período.</div>
+            </div>
+        </div>
+
+        <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
+        <div class="card" id="area-recibo">
+            <h2>🧾 Emissão de Recibo de Corrida</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Motorista ou Empresa</label>
+                    <input type="text" id="rec-motorista" placeholder="Ex: João da Silva / Táxi VIP Ltda">
+                </div>
+                <div class="form-group">
+                    <label>CPF ou CNPJ</label>
+                    <input type="text" id="rec-doc-motorista" placeholder="Ex: 00.000.000/0001-00">
+                </div>
+                <div class="form-group">
+                    <label>Veículo (Modelo e Placa)</label>
+                    <input type="text" id="rec-veiculo" placeholder="Ex: Chevrolet Spin - ABC-1234">
+                </div>
+                <div class="form-group">
+                    <label>Nome do Passageiro</label>
+                    <input type="text" id="cliente-nome" placeholder="Ex: Maria Oliveira">
+                </div>
+                <div class="form-group">
+                    <label>Valor da Corrida (R$)</label>
+                    <input type="number" step="0.01" id="corrida-valor" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>WhatsApp do Passageiro</label>
+                    <input type="text" id="cliente-wsp" placeholder="(00) 00000-0000">
+                </div>
+                <div class="form-group">
+                    <label>E-mail do Passageiro</label>
+                    <input type="email" id="cliente-email" placeholder="passageiro@email.com">
+                </div>
+            </div>
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Trajeto / Observações</label>
+                <textarea id="corrida-obs" rows="2" placeholder="Ex: Corrida do Aeroporto ao Centro"></textarea>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn btn-voz" id="btn-voz-recibo" onclick="vozPreencherRecibo()">🎤 Ditar Trajeto por Voz</button>
+                <button class="btn btn-warning" onclick="gerarPDFRecibo(true)">📄 Baixar Recibo PDF</button>
+                <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar por WhatsApp</button>
+                <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar por E-mail</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- MODAL: ÁREA RESTRITA SUPORTE TÉCNICO -->
+<div id="modal-admin" class="modal">
+    <div class="modal-content" style="max-width: 950px;">
+        <h3 style="color:#8e44ad; margin-bottom: 5px;">🔐 Área Restrita Suporte Técnico</h3>
+       
+        <div id="admin-login-box">
+            <div class="form-grid" style="max-width: 400px; margin: 0 auto; margin-top: 15px;">
+                <div class="form-group">
+                    <label>E-mail da Autora</label>
+                    <input type="password" id="admin-email" placeholder="Digite seu e-mail">
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <input type="password" id="admin-senha" placeholder="Digite sua senha">
+                </div>
+                <button class="btn btn-admin" onclick="fazerLoginAdmin()" style="grid-column: 1 / -1;">Entrar no Painel</button>
+                <p id="admin-login-erro" style="color:red; font-size:0.8rem; text-align:center; display:none; grid-column: 1 / -1;">Credenciais incorretas.</p>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn btn-danger" onclick="fecharModalAdmin()">Fechar</button>
+            </div>
+        </div>
+
+        <div id="admin-painel-box" style="display: none;">
+            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">➕ Cadastrar Novo Comprador</h4>
+                <form id="form-novo-comprador" onsubmit="cadastrarComprador(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome do Comprador</label>
+                            <input type="text" id="novo-comp-nome" required placeholder="Nome completo">
+                        </div>
+                        <div class="form-group">
+                            <label>E-mail de Acesso</label>
+                            <input type="email" id="novo-comp-email" required placeholder="cliente@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Telefone / WhatsApp</label>
+                            <input type="text" id="novo-comp-tel" placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Período de Licença (Banco de Dados)</label>
+                            <select id="novo-comp-dias">
+                                <option value="7">7 Dias</option>
+                                <option value="30" selected>30 Dias</option>
+                                <option value="60">60 Dias</option>
+                                <option value="90">90 Dias</option>
+                                <option value="365">1 Ano (365 Dias)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Data da Compra</label>
+                            <input type="date" id="novo-comp-data" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-warning">💾 Cadastrar no Banco Selecionado</button>
+                </form>
+            </div>
+
+            <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
+            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados por Período de Licença</h4>
+            <div class="admin-tabs">
+                <button type="button" class="tab-btn active" onclick="trocarAbaAdmin('7')">Banco 7 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('30')">Banco 30 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('60')">Banco 60 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('90')">Banco 90 Dias</button>
+                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('365')">Banco 1 Ano</button>
+            </div>
+
+            <!-- SEÇÕES DE CADA BANCO -->
+            <div id="db-sec-7" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 7 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-30" class="db-section active">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 30 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-60" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 60 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-90" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 90 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+            <div id="db-sec-365" class="db-section">
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 1 Ano (365 Dias)</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+            </div>
+
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn btn-danger" onclick="fecharModalAdmin()">Sair da Área Restrita</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE TERMOS LEGAIS E PRIVACIDADE (LGPD) -->
+<div id="modal-legal" class="modal">
+    <div class="modal-content">
+        <h3 style="color:#2c3e50; margin-bottom: 10px;">Termos de Uso, Licenciamento e Privacidade (LGPD)</h3>
+        <div style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>1. TITULARIDADE E PROPRIEDADE INTELECTUAL:</strong><br>
+                Este aplicativo ("Táxify") é de autoria e propriedade intelectual exclusiva de <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todo o código-fonte, design visual, logotipos, estruturação de banco de dados e marcas associadas são protegidos pelas leis de direitos autorais e propriedade industrial brasileira. É expressamente proibida a cópia, engenharia reversa, redistribuição ou comercialização não autorizada.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
+                O direito de acesso ao sistema é concedido mediante licença de uso pessoal, intransferível e temporária, vinculada diretamente ao e-mail comercial do comprador. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso sem direito a reembolso.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>3. POLÍTICA DE PAGAMENTOS E REEMBOLSO:</strong><br>
+                A aquisição e renovação das licenças (planos de 7 dias, 30 dias, 60 dias, 90 dias ou 1 ano) são realizadas estritamente através dos canais oficiais de suporte técnico (WhatsApp Business). Uma vez liberado e ativado o acesso digital, os valores pagos referentes a licenças digitais não são reembolsáveis.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
+                Em conformidade com a LGPD (Lei nº 13.709/2018), informamos que os dados financeiros, agenda de clientes e perfis inseridos no aplicativo são armazenados localmente no navegador e dispositivo do próprio usuário. Os desenvolvedores não mantêm cópias centralizadas dos registros financeiros dos clientes. Portanto, é de inteira responsabilidade do usuário realizar backups periódicos de suas informações.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
+                O e-mail e os dados informados no momento da aquisição são armazenados no banco de dados restrito do suporte técnico unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software. Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
+                O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador, instabilidades na rede de internet ou mau uso das ferramentas de cálculo e emissão de recibos.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>7. ATUALIZAÇÕES DOS TERMOS:</strong><br>
+                Estes termos poderão ser revistos e atualizados periodicamente para refletir melhorias no sistema ou adequações legais. O uso continuado da aplicação implica na concordância automática com a versão vigente.
+            </p>
+        </div>
+        <div style="text-align: right; margin-top: 15px;">
+            <button class="btn btn-warning" onclick="aceitarPeloModal()">Concordar e Continuar</button>
+            <button class="btn btn-danger" onclick="fecharModalLegal()">Fechar</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- GERAÇÃO AUTOMÁTICA DE MANIFESTO PWA EM BASE64 ---
+    const manifestoPWA = {
+        name: "Táxify - Gestão para Taxistas",
+        short_name: "Táxify",
+        start_url: "./index.html",
+        display: "standalone",
+        background_color: "#f4f6f9",
+        theme_color: "#2c3e50",
+        icons: [
+            {
+                src: "data:image/svg+xml,%3Csvg xmlns='[http://www.w3.org/2000/svg](http://www.w3.org/2000/svg)' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='150' fill='%232c3e50'/%3E%3Ctext x='50%25' y='55%25' font-size='220' text-anchor='middle' dominant-baseline='middle' fill='%23f1c40f'%3E🚖%3C/text%3E%3C/svg%3E",
+                sizes: "512x512",
+                type: "image/svg+xml"
+            }
+        ]
+    };
+    const blobManifesto = new Blob([JSON.stringify(manifestoPWA)], {type: 'application/json'});
+    document.getElementById('dynamic-manifest').href = URL.createObjectURL(blobManifesto);
+
+    // --- REGISTRO DO SERVICE WORKER PWA ---
+    if ('serviceWorker' in navigator) {
+        const swCode = `
+            self.addEventListener('install', e => {
+                e.waitUntil(caches.open('taxify-v1').then(cache => cache.addAll(['./index.html'])));
+            });
+            self.addEventListener('fetch', e => {
+                e.respondWith(caches.match(e.request).then(response => response || fetch(e.request)));
+            });
+        `;
+        const swBlob = new Blob([swCode], {type: 'application/javascript'});
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob))
+            .then(() => console.log("Service Worker PWA registrado com sucesso!"))
+            .catch(err => console.log("Erro no Service Worker:", err));
+    }
+
+    // --- CAPTURA DE INSTALAÇÃO DO APP (PROMPT) ---
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        document.getElementById('btn-instalar-pwa').style.display = 'block';
+    });
+
+    function instalarPWAApp() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                if (choiceResult.outcome === 'accepted') {
+                    document.getElementById('btn-instalar-pwa').style.display = 'none';
+                }
+                deferredPrompt = null;
+            });
+        } else {
+            alert('Para instalar, abra o menu do seu navegador (três pontinhos ou compartilhar) e escolha "Adicionar à Tela Inicial".');
+        }
+    }
+
+    function validarAceiteTermos() {
+        const checkbox = document.getElementById('aceite-termos');
+        const btnEntrar = document.getElementById('btn-entrar');
+        btnEntrar.disabled = !checkbox.checked;
+    }
+
+    function abrirModalLegal() {
+        document.getElementById('modal-legal').style.display = 'flex';
+    }
+
+    function fecharModalLegal() {
+        document.getElementById('modal-legal').style.display = 'none';
+    }
+
+    function aceitarPeloModal() {
+        document.getElementById('aceite-termos').checked = true;
+        validarAceiteTermos();
+        fecharModalLegal();
+    }
+
+    // --- BANCOS DE DADOS SEPARADOS POR PERÍODO (LOCALSTORAGE) ---
+    const periodosDB = ['7', '30', '60', '90', '365'];
+
+    function obterCompradoresDB(dias) {
+        const chave = `taxify_compradores_db_${dias}`;
+        const dados = localStorage.getItem(chave);
+        if (dados) {
+            return JSON.parse(dados);
+        }
+        let inicial = [];
+        if (dias === '30') {
+            inicial = [{ id: 1, nome: "Carla Miter", email: "carlamiter038@gmail.com", tel: "(31) 97564-4571", dataCompra: "2026-10-01", vencimento: "2026-11-01", ativo: true }];
+        }
+        localStorage.setItem(chave, JSON.stringify(inicial));
+        return inicial;
+    }
+
+    function salvarCompradoresDB(dias, lista) {
+        const chave = `taxify_compradores_db_${dias}`;
+        localStorage.setItem(chave, JSON.stringify(lista));
+    }
+
+    // --- CONTROLE DA ÁREA RESTRITA SUPORTE TÉCNICO ---
+    function abrirModalAdmin() {
+        document.getElementById('modal-admin').style.display = 'flex';
+        document.getElementById('admin-email').value = '';
+        document.getElementById('admin-senha').value = '';
+        document.getElementById('admin-login-erro').style.display = 'none';
+        document.getElementById('admin-login-box').style.display = 'block';
+        document.getElementById('admin-painel-box').style.display = 'none';
+    }
+
+    function fecharModalAdmin() {
+        document.getElementById('modal-admin').style.display = 'none';
+    }
+
+    function fazerLoginAdmin() {
+        const email = document.getElementById('admin-email').value.trim();
+        const senha = document.getElementById('admin-senha').value.trim();
+        const erro = document.getElementById('admin-login-erro');
+
+        if (email === 'carlamiter038@gmail.com' && senha === '312707') {
+            document.getElementById('admin-login-box').style.display = 'none';
+            document.getElementById('admin-painel-box').style.display = 'block';
+            document.getElementById('novo-comp-data').valueAsDate = new Date();
+            renderizarTodasTabelasCompradores();
+        } else {
+            erro.style.display = 'block';
+        }
+    }
+
+    function trocarAbaAdmin(dias) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.db-section').forEach(sec => sec.classList.remove('active'));
+
+        event.target.classList.add('active');
+        document.getElementById(`db-sec-${dias}`).classList.add('active');
+    }
+
+    function cadastrarComprador(e) {
+        e.preventDefault();
+        const nome = document.getElementById('novo-comp-nome').value.trim();
+        const email = document.getElementById('novo-comp-email').value.trim().toLowerCase();
+        const tel = document.getElementById('novo-comp-tel').value.trim();
+        const diasSelecionados = document.getElementById('novo-comp-dias').value;
+        const dataCompra = document.getElementById('novo-comp-data').value;
+
+        const dCompra = new Date(dataCompra + 'T00:00:00');
+        const dVenc = new Date(dCompra);
+        dVenc.setDate(dVenc.getDate() + parseInt(diasSelecionados));
+        const vencimento = dVenc.toISOString().split('T')[0];
+
+        let lista = obterCompradoresDB(diasSelecionados);
+        const idx = lista.findIndex(c => c.email === email);
+        if (idx >= 0) {
+            lista[idx].nome = nome;
+            lista[idx].tel = tel;
+            lista[idx].dataCompra = dataCompra;
+            lista[idx].vencimento = vencimento;
+            lista[idx].ativo = true;
+        } else {
+            lista.push({ id: Date.now(), nome, email, tel, dataCompra, vencimento, ativo: true });
+        }
+
+        salvarCompradoresDB(diasSelecionados, lista);
+        renderizarTodasTabelasCompradores();
+        document.getElementById('form-novo-comprador').reset();
+        document.getElementById('novo-comp-data').valueAsDate = new Date();
+        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso!`);
+    }
+
+    function renderizarTodasTabelasCompradores() {
+        periodosDB.forEach(dias => {
+            renderizarTabelaCompradoresPorBanco(dias);
+        });
+    }
+
+    function renderizarTabelaCompradoresPorBanco(dias) {
+        const lista = obterCompradoresDB(dias);
+        const tbody = document.querySelector(`#tabela-comp-${dias} tbody`);
+        if (!tbody) return;
+        tbody.innerHTML = '';
+
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+
+        lista.forEach(c => {
+            const row = tbody.insertRow();
+           
+            const dataVencObj = new Date(c.vencimento + 'T00:00:00');
+            const diffTime = dataVencObj - hoje;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let badgePrazo = '';
+            if (diffDays < 0) {
+                badgePrazo = `<span style="background: #e74c3c; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🔴 Vencido (${Math.abs(diffDays)}d)</span>`;
+            } else if (diffDays <= 5) {
+                badgePrazo = `<span style="background: #e67e22; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">⚠️ Expira em ${diffDays}d</span>`;
+            } else {
+                badgePrazo = `<span style="background: #2ecc71; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🟢 Regular (${diffDays}d)</span>`;
+            }
+
+            row.innerHTML = `
+                <td><strong>${c.nome}</strong><br><small>${c.tel}</small></td>
+                <td>${c.email}</td>
+                <td>${c.dataCompra ? c.dataCompra.split('-').reverse().join('/') : '-'}</td>
+                <td><input type="date" value="${c.vencimento}" onchange="atualizarDataVencimento('${dias}', ${c.id}, this.value)" style="padding:4px; font-size:0.85rem;"></td>
+                <td>${badgePrazo}</td>
+                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? 'Ativo' : 'Bloqueado'}</span></td>
+                <td>
+                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? 'Bloquear' : 'Ativar'}</button>
+                    <button class="btn btn-danger" onclick="excluirComprador('${dias}', ${c.id})" style="margin-left:5px;">Excluir</button>
+                </td>
+            `;
+        });
+    }
+
+    function alternarStatusComprador(dias, id) {
+        let lista = obterCompradoresDB(dias);
+        lista = lista.map(c => {
+            if (c.id === id) c.ativo = !c.ativo;
+            return c;
+        });
+        salvarCompradoresDB(dias, lista);
+        renderizarTabelaCompradoresPorBanco(dias);
+    }
+
+    function atualizarDataVencimento(dias, id, novaData) {
+        let lista = obterCompradoresDB(dias);
+        lista = lista.map(c => {
+            if (c.id === id) c.vencimento = novaData;
+            return c;
+        });
+        salvarCompradoresDB(dias, lista);
+        renderizarTabelaCompradoresPorBanco(dias);
+        alert('Data de vencimento atualizada!');
+    }
+
+    function excluirComprador(dias, id) {
+        if (confirm('Tem certeza que deseja excluir este comprador deste banco de dados?')) {
+            let lista = obterCompradoresDB(dias);
+            lista = lista.filter(c => c.id !== id);
+            salvarCompradoresDB(dias, lista);
+            renderizarTabelaCompradoresPorBanco(dias);
+        }
+    }
+
+    // --- CONTROLE DE LOGIN DO CLIENTE COM VALIDAÇÃO NOS BANCOS ---
+    const formLogin = document.getElementById('form-login');
+    formLogin.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+        const msgErro = document.getElementById('login-msg');
+
+        let compradorEncontrado = null;
+        for (let dias of periodosDB) {
+            let lista = obterCompradoresDB(dias);
+            let achei = lista.find(c => c.email === emailInput);
+            if (achei) {
+                compradorEncontrado = achei;
+                break;
+            }
+        }
+
+        if (!compradorEncontrado) {
+            msgErro.innerText = 'E-mail não encontrado. Adquira o acesso via WhatsApp!';
+            msgErro.style.display = 'block';
+            return;
+        }
+
+        if (!compradorEncontrado.ativo) {
+            msgErro.innerText = 'Seu acesso está BLOQUEADO. Entre em contato com o suporte.';
+            msgErro.style.display = 'block';
+            return;
+        }
+
+        const hoje = new Date().toISOString().split('T')[0];
+        if (compradorEncontrado.vencimento < hoje && emailInput !== 'carlamiter038@gmail.com') {
+            msgErro.innerText = `Sua licença venceu em ${compradorEncontrado.vencimento.split('-').reverse().join('/')}. Renove via WhatsApp!`;
+            msgErro.style.display = 'block';
+            return;
+        }
+
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app-content').style.display = 'block';
+        carregarPerfilTaxista();
+        inicializarGrafico();
+    });
+
+    function sairDoApp() {
+        document.getElementById('app-content').style.display = 'none';
+        document.getElementById('login-screen').style.display = 'block';
+        document.getElementById('login-email').value = '';
+        document.getElementById('aceite-termos').checked = false;
+        validarAceiteTermos();
+    }
+
+    // --- RECONHECIMENTO DE VOZ GENÉRICO ---
+    function escutarVoz(callbackSucesso, btnElement, textoNormal) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert('Seu navegador não suporta reconhecimento de voz.');
+            return;
+        }
+
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'pt-BR';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        if (btnElement) {
+            btnElement.innerText = '🔴 Ouvindo...';
+            btnElement.style.backgroundColor = '#e74c3c';
+        }
+
+        recognition.start();
+
+        recognition.onresult = function(event) {
+            const texto = event.results[0][0].transcript;
+            callbackSucesso(texto);
+        };
+
+        recognition.onerror = function() {
+            alert('Não foi possível reconhecer a voz. Tente novamente.');
+        };
+
+        recognition.onsend = recognition.onend = function() {
+            if (btnElement) {
+                btnElement.innerText = textoNormal;
+                btnElement.style.backgroundColor = '#e67e22';
+            }
+        };
+    }
+
+    // --- CALCULADORA DE VIAGEM (KM x R$ 4,50) ---
+    const TARIFA_POR_KM = 4.50;
+
+    function calcularViagem() {
+        const kmInput = parseFloat(document.getElementById('calc-km').value);
+        const resultadoSpan = document.getElementById('calc-resultado');
+
+        if (!isNaN(kmInput) && kmInput > 0) {
+            const total = kmInput * TARIFA_POR_KM;
+            resultadoSpan.innerText = total.toFixed(2).replace('.', ',');
+            return total;
+        } else {
+            resultadoSpan.innerText = '0,00';
+            return 0;
+        }
+    }
+
+    function vozInformarKm() {
+        const btnVoz = document.getElementById('btn-voz-km');
+        escutarVoz(texto => {
+            const textoTratado = texto.replace(',', '.');
+            const numeros = textoTratado.match(/\d+(\.\d+)?/);
+           
+            if (numeros && numeros.length > 0) {
+                document.getElementById('calc-km').value = parseFloat(numeros[0]);
+                calcularViagem();
+                alert(`Quilometragem capturada: ${numeros[0]} KM`);
+            } else {
+                alert(`Não foi possível identificar a quilometragem no áudio: "${texto}"`);
+            }
+        }, btnVoz, '🎤 Falar Distância (KM)');
+    }
+
+    function copiarValorParaRecibo() {
+        const valorCalculado = calcularViagem();
+        if (valorCalculado > 0) {
+            document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
+            alert(`R$ ${valorCalculado.toFixed(2)} foi inserido diretamente no recibo!`);
+            document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
+        } else {
+            alert('Digite ou fale uma distância válida primeiro.');
+        }
+    }
+
+    // --- AGENDA DE CLIENTES ---
+    let clientesAgenda = [];
+
+    const formAgenda = document.getElementById('form-agenda');
+    formAgenda.addEventListener('submit', function(e) {
+        e.preventDefault();
+        salvarCliente();
+    });
+
+    function salvarCliente(nomeCustom, telCustom) {
+        const nome = nomeCustom || document.getElementById('ag-nome').value.trim();
+        const tel = telCustom || document.getElementById('ag-tel').value.trim();
+
+        if (!nome || !tel) {
+            alert('Preencha Nome e Telefone para salvar na agenda.');
+            return;
+        }
+
+        const cliente = { id: Date.now(), nome, tel };
+        clientesAgenda.push(cliente);
+        renderizarAgenda();
+        formAgenda.reset();
+    }
+
+    function renderizarAgenda(lista = clientesAgenda) {
+        const tbody = document.getElementById('tabela-agenda').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        lista.forEach(c => {
+            const row = tbody.insertRow();
+            const telLimpo = c.tel.replace(/\D/g, '');
+
+            row.innerHTML = `
+                <td><strong>${c.nome}</strong></td>
+                <td>${c.tel}</td>
+                <td>
+                    <a href="tel:${telLimpo}" class="btn" style="text-decoration:none; display:inline-block; margin-right:5px; background:#2c3e50; padding:5px 8px; font-size:0.8rem;">📞 Ligar</a>
+                    <a href="[https://api.whatsapp.com/send?phone=$](https://api.whatsapp.com/send?phone=$){telLimpo}" target="_blank" class="btn btn-wsp" style="text-decoration:none; display:inline-block; margin-right:5px; padding:5px 8px; font-size:0.8rem;">📱 WhatsApp</a>
+                    <button class="btn btn-danger" onclick="removerCliente(${c.id})">Excluir</button>
+                </td>
+            `;
+        });
+    }
+
+    function removerCliente(id) {
+        clientesAgenda = clientesAgenda.filter(c => c.id !== id);
+        renderizarAgenda();
+    }
+
+    function filtrarAgenda() {
+        const termo = document.getElementById('busca-agenda').value.toLowerCase();
+        const filtrados = clientesAgenda.filter(c =>
+            c.nome.toLowerCase().includes(termo) || c.tel.includes(termo)
+        );
+        renderizarAgenda(filtrados);
+    }
+
+    function vozCadastrarCliente() {
+        const btn = document.getElementById('btn-voz-agenda');
+        escutarVoz(texto => {
+            document.getElementById('ag-nome').value = texto;
+            alert(`Nome capturado: "${texto}". Preencha o telefone para salvar.`);
+        }, btn, '🎤 Falar Nome');
+    }
+
+    function vozBuscarAgenda() {
+        const btn = document.getElementById('btn-voz-busca-ag');
+        escutarVoz(texto => {
+            document.getElementById('busca-agenda').value = texto;
+            filtrarAgenda();
+        }, btn, '🎤');
+    }
+
+    // --- ESTADO FINANCEIRO DA APLICAÇÃO ---
+    let transacoes = [];
+    let meuGrafico = null;
+
+    document.getElementById('trans-data').valueAsDate = new Date();
+
+    function inicializarGrafico() {
+        const ctx = document.getElementById('meuGrafico').getContext('2d');
+        if (meuGrafico) meuGrafico.destroy();
+        meuGrafico = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Entradas', 'Despesas Variáveis', 'Dívidas (Cartão/Empréstimo)', 'Metas (Reservas)'],
+                datasets: [{
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ['#2ecc71', '#e74c3c', '#e67e22', '#3498db']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    }
+
+    const formTransacao = document.getElementById('form-transacao');
+    formTransacao.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const data = document.getElementById('trans-data').value;
+        const tipo = document.getElementById('trans-tipo').value;
+        const categoria = document.getElementById('trans-categoria').value;
+        const desc = document.getElementById('trans-desc').value.trim();
+        const valor = parseFloat(document.getElementById('trans-valor').value);
+
+        if (!data || !desc || isNaN(valor) || valor <= 0) {
+            alert('Preencha todos os campos do lançamento corretamente.');
+            return;
+        }
+
+        transacoes.push({ id: Date.now(), data, tipo, categoria, desc, valor });
+        atualizarPainelFinanceiro();
+        formTransacao.reset();
+        document.getElementById('trans-data').valueAsDate = new Date();
+    });
+
+    function atualizarPainelFinanceiro() {
+        let totalEntradas = 0;
+        let totalSaidas = 0;
+        let totalMetas = 0;
+        let totalDividas = 0;
+
+        const tbody = document.getElementById('tabela-transacoes').getElementsByTagName('tbody')[0];
+        tbody.innerHTML = '';
+
+        transacoes.forEach(t => {
+            if (t.tipo === 'Entrada') {
+                totalEntradas += t.valor;
+            } else {
+                totalSaidas += t.valor;
+                if (['Fundo de Emergência', 'Investimentos'].includes(t.categoria)) {
+                    totalMetas += t.valor;
+                }
+                if (['Cartão de Crédito', 'Empréstimo'].includes(t.categoria)) {
+                    totalDividas += t.valor;
+                }
+            }
+
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td>${t.data.split('-').reverse().join('/')}</td>
+                <td style="color: ${t.tipo === 'Entrada' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${t.tipo}</td>
+                <td>${t.categoria}</td>
+                <td>${t.desc}</td>
+                <td>R$ ${t.valor.toFixed(2)}</td>
+                <td><button class="btn btn-danger" onclick="removerTransacao(${t.id})">X</button></td>
+            `;
+        });
+
+        const lucroLiquido = totalEntradas - totalSaidas;
+
+        document.getElementById('dash-entradas').innerText = totalEntradas.toFixed(2);
+        document.getElementById('dash-saidas').innerText = totalSaidas.toFixed(2);
+        document.getElementById('dash-lucro').innerText = lucroLiquido.toFixed(2);
+        document.getElementById('dash-metas').innerText = totalMetas.toFixed(2);
+
+        if (meuGrafico) {
+            const despesasVariaveis = totalSaidas - totalMetas - totalDividas;
+            meuGrafico.data.datasets[0].data = [
+                totalEntradas,
+                despesasVariaveis > 0 ? despesasVariaveis : 0,
+                totalDividas,
+                totalMetas
+            ];
+            meuGrafico.update();
+        }
+    }
+
+    function removerTransacao(id) {
+        transacoes = transacoes.filter(t => t.id !== id);
+        atualizarPainelFinanceiro();
+    }
+
+    // --- ASSISTENTE DE IA ---
+    function analisarComIA() {
+        const painel = document.getElementById('ai-painel');
+        const conteudo = document.getElementById('ai-conteudo');
+        let lucro = parseFloat(document.getElementById('dash-lucro').innerText);
+
+        if (transacoes.length === 0) {
+            alert('Insira lançamentos primeiro para gerar a análise da IA.');
+            return;
+        }
+
+        let sugestao = '';
+        if (lucro > 0) {
+            sugestao = ' Margem positiva! Recomendamos destinar 20% do lucro líquido para a Reserva de Emergência ou manutenção do veículo.';
+        } else if (lucro < 0) {
+            sugestao = ' Atenção: Suas despesas superaram a receita. Revise gastos com combustível ou despesas variáveis acumuladas.';
+        } else {
+            sugestao = ' Seu balanço está neutro. Procure registrar corridas adicionais para criar uma margem de lucro segura.';
+        }
+
+        conteudo.innerHTML = `
+            <div class="ai-insight-item">
+                <strong>Análise do Período:</strong> Foram registrados <strong>${transacoes.length}</strong> lançamentos.
+            </div>
+            <div class="ai-insight-item">
+                <strong>Diagnóstico de Lucratividade:</strong> Lucro Líquido atual de <strong>R$ ${lucro.toFixed(2)}</strong>.
+            </div>
+            <div class="ai-insight-item">
+                <strong>Recomendação IA:</strong> ${sugestao}
+            </div>
+        `;
+        painel.style.display = 'block';
+    }
+
+    // --- RELATÓRIOS E COMPARTILHAMENTO ---
+    function gerarRelatorio() {
+        const periodo = document.getElementById('rel-periodo').value;
+        const dataEmissao = document.getElementById('rel-data-emissao');
+        const relConteudo = document.getElementById('rel-conteudo');
+
+        dataEmissao.innerText = `Emitido em: ${new Date().toLocaleString('pt-BR')}`;
+
+        let entradas = 0;
+        let saidas = 0;
+
+        transacoes.forEach(t => {
+            if (t.tipo === 'Entrada') entradas += t.valor;
+            else saidas += t.valor;
+        });
+
+        relConteudo.innerHTML = `
+            <p><strong>Filtro Utilizado:</strong> ${periodo.toUpperCase()}</p>
+            <p><strong>Total de Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
+            <p><strong>Total de Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
+            <p><strong>Saldo Final do Período:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
+            <p><strong>Total de Registros:</strong> ${transacoes.length} movimentação(ões).</p>
+        `;
+    }
+
+    function vozPreencherRelatorio() {
+        const btn = document.getElementById('btn-voz-rel');
+        escutarVoz(texto => {
+            const numeros = texto.replace(/\D/g, '');
+            if (numeros.length >= 8) {
+                document.getElementById('rel-wsp').value = numeros;
+                alert(`Contato carregado: ${numeros}`);
+            } else {
+                alert(`Conteúdo de áudio capturado: "${texto}"`);
+            }
+        }, btn, '🎤 Ditador de Dados');
+    }
+
+    function gerarPDFRelatorio(download = true) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        doc.setFontSize(16);
+        doc.text("Táxify - Relatório Financeiro", 20, 20);
+        doc.setFontSize(10);
+        doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
+        doc.line(20, 32, 190, 32);
+
+        let y = 40;
+        transacoes.forEach((t) => {
+            doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | R$ ${t.valor.toFixed(2)}`, 20, y);
+            y += 8;
+            if (y > 280) { doc.addPage(); y = 20; }
+        });
+
+        if (download) {
+            doc.save("relatorio_taxify.pdf");
+        }
+        return doc;
+    }
+
+    function enviarRelatorioWhatsAppPDF() {
+        const wsp = document.getElementById('rel-wsp').value.replace(/\D/g, '');
+        if (!wsp) { alert('Informe o número de WhatsApp primeiro.'); return; }
+        const texto = encodeURIComponent("Olá! Segue o resumo financeiro gerado pelo Táxify.");
+        window.open(`[https://api.whatsapp.com/send?phone=$](https://api.whatsapp.com/send?phone=$){wsp}&text=${texto}`, '_blank');
+    }
+
+    function enviarRelatorioEmailPDF() {
+        const email = document.getElementById('rel-email').value;
+        if (!email) { alert('Informe o e-mail de destino.'); return; }
+        const assunto = encodeURIComponent("Relatório Financeiro - Táxify");
+        const corpo = encodeURIComponent("Segue em anexo o resumo do relatório financeiro.");
+        window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
+    }
+
+    // --- FOTO DO VEÍCULO & PERFIL DO TAXISTA ---
+    let fotoVeiculoBase64 = "";
+
+    function carregarFotoVeiculo(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            fotoVeiculoBase64 = reader.result;
+            const container = document.getElementById('box-preview-img');
+            container.innerHTML = `<img src="${fotoVeiculoBase64}" alt="Foto Veículo">`;
+        };
+        if (event.target.files[0]) {
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    }
+
+    function salvarPerfilTaxista() {
+        const perfil = {
+            nome: document.getElementById('taxista-nome').value,
+            doc: document.getElementById('taxista-doc').value,
+            foto: fotoVeiculoBase64
+        };
+        localStorage.setItem('taxify_perfil', JSON.stringify(perfil));
+        alert('Dados do motorista salvos localmente com sucesso!');
+    }
+
+    function carregarPerfilTaxista() {
+        const perfilSalvo = localStorage.getItem('taxify_perfil');
+        if (perfilSalvo) {
+            const perfil = JSON.parse(perfilSalvo);
+            document.getElementById('taxista-nome').value = perfil.nome || '';
+            document.getElementById('taxista-doc').value = perfil.doc || '';
+            document.getElementById('rec-motorista').value = perfil.nome || '';
+            document.getElementById('rec-doc-motorista').value = perfil.doc || '';
+            if (perfil.foto) {
+                fotoVeiculoBase64 = perfil.foto;
+                document.getElementById('box-preview-img').innerHTML = `<img src="${perfil.foto}" alt="Foto Veículo">`;
+            }
+        }
+    }
+
+    function limparPerfilTaxista() {
+        localStorage.removeItem('taxify_perfil');
+        document.getElementById('taxista-nome').value = '';
+        document.getElementById('taxista-doc').value = '';
+        document.getElementById('box-preview-img').innerHTML = '<span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>';
+        fotoVeiculoBase64 = "";
+        alert('Dados do motorista removidos.');
+    }
+
+    function vozPreencherRecibo() {
+        const btn = document.getElementById('btn-voz-recibo');
+        escutarVoz(texto => {
+            document.getElementById('corrida-obs').value = texto;
+            alert(`Trajeto preenchido: "${texto}"`);
+        }, btn, '🎤 Ditar Trajeto por Voz');
+    }
+
+    function gerarPDFRecibo(download = true) {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+
+        const motorista = document.getElementById('rec-motorista').value || "Motorista / Empresa";
+        const docMotorista = document.getElementById('rec-doc-motorista').value || "N/A";
+        const veiculo = document.getElementById('rec-veiculo').value || "N/A";
+        const cliente = document.getElementById('cliente-nome').value || "Cliente";
+        const valor = document.getElementById('corrida-valor').value || "0.00";
+        const obs = document.getElementById('corrida-obs').value || "Sem observações.";
+
+        doc.setFillColor(44, 62, 80);
+        doc.rect(0, 0, 210, 30, 'F');
+       
+        doc.setTextColor(241, 196, 15);
+        doc.setFontSize(18);
+        doc.text("RECIBO DE CORRIDA - TÁXIFY", 15, 20);
+
+        doc.setTextColor(0, 0, 0);
+        doc.setFontSize(10);
+        doc.text(`Motorista/Empresa: ${motorista}`, 15, 42);
+        doc.text(`CPF/CNPJ: ${docMotorista}`, 15, 49);
+        doc.text(`Veículo (Modelo/Placa): ${veiculo}`, 15, 56);
+        doc.text(`Passageiro: ${cliente}`, 15, 63);
+        doc.text(`Valor da Corrida: R$ ${parseFloat(valor).toFixed(2)}`, 15, 70);
+        doc.text(`Trajeto / Obs: ${obs}`, 15, 77);
+
+        if (fotoVeiculoBase64) {
+            doc.addImage(fotoVeiculoBase64, 'JPEG', 150, 40, 45, 35);
+        }
+
+        doc.line(15, 88, 195, 88);
+        doc.text("Obrigado pela preferência!", 15, 96);
+
+        if (download) {
+            doc.save(`recibo_${cliente.replace(/\s+/g, '_')}.pdf`);
+        }
+        return doc;
+    }
+
+    function enviarReciboWspPDF() {
+        const wsp = document.getElementById('cliente-wsp').value.replace(/\D/g, '');
+        if (!wsp) { alert('Informe o WhatsApp do cliente.'); return; }
+        gerarPDFRecibo(true);
+        const texto = encodeURIComponent("Olá! Aqui está o seu recibo de corrida emitido via Táxify.");
+        window.open(`[https://api.whatsapp.com/send?phone=$](https://api.whatsapp.com/send?phone=$){wsp}&text=${texto}`, '_blank');
+    }
+
+    function enviarReciboEmailPDF() {
+        const email = document.getElementById('cliente-email').value;
+        if (!email) { alert('Informe o e-mail do cliente.'); return; }
+        gerarPDFRecibo(true);
+        const assunto = encodeURIComponent("Seu Recibo de Corrida - Táxify");
+        const corpo = encodeURIComponent("Obrigado por utilizar nossos serviços! O seu recibo de corrida foi gerado.");
+        window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
+    }
+</script>
+</body>
+</html>
+
+ 
