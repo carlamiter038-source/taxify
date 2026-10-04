@@ -944,7 +944,7 @@
         const vencimento = dVenc.toISOString().split('T')[0];
 
         let lista = obterCompradoresDB(diasSelecionados);
-        const idx = lista.findIndex(c => c.email === email);
+        const idx = lista.findIndex(c => c.email.toLowerCase() === email);
         if (idx >= 0) {
             lista[idx].nome = nome;
             lista[idx].tel = tel;
@@ -959,7 +959,7 @@
         renderizarTodasTabelasCompradores();
         document.getElementById('form-novo-comprador').reset();
         document.getElementById('novo-comp-data').valueAsDate = new Date();
-        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso!`);
+        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso! Já pode acessar o app.`);
     }
 
     function renderizarTodasTabelasCompradores() {
@@ -1038,17 +1038,18 @@
         }
     }
 
-    // --- CONTROLE DE LOGIN DO CLIENTE COM VALIDAÇÃO NOS BANCOS ---
+    // --- CONTROLE DE LOGIN DO CLIENTE (SIMPLIFICADO E DIRETO) ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
         const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
         const msgErro = document.getElementById('login-msg');
+        msgErro.style.display = 'none';
 
         let compradorEncontrado = null;
         for (let dias of periodosDB) {
             let lista = obterCompradoresDB(dias);
-            let achei = lista.find(c => c.email === emailInput);
+            let achei = lista.find(c => c.email.trim().toLowerCase() === emailInput);
             if (achei) {
                 compradorEncontrado = achei;
                 break;
@@ -1056,7 +1057,7 @@
         }
 
         if (!compradorEncontrado) {
-            msgErro.innerText = 'E-mail não encontrado. Adquira o acesso via WhatsApp!';
+            msgErro.innerText = 'E-mail não encontrado. Solicite o cadastro ao suporte técnico!';
             msgErro.style.display = 'block';
             return;
         }
@@ -1074,6 +1075,7 @@
             return;
         }
 
+        // Sucesso no Acesso
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
         carregarPerfilTaxista();
@@ -1572,3 +1574,5 @@
 </script>
 </body>
 </html>
+
+ 
