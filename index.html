@@ -353,8 +353,8 @@
 
         <form id="form-login">
             <div class="form-group" style="margin-bottom: 12px;">
-                <label for="login-email">E-mail do Cliente</label>
-                <input type="email" id="login-email" required placeholder="Digite seu e-mail cadastrado">
+                <label for="login-tel">Número de Telefone / WhatsApp</label>
+                <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
             </div>
 
             <div style="font-size: 0.8rem; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px;">
@@ -687,12 +687,8 @@
                             <input type="text" id="novo-comp-nome" required placeholder="Nome completo">
                         </div>
                         <div class="form-group">
-                            <label>E-mail de Acesso</label>
-                            <input type="email" id="novo-comp-email" required placeholder="cliente@email.com">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone / WhatsApp</label>
-                            <input type="text" id="novo-comp-tel" placeholder="(00) 00000-0000">
+                            <label>Telefone / WhatsApp (Chave de Acesso)</label>
+                            <input type="text" id="novo-comp-tel" required placeholder="(00) 00000-0000">
                         </div>
                         <div class="form-group">
                             <label>Período de Licença (Banco de Dados)</label>
@@ -726,23 +722,23 @@
             <!-- SEÇÕES DE CADA BANCO -->
             <div id="db-sec-7" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 7 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-30" class="db-section active">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 30 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-60" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 60 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-90" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 90 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-365" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome / Contato</th><th>E-mail</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <div style="text-align: right; margin-top: 15px;">
@@ -763,7 +759,7 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante licença de uso pessoal, intransferível e temporária, vinculada diretamente ao e-mail comercial do comprador. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso sem direito a reembolso.
+                O direito de acesso ao sistema é concedido mediante licença de uso pessoal, intransferível e temporária, vinculada diretamente ao número de telefone/WhatsApp do comprador. O compartilhamento de credenciais de acesso ou a utilização simultánea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso sem direito a reembolso.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>3. POLÍTICA DE PAGAMENTOS E REEMBOLSO:</strong><br>
@@ -775,7 +771,7 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
-                O e-mail e os dados informados no momento da aquisição são armazenados no banco de dados restrito do suporte técnico unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software. Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
+                O número de telefone e os dados informados no momento da aquisição são armazenados no banco de dados restrito do suporte técnico unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software. Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
@@ -874,6 +870,10 @@
     // --- BANCOS DE DADOS SEPARADOS POR PERÍODO (LOCALSTORAGE) ---
     const periodosDB = ['7', '30', '60', '90', '365'];
 
+    function limparTelefone(tel) {
+        return tel ? tel.replace(/\D/g, '') : '';
+    }
+
     function obterCompradoresDB(dias) {
         const chave = `taxify_compradores_db_${dias}`;
         const dados = localStorage.getItem(chave);
@@ -881,9 +881,6 @@
             return JSON.parse(dados);
         }
         let inicial = [];
-        if (dias === '30') {
-            inicial = [{ id: 1, nome: "Carla Miter", email: "carlamiter038@gmail.com", tel: "(31) 97564-4571", dataCompra: "2026-10-01", vencimento: "2026-11-01", ativo: true }];
-        }
         localStorage.setItem(chave, JSON.stringify(inicial));
         return inicial;
     }
@@ -933,8 +930,8 @@
     function cadastrarComprador(e) {
         e.preventDefault();
         const nome = document.getElementById('novo-comp-nome').value.trim();
-        const email = document.getElementById('novo-comp-email').value.trim().toLowerCase();
-        const tel = document.getElementById('novo-comp-tel').value.trim();
+        const telDigitado = document.getElementById('novo-comp-tel').value.trim();
+        const telLimpo = limparTelefone(telDigitado);
         const diasSelecionados = document.getElementById('novo-comp-dias').value;
         const dataCompra = document.getElementById('novo-comp-data').value;
 
@@ -944,22 +941,21 @@
         const vencimento = dVenc.toISOString().split('T')[0];
 
         let lista = obterCompradoresDB(diasSelecionados);
-        const idx = lista.findIndex(c => c.email.toLowerCase() === email);
+        const idx = lista.findIndex(c => c.tel === telLimpo);
         if (idx >= 0) {
             lista[idx].nome = nome;
-            lista[idx].tel = tel;
             lista[idx].dataCompra = dataCompra;
             lista[idx].vencimento = vencimento;
             lista[idx].ativo = true;
         } else {
-            lista.push({ id: Date.now(), nome, email, tel, dataCompra, vencimento, ativo: true });
+            lista.push({ id: Date.now(), nome, tel: telLimpo, dataCompra, vencimento, ativo: true });
         }
 
         salvarCompradoresDB(diasSelecionados, lista);
         renderizarTodasTabelasCompradores();
         document.getElementById('form-novo-comprador').reset();
         document.getElementById('novo-comp-data').valueAsDate = new Date();
-        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso! Já pode acessar o app.`);
+        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso!`);
     }
 
     function renderizarTodasTabelasCompradores() {
@@ -994,8 +990,8 @@
             }
 
             row.innerHTML = `
-                <td><strong>${c.nome}</strong><br><small>${c.tel}</small></td>
-                <td>${c.email}</td>
+                <td><strong>${c.nome}</strong></td>
+                <td>${c.tel}</td>
                 <td>${c.dataCompra ? c.dataCompra.split('-').reverse().join('/') : '-'}</td>
                 <td><input type="date" value="${c.vencimento}" onchange="atualizarDataVencimento('${dias}', ${c.id}, this.value)" style="padding:4px; font-size:0.85rem;"></td>
                 <td>${badgePrazo}</td>
@@ -1038,18 +1034,17 @@
         }
     }
 
-    // --- CONTROLE DE LOGIN DO CLIENTE (SIMPLIFICADO E DIRETO) ---
+    // --- CONTROLE DE LOGIN DO CLIENTE COM VALIDAÇÃO POR TELEFONE NOS BANCOS ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
-        const emailInput = document.getElementById('login-email').value.trim().toLowerCase();
+        const telInput = limparTelefone(document.getElementById('login-tel').value);
         const msgErro = document.getElementById('login-msg');
-        msgErro.style.display = 'none';
 
         let compradorEncontrado = null;
         for (let dias of periodosDB) {
             let lista = obterCompradoresDB(dias);
-            let achei = lista.find(c => c.email.trim().toLowerCase() === emailInput);
+            let achei = lista.find(c => limparTelefone(c.tel) === telInput);
             if (achei) {
                 compradorEncontrado = achei;
                 break;
@@ -1057,7 +1052,7 @@
         }
 
         if (!compradorEncontrado) {
-            msgErro.innerText = 'E-mail não encontrado. Solicite o cadastro ao suporte técnico!';
+            msgErro.innerText = 'Número de telefone não encontrado. Adquira o acesso via WhatsApp!';
             msgErro.style.display = 'block';
             return;
         }
@@ -1069,13 +1064,12 @@
         }
 
         const hoje = new Date().toISOString().split('T')[0];
-        if (compradorEncontrado.vencimento < hoje && emailInput !== 'carlamiter038@gmail.com') {
+        if (compradorEncontrado.vencimento < hoje) {
             msgErro.innerText = `Sua licença venceu em ${compradorEncontrado.vencimento.split('-').reverse().join('/')}. Renove via WhatsApp!`;
             msgErro.style.display = 'block';
             return;
         }
 
-        // Sucesso no Acesso
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
         carregarPerfilTaxista();
@@ -1085,7 +1079,7 @@
     function sairDoApp() {
         document.getElementById('app-content').style.display = 'none';
         document.getElementById('login-screen').style.display = 'block';
-        document.getElementById('login-email').value = '';
+        document.getElementById('login-tel').value = '';
         document.getElementById('aceite-termos').checked = false;
         validarAceiteTermos();
     }
@@ -1201,7 +1195,7 @@
 
         lista.forEach(c => {
             const row = tbody.insertRow();
-            const telLimpo = c.tel.replace(/\D/g, '');
+            const telLimpo = limparTelefone(c.tel);
 
             row.innerHTML = `
                 <td><strong>${c.nome}</strong></td>
@@ -1444,7 +1438,7 @@
     }
 
     function enviarRelatorioWhatsAppPDF() {
-        const wsp = document.getElementById('rel-wsp').value.replace(/\D/g, '');
+        const wsp = limparTelefone(document.getElementById('rel-wsp').value);
         if (!wsp) { alert('Informe o número de WhatsApp primeiro.'); return; }
         const texto = encodeURIComponent("Olá! Segue o resumo financeiro gerado pelo Táxify.");
         window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
@@ -1556,7 +1550,7 @@
     }
 
     function enviarReciboWspPDF() {
-        const wsp = document.getElementById('cliente-wsp').value.replace(/\D/g, '');
+        const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
         if (!wsp) { alert('Informe o WhatsApp do cliente.'); return; }
         gerarPDFRecibo(true);
         const texto = encodeURIComponent("Olá! Aqui está o seu recibo de corrida emitido via Táxify.");
