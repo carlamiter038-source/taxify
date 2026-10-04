@@ -353,6 +353,11 @@
 
         <form id="form-login">
             <div class="form-group" style="margin-bottom: 12px;">
+                <label for="login-nome">Seu Nome (para Auto-liberação)</label>
+                <input type="text" id="login-nome" required placeholder="Digite seu nome completo">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 12px;">
                 <label for="login-tel">Número de Telefone / WhatsApp</label>
                 <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
             </div>
@@ -364,7 +369,7 @@
                 </label>
             </div>
 
-            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Acessar Sistema</button>
+            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Ativar e Acessar Sistema</button>
             <p id="login-msg" style="color: red; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;"></p>
         </form>
     </div>
@@ -678,39 +683,8 @@
         </div>
 
         <div id="admin-painel-box" style="display: none;">
-            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
-                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">➕ Cadastrar Novo Cliente</h4>
-                <form id="form-novo-comprador" onsubmit="cadastrarComprador(event)">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nome do Cliente</label>
-                            <input type="text" id="novo-comp-nome" required placeholder="Nome completo">
-                        </div>
-                        <div class="form-group">
-                            <label>Telefone / WhatsApp (Chave de Acesso)</label>
-                            <input type="text" id="novo-comp-tel" required placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="form-group">
-                            <label>Período de Licença (Banco de Dados)</label>
-                            <select id="novo-comp-dias">
-                                <option value="7">7 Dias</option>
-                                <option value="30" selected>30 Dias</option>
-                                <option value="60">60 Dias</option>
-                                <option value="90">90 Dias</option>
-                                <option value="365">1 Ano (365 Dias)</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>Data de Início / Cadastro</label>
-                            <input type="date" id="novo-comp-data" required>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-warning">💾 Cadastrar e Liberar Acesso</button>
-                </form>
-            </div>
-
             <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
-            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados por Período de Licença</h4>
+            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados</h4>
             <div class="admin-tabs">
                 <button type="button" class="tab-btn active" onclick="trocarAbaAdmin('7')">Banco 7 Dias</button>
                 <button type="button" class="tab-btn" onclick="trocarAbaAdmin('30')">Banco 30 Dias</button>
@@ -722,23 +696,23 @@
             <!-- SEÇÕES DE CADA BANCO -->
             <div id="db-sec-7" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 7 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-30" class="db-section active">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 30 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-60" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 60 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-90" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 90 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-365" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <div style="text-align: right; margin-top: 15px;">
@@ -759,11 +733,11 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante liberação técnica na área restrita, vinculado diretamente ao número de telefone/WhatsApp do cliente. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
+                O direito de acesso ao sistema é concedido mediante ativação direta realizada pelo usuário no próprio aplicativo com seu número de telefone. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>3. SUPORTE TÉCNICO E LIBERAÇÃO:</strong><br>
-                A liberação e renovação das licenças (planos de 7 dias, 30 dias, 60 dias, 90 dias ou 1 ano) são gerenciadas diretamente pelo suporte técnico através dos canais oficiais.
+                <strong>3. SUPORTE TÉCNICO:</strong><br>
+                O suporte técnico e esclarecimento de dúvidas sobre o Táxify são realizados através do canal de atendimento via WhatsApp oficial.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
@@ -771,7 +745,7 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
-                O número de telefone e os dados informados no cadastro são armazenados no banco de dados restrito do suporte unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software.
+                O número de telefone e nome informados no login são armazenados no banco de dados restrito unicamente para fins de validação de licença, controle de vigência e acesso ao software.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
@@ -912,7 +886,6 @@
         if (email === 'carlamiter038@gmail.com' && senha === '312707') {
             document.getElementById('admin-login-box').style.display = 'none';
             document.getElementById('admin-painel-box').style.display = 'block';
-            document.getElementById('novo-comp-data').valueAsDate = new Date();
             renderizarTodasTabelasCompradores();
         } else {
             erro.style.display = 'block';
@@ -925,37 +898,6 @@
 
         event.target.classList.add('active');
         document.getElementById(`db-sec-${dias}`).classList.add('active');
-    }
-
-    function cadastrarComprador(e) {
-        e.preventDefault();
-        const nome = document.getElementById('novo-comp-nome').value.trim();
-        const telDigitado = document.getElementById('novo-comp-tel').value.trim();
-        const telLimpo = limparTelefone(telDigitado);
-        const diasSelecionados = document.getElementById('novo-comp-dias').value;
-        const dataCompra = document.getElementById('novo-comp-data').value;
-
-        const dCompra = new Date(dataCompra + 'T00:00:00');
-        const dVenc = new Date(dCompra);
-        dVenc.setDate(dVenc.getDate() + parseInt(diasSelecionados));
-        const vencimento = dVenc.toISOString().split('T')[0];
-
-        let lista = obterCompradoresDB(diasSelecionados);
-        const idx = lista.findIndex(c => c.tel === telLimpo);
-        if (idx >= 0) {
-            lista[idx].nome = nome;
-            lista[idx].dataCompra = dataCompra;
-            lista[idx].vencimento = vencimento;
-            lista[idx].ativo = true;
-        } else {
-            lista.push({ id: Date.now(), nome, tel: telLimpo, dataCompra, vencimento, ativo: true });
-        }
-
-        salvarCompradoresDB(diasSelecionados, lista);
-        renderizarTodasTabelasCompradores();
-        document.getElementById('form-novo-comprador').reset();
-        document.getElementById('novo-comp-data').valueAsDate = new Date();
-        alert(`Cliente cadastrado e acesso liberado no banco de ${diasSelecionados} dias!`);
     }
 
     function renderizarTodasTabelasCompradores() {
@@ -1034,40 +976,70 @@
         }
     }
 
-    // --- CONTROLE DE LOGIN DO CLIENTE COM VALIDAÇÃO POR TELEFONE NOS BANCOS ---
+    // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO DO CLIENTE ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
+        const nomeInput = document.getElementById('login-nome').value.trim();
         const telInput = limparTelefone(document.getElementById('login-tel').value);
         const msgErro = document.getElementById('login-msg');
 
         let compradorEncontrado = null;
+        let bancoEncontrado = '30'; // Padrão de 30 dias para novas auto-ativações
+
         for (let dias of periodosDB) {
             let lista = obterCompradoresDB(dias);
             let achei = lista.find(c => limparTelefone(c.tel) === telInput);
             if (achei) {
                 compradorEncontrado = achei;
+                bancoEncontrado = dias;
                 break;
             }
         }
 
+        const hojeObj = new Date();
+        const hojeStr = hojeObj.toISOString().split('T')[0];
+
         if (!compradorEncontrado) {
-            msgErro.innerText = 'Número de telefone não cadastrado. Solicite a liberação via suporte técnico!';
-            msgErro.style.display = 'block';
-            return;
-        }
+            // Auto-liberação: Se o telefone não existe, cadastra automaticamente no banco de 30 dias com acesso liberado
+            const dVenc = new Date(hojeObj);
+            dVenc.setDate(dVenc.getDate() + 30);
+            const vencimentoStr = dVenc.toISOString().split('T')[0];
 
-        if (!compradorEncontrado.ativo) {
-            msgErro.innerText = 'Seu acesso está BLOQUEADO. Entre em contato com o suporte.';
-            msgErro.style.display = 'block';
-            return;
-        }
+            compradorEncontrado = {
+                id: Date.now(),
+                nome: nomeInput,
+                tel: telInput,
+                dataCompra: hojeStr,
+                vencimento: vencimentoStr,
+                ativo: true
+            };
 
-        const hoje = new Date().toISOString().split('T')[0];
-        if (compradorEncontrado.vencimento < hoje) {
-            msgErro.innerText = `Sua licença venceu em ${compradorEncontrado.vencimento.split('-').reverse().join('/')}. Solicite a renovação via suporte!`;
-            msgErro.style.display = 'block';
-            return;
+            let lista30 = obterCompradoresDB('30');
+            lista30.push(compradorEncontrado);
+            salvarCompradoresDB('30', lista30);
+        } else {
+            // Se já existe, atualiza o nome e garante que está ativo e com validade em dia (ou renova caso tenha vencido)
+            if (!compradorEncontrado.ativo) {
+                msgErro.innerText = 'Seu acesso está BLOQUEADO. Entre em contato com o suporte.';
+                msgErro.style.display = 'block';
+                return;
+            }
+
+            if (compradorEncontrado.vencimento < hojeStr) {
+                // Auto-renovação de 30 dias caso estivesse vencido
+                const dVenc = new Date(hojeObj);
+                dVenc.setDate(dVenc.getDate() + 30);
+                compradorEncontrado.vencimento = dVenc.toISOString().split('T')[0];
+                compradorEncontrado.ativo = true;
+            }
+
+            compradorEncontrado.nome = nomeInput;
+           
+            // Salva atualizações no banco correspondente
+            let listaBanco = obterCompradoresDB(bancoEncontrado);
+            listaBanco = listaBanco.map(c => c.id === compradorEncontrado.id ? compradorEncontrado : c);
+            salvarCompradoresDB(bancoEncontrado, listaBanco);
         }
 
         document.getElementById('login-screen').style.display = 'none';
@@ -1080,6 +1052,7 @@
         document.getElementById('app-content').style.display = 'none';
         document.getElementById('login-screen').style.display = 'block';
         document.getElementById('login-tel').value = '';
+        document.getElementById('login-nome').value = '';
         document.getElementById('aceite-termos').checked = false;
         validarAceiteTermos();
     }
