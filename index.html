@@ -347,8 +347,8 @@
         </button>
 
         <!-- Botão de Suporte / WhatsApp Business -->
-        <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Gostaria de adquirir o Táxify, tirar dúvidas ou obter os dados para pagamento." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
-            💬 Comprar / Suporte (WhatsApp)
+        <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Preciso de suporte técnico ou informações sobre o Táxify." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
+            💬 Suporte Técnico (WhatsApp)
         </a>
 
         <form id="form-login">
@@ -679,11 +679,11 @@
 
         <div id="admin-painel-box" style="display: none;">
             <div style="background: #f8f9fa; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
-                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">➕ Cadastrar Novo Comprador</h4>
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">➕ Cadastrar Novo Cliente</h4>
                 <form id="form-novo-comprador" onsubmit="cadastrarComprador(event)">
                     <div class="form-grid">
                         <div class="form-group">
-                            <label>Nome do Comprador</label>
+                            <label>Nome do Cliente</label>
                             <input type="text" id="novo-comp-nome" required placeholder="Nome completo">
                         </div>
                         <div class="form-group">
@@ -701,11 +701,11 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Data da Compra</label>
+                            <label>Data de Início / Cadastro</label>
                             <input type="date" id="novo-comp-data" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-warning">💾 Cadastrar no Banco Selecionado</button>
+                    <button type="submit" class="btn btn-warning">💾 Cadastrar e Liberar Acesso</button>
                 </form>
             </div>
 
@@ -721,24 +721,24 @@
 
             <!-- SEÇÕES DE CADA BANCO -->
             <div id="db-sec-7" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 7 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 7 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-30" class="db-section active">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 30 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 30 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-60" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 60 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 60 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-90" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 90 Dias</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 90 Dias</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-365" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Compradores - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Compra</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações</th></tr></thead><tbody></tbody></table></div>
+                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 1 Ano (365 Dias)</h5>
+                <div style="max-height: 200px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <div style="text-align: right; margin-top: 15px;">
@@ -759,11 +759,11 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante licença de uso pessoal, intransferível e temporária, vinculada diretamente ao número de telefone/WhatsApp do comprador. O compartilhamento de credenciais de acesso ou a utilização simultánea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso sem direito a reembolso.
+                O direito de acesso ao sistema é concedido mediante liberação técnica na área restrita, vinculado diretamente ao número de telefone/WhatsApp do cliente. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>3. POLÍTICA DE PAGAMENTOS E REEMBOLSO:</strong><br>
-                A aquisição e renovação das licenças (planos de 7 dias, 30 dias, 60 dias, 90 dias ou 1 ano) são realizadas estritamente através dos canais oficiais de suporte técnico (WhatsApp Business). Uma vez liberado e ativado o acesso digital, os valores pagos referentes a licenças digitais não são reembolsáveis.
+                <strong>3. SUPORTE TÉCNICO E LIBERAÇÃO:</strong><br>
+                A liberação e renovação das licenças (planos de 7 dias, 30 dias, 60 dias, 90 dias ou 1 ano) são gerenciadas diretamente pelo suporte técnico através dos canais oficiais.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
@@ -771,11 +771,11 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
-                O número de telefone e os dados informados no momento da aquisição são armazenados no banco de dados restrito do suporte técnico unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software. Nenhum dado pessoal é comercializado ou compartilhado com terceiros.
+                O número de telefone e os dados informados no cadastro são armazenados no banco de dados restrito do suporte unicamente para fins de validação de licença, controle de vigência e liberação de acesso ao software.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
-                O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador, instabilidades na rede de internet ou mau uso das ferramentas de cálculo e emissão de recibos.
+                O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador ou instabilidades na rede de internet.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>7. ATUALIZAÇÕES DOS TERMOS:</strong><br>
@@ -955,7 +955,7 @@
         renderizarTodasTabelasCompradores();
         document.getElementById('form-novo-comprador').reset();
         document.getElementById('novo-comp-data').valueAsDate = new Date();
-        alert(`Comprador cadastrado no banco de ${diasSelecionados} dias com sucesso!`);
+        alert(`Cliente cadastrado e acesso liberado no banco de ${diasSelecionados} dias!`);
     }
 
     function renderizarTodasTabelasCompradores() {
@@ -995,9 +995,9 @@
                 <td>${c.dataCompra ? c.dataCompra.split('-').reverse().join('/') : '-'}</td>
                 <td><input type="date" value="${c.vencimento}" onchange="atualizarDataVencimento('${dias}', ${c.id}, this.value)" style="padding:4px; font-size:0.85rem;"></td>
                 <td>${badgePrazo}</td>
-                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? 'Ativo' : 'Bloqueado'}</span></td>
+                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? 'Liberado' : 'Bloqueado'}</span></td>
                 <td>
-                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? 'Bloquear' : 'Ativar'}</button>
+                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? '🔒 Bloquear' : '🔓 Liberar'}</button>
                     <button class="btn btn-danger" onclick="excluirComprador('${dias}', ${c.id})" style="margin-left:5px;">Excluir</button>
                 </td>
             `;
@@ -1026,7 +1026,7 @@
     }
 
     function excluirComprador(dias, id) {
-        if (confirm('Tem certeza que deseja excluir este comprador deste banco de dados?')) {
+        if (confirm('Tem certeza que deseja excluir este cliente deste banco de dados?')) {
             let lista = obterCompradoresDB(dias);
             lista = lista.filter(c => c.id !== id);
             salvarCompradoresDB(dias, lista);
@@ -1052,7 +1052,7 @@
         }
 
         if (!compradorEncontrado) {
-            msgErro.innerText = 'Número de telefone não encontrado. Adquira o acesso via WhatsApp!';
+            msgErro.innerText = 'Número de telefone não cadastrado. Solicite a liberação via suporte técnico!';
             msgErro.style.display = 'block';
             return;
         }
@@ -1065,7 +1065,7 @@
 
         const hoje = new Date().toISOString().split('T')[0];
         if (compradorEncontrado.vencimento < hoje) {
-            msgErro.innerText = `Sua licença venceu em ${compradorEncontrado.vencimento.split('-').reverse().join('/')}. Renove via WhatsApp!`;
+            msgErro.innerText = `Sua licença venceu em ${compradorEncontrado.vencimento.split('-').reverse().join('/')}. Solicite a renovação via suporte!`;
             msgErro.style.display = 'block';
             return;
         }
