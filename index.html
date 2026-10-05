@@ -421,31 +421,31 @@
             </div>
         </div>
 
-        <!-- CALCULADORA DE CORRIDAS COM GPS (KM x R$ 4,50) -->
+        <!-- CALCULADORA DE CORRIDAS POR ENDEREÇO OU KM (R$ 4,50) -->
         <div class="card">
-            <h2>🛰️ Calculadora de Corrida com GPS (R$ 4,50 / KM)</h2>
+            <h2>🛰️ Calculadora de Corrida (Por Endereço ou KM - R$ 4,50/km)</h2>
             <div style="background: #e8f4f8; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 0.85rem; color: #2980b9;">
-                💡 <strong>Dica:</strong> Clique em "Detectar Origem (GPS)" para capturar sua localização atual automaticamente. Digite o destino do passageiro para calcular a distância e o valor estimado da corrida.
+                💡 <strong>Como usar:</strong> Você pode preencher a **Origem** e o **Destino** por endereço (ou clicar em 📍 GPS para pegar sua posição) para calcular automaticamente pelo mapa, <strong>OU</strong> digitar a quilometragem diretamente no campo de KM abaixo. O preço será atualizado instantaneamente!
             </div>
+           
             <div class="form-grid">
                 <div class="form-group">
-                    <label>Local de Origem (Sua Posição Atual)</label>
+                    <label>Local de Origem</label>
                     <div style="display: flex; gap: 5px;">
-                        <input type="text" id="calc-origem" placeholder="Clique no botão GPS ao lado">
+                        <input type="text" id="calc-origem" placeholder="Endereço de partida ou clique GPS">
                         <button type="button" class="btn btn-gps" onclick="obterLocalizacaoAtual()" title="Obter GPS Atual">📍 GPS</button>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Endereço / Local de Destino</label>
-                    <input type="text" id="calc-destino" placeholder="Ex: Aeroporto, Rodoviária, Rua X...">
+                    <label>Local de Destino</label>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="calc-destino" placeholder="Endereço de chegada do passageiro" onblur="calcularRotaPorEnderecos()">
+                        <button type="button" class="btn btn-voz" id="btn-voz-km" onclick="vozInformarDestino()" title="Falar Destino">🎤</button>
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Quilometragem Calculada (KM)</label>
+                    <label>Quilometragem Calculada ou Manual (KM)</label>
                     <input type="number" step="0.1" id="calc-km" placeholder="0.0" oninput="calcularViagemPorKmManual()">
-                </div>
-                <div class="form-group">
-                    <label>Comando por Voz (Destino)</label>
-                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarDestino()">🎤 Falar Destino</button>
                 </div>
             </div>
            
@@ -456,7 +456,10 @@
                         R$ <span id="calc-resultado">0,00</span>
                     </p>
                 </div>
-                <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor e Trajeto para Recibo</button>
+                <div style="display: flex; gap: 8px;">
+                    <button class="btn" onclick="calcularRotaPorEnderecos()" style="background:#2980b9;">🗺️ Calcular por Endereços</button>
+                    <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar para Recibo</button>
+                </div>
             </div>
             <p id="gps-status-msg" style="font-size: 0.8rem; color: #7f8c8d; margin-top: 8px;"></p>
         </div>
@@ -1177,9 +1180,8 @@
         };
     }
 
-    // --- GEOLOCALIZAÇÃO & CÁLCULO DE ROTA POR GPS ---
+    // --- GEOLOCALIZAÇÃO & CÁLCULO DE ROTA POR ENDEREÇO OU KM ---
     const TARIFA_POR_KM = 4.50;
-    let origemCoords = null; // Guarda {lat, lon}
 
     function obterLocalizacaoAtual() {
         const statusMsg = document.getElementById('gps-status-msg');
@@ -1196,33 +1198,30 @@
             async (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                origemCoords = { lat, lon };
 
-                // Tenta buscar o endereço legível (Geocodificação Reversa Nominatim)
                 try {
                     const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=16&addressdetails=1`);
                     const data = await response.json();
                     if (data && data.display_name) {
                         origemInput.value = data.display_name;
-                        statusMsg.innerText = '✅ Localização de origem obtida com sucesso!';
+                        statusMsg.innerText = '✅ Origem obtida via GPS com sucesso!';
                     } else {
-                        origemInput.value = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-                        statusMsg.innerText = '✅ Coordenadas obtidas (endereço não detalhado).';
+                        origemInput.value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+                        statusMsg.innerText = '✅ Coordenadas de GPS obtidas!';
                     }
                 } catch (err) {
-                    origemInput.value = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-                    statusMsg.innerText = '✅ Coordenadas de GPS obtidas!';
+                    origemInput.value = `${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+                    statusMsg.innerText = '✅ Coordenadas obtidas!';
                 }
             },
             (error) => {
-                statusMsg.innerText = '❌ Erro ao obter localização. Verifique permissões do GPS.';
+                statusMsg.innerText = '❌ Erro ao obter GPS. Verifique permissões.';
                 alert('Não foi possível obter sua localização. Certifique-se de permitir o acesso ao GPS.');
             },
             { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
         );
     }
 
-    // Fórmula de Haversine para calcular distância em KM entre dois pontos de coordenadas (lat/lon)
     function calcularDistanciaHaversine(lat1, lon1, lat2, lon2) {
         const R = 6371; // Raio da Terra em km
         const dLat = (lat2 - lat1) * Math.PI / 180;
@@ -1232,56 +1231,51 @@
             Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
             Math.sin(dLon/2) * Math.sin(dLon/2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        // Multiplica por 1.3 para aproximar a rota real de trânsito urbano (curvas e ruas) em vez de linha reta
+        // Multiplica por 1.3 para aproximar a rota urbana real (curvas e ruas)
         return (R * c) * 1.3;
     }
 
-    async function calcularViagemPorDestinoTexto(destinoTexto) {
+    async function calcularRotaPorEnderecos() {
+        const origemTexto = document.getElementById('calc-origem').value.trim();
+        const destinoTexto = document.getElementById('calc-destino').value.trim();
         const statusMsg = document.getElementById('gps-status-msg');
         const kmInput = document.getElementById('calc-km');
-       
-        if (!origemCoords) {
-            alert('Por favor, clique primeiro no botão "📍 GPS" para definir sua origem atual.');
+
+        if (!origemTexto || !destinoTexto) {
+            alert('Preencha tanto o local de Origem quanto o Destino para calcular pelo endereço.');
             return;
         }
 
-        if (!destinoTexto) return;
-
-        statusMsg.innerText = `🔍 Buscando coordenadas para: "${destinoTexto}"...`;
+        statusMsg.innerText = '🔍 Geocodificando endereços e calculando rota...';
 
         try {
-            const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destinoTexto)}&limit=1`);
-            const data = await response.json();
+            // Busca coordenadas da Origem
+            const resOrigem = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(origemTexto)}&limit=1`);
+            const dataOrigem = await resOrigem.json();
 
-            if (data && data.length > 0) {
-                const destinoLat = parseFloat(data[0].lat);
-                const destinoLon = parseFloat(data[0].lon);
+            // Busca coordenadas do Destino
+            const resDestino = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(destinoTexto)}&limit=1`);
+            const dataDestino = await resDestino.json();
 
-                const distanciaKm = calcularDistanciaHaversine(origemCoords.lat, origemCoords.lon, destinoLat, destinoLon);
+            if (dataOrigem && dataOrigem.length > 0 && dataDestino && dataDestino.length > 0) {
+                const lat1 = parseFloat(dataOrigem[0].lat);
+                const lon1 = parseFloat(dataOrigem[0].lon);
+                const lat2 = parseFloat(dataDestino[0].lat);
+                const lon2 = parseFloat(dataDestino[0].lon);
+
+                const distanciaKm = calcularDistanciaHaversine(lat1, lon1, lat2, lon2);
                
                 kmInput.value = distanciaKm.toFixed(1);
                 calcularViagemPorKmManual();
-                statusMsg.innerText = `✅ Rota calculada com sucesso (~${distanciaKm.toFixed(1)} km).`;
+                statusMsg.innerText = `✅ Rota calculada com sucesso (~${distanciaKm.toFixed(1)} km). Preço atualizado!`;
             } else {
-                statusMsg.innerText = '⚠️ Endereço de destino não encontrado. Insira os KM manualmente.';
-                alert('Não foi possível localizar o endereço exato no mapa. Você pode digitar os quilômetros manualmente no campo ao lado.');
+                statusMsg.innerText = '⚠️ Endereço não localizado exatamente. Insira os KM manualmente.';
+                alert('Não foi possível localizar um dos endereços informados. Você pode ajustar os KM manualmente.');
             }
         } catch (err) {
-            statusMsg.innerText = '❌ Erro ao consultar rota.';
+            statusMsg.innerText = '❌ Erro ao buscar endereços no mapa.';
         }
     }
-
-    // Dispara o cálculo quando o usuário termina de digitar o destino e sai do campo
-    document.addEventListener('DOMContentLoaded', () => {
-        const inputDestino = document.getElementById('calc-destino');
-        if (inputDestino) {
-            inputDestino.addEventListener('blur', function() {
-                if (this.value.trim() !== '') {
-                    calcularViagemPorDestinoTexto(this.value.trim());
-                }
-            });
-        }
-    });
 
     function calcularViagemPorKmManual() {
         const kmInput = parseFloat(document.getElementById('calc-km').value);
@@ -1301,24 +1295,23 @@
         const btnVoz = document.getElementById('btn-voz-km');
         escutarVoz(texto => {
             document.getElementById('calc-destino').value = texto;
-            calcularViagemPorDestinoTexto(texto);
-            alert(`Destino capturado por voz: "${texto}"`);
-        }, btnVoz, '🎤 Falar Destino');
+            calcularRotaPorEnderecos();
+        }, btnVoz, '🎤');
     }
 
     function copiarValorParaRecibo() {
         const valorCalculado = calcularViagemPorKmManual();
-        const origem = document.getElementById('calc-origem').value || "Localização Atual";
-        const destino = document.getElementById('calc-destino').value || "Destino Informado";
+        const origem = document.getElementById('calc-origem').value || "Local de Partida";
+        const destino = document.getElementById('calc-destino').value || "Destino";
         const km = document.getElementById('calc-km').value || "0";
 
         if (valorCalculado > 0) {
             document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
             document.getElementById('corrida-obs').value = `Corrida de ${origem} até ${destino} (~${km} km)`;
-            alert(`Valor de R$ ${valorCalculado.toFixed(2)} e trajeto inseridos diretamente no recibo!`);
+            alert(`Valor de R$ ${valorCalculado.toFixed(2)} e trajeto transferidos para o recibo!`);
             document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
         } else {
-            alert('Calcule a distância ou insira os KM primeiro.');
+            alert('Calcule ou insira os KM primeiro.');
         }
     }
 
