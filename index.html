@@ -251,7 +251,7 @@
             background: #fff;
             padding: 25px;
             border-radius: 8px;
-            max-width: 900px;
+            max-width: 950px;
             width: 90%;
             max-height: 85vh;
             overflow-y: auto;
@@ -679,6 +679,35 @@
         </div>
 
         <div id="admin-painel-box" style="display: none;">
+           
+            <!-- FORMULÁRIO DE CADASTRO DE CLIENTE PELO ADMIN -->
+            <div class="card" style="border-top-color: #8e44ad; margin-bottom: 20px; background: #fdfcfe;">
+                <h4 style="font-size: 1rem; color: #8e44ad; margin-bottom: 12px;">➕ Cadastrar Novo Cliente Manualmente</h4>
+                <form id="form-admin-cadastrar" onsubmit="cadastrarClienteAdmin(event)">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Nome do Cliente</label>
+                            <input type="text" id="admin-novo-nome" required placeholder="Nome completo do taxista">
+                        </div>
+                        <div class="form-group">
+                            <label>Número de Telefone / WhatsApp</label>
+                            <input type="text" id="admin-novo-tel" required placeholder="(00) 00000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label>Período / Licença</label>
+                            <select id="admin-novo-dias">
+                                <option value="7">7 Dias</option>
+                                <option value="30" selected>30 Dias</option>
+                                <option value="60">60 Dias</option>
+                                <option value="90">90 Dias</option>
+                                <option value="365">1 Ano (365 Dias)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-admin">Cadastrar e Liberar Acesso</button>
+                </form>
+            </div>
+
             <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
             <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados</h4>
             <div class="admin-tabs">
@@ -692,23 +721,23 @@
             <!-- SEÇÕES DE CADA BANCO -->
             <div id="db-sec-7" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 7 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-30" class="db-section active">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 30 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-60" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 60 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-90" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 90 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-365" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <div style="text-align: right; margin-top: 15px;">
@@ -729,7 +758,7 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante ativação direta realizada pelo usuário no próprio aplicativo com seu nome e número de telefone. O compartilhamento de credenciais de acesso ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
+                O direito de acesso ao sistema é concedido mediante ativação ou cadastro direto realizado pelo suporte ou pelo próprio usuário. O compartilhamento de credenciais ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>3. SUPORTE TÉCNICO:</strong><br>
@@ -894,6 +923,45 @@
         document.getElementById(`db-sec-${dias}`).classList.add('active');
     }
 
+    // --- CADASTRAR CLIENTE DIRETAMENTE PELA ÁREA RESTRITA ---
+    function cadastrarClienteAdmin(e) {
+        e.preventDefault();
+        const nome = document.getElementById('admin-novo-nome').value.trim();
+        const tel = limparTelefone(document.getElementById('admin-novo-tel').value);
+        const dias = document.getElementById('admin-novo-dias').value;
+
+        if (!nome || !tel) {
+            alert('Preencha o nome e o telefone do cliente.');
+            return;
+        }
+
+        const hojeObj = new Date();
+        const hojeStr = hojeObj.toISOString().split('T')[0];
+
+        const dVenc = new Date(hojeObj);
+        dVenc.setDate(dVenc.getDate() + parseInt(dias));
+        const vencimentoStr = dVenc.toISOString().split('T')[0];
+
+        const novoCliente = {
+            id: Date.now(),
+            nome: nome,
+            tel: tel,
+            dataCompra: hojeStr,
+            vencimento: vencimentoStr,
+            ativo: true
+        };
+
+        let listaBanco = obterCompradoresDB(dias);
+        // Remove duplicado caso já exista o telefone no mesmo banco
+        listaBanco = listaBanco.filter(c => limparTelefone(c.tel) !== tel);
+        listaBanco.push(novoCliente);
+        salvarCompradoresDB(dias, listaBanco);
+
+        document.getElementById('form-admin-cadastrar').reset();
+        renderizarTodasTabelasCompradores();
+        alert(`Cliente ${nome} cadastrado com sucesso no banco de ${dias} dias!`);
+    }
+
     function renderizarTodasTabelasCompradores() {
         periodosDB.forEach(dias => {
             renderizarTabelaCompradoresPorBanco(dias);
@@ -979,7 +1047,7 @@
         const msgErro = document.getElementById('login-msg');
 
         let compradorEncontrado = null;
-        let bancoEncontrado = '30'; // Padrão de 30 dias para novas auto-ativações
+        let bancoEncontrado = '30';
 
         for (let dias of periodosDB) {
             let lista = obterCompradoresDB(dias);
@@ -1013,9 +1081,9 @@
             lista30.push(compradorEncontrado);
             salvarCompradoresDB('30', lista30);
         } else {
-            // Se já existe, atualiza o nome e garante que está ativo e com validade em dia (ou renova caso tenha vencido)
+            // Verifica se está bloqueado pelo administrador
             if (!compradorEncontrado.ativo) {
-                msgErro.innerText = 'Seu acesso está BLOQUEADO. Entre em contato com o suporte.';
+                msgErro.innerText = 'Seu acesso está BLOQUEADO pelo suporte técnico.';
                 msgErro.style.display = 'block';
                 return;
             }
@@ -1030,7 +1098,6 @@
 
             compradorEncontrado.nome = nomeInput;
            
-            // Salva atualizações no banco correspondente
             let listaBanco = obterCompradoresDB(bancoEncontrado);
             listaBanco = listaBanco.map(c => c.id === compradorEncontrado.id ? compradorEncontrado : c);
             salvarCompradoresDB(bancoEncontrado, listaBanco);
