@@ -5,16 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Táxify - Gestão Financeira para Taxistas</title>
    
-    <!-- Configurações PWA (Progressive Web App) -->
+    <!-- Configurações PWA -->
     <meta name="theme-color" content="#2c3e50">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Táxify">
    
-    <!-- Manifesto PWA dinâmico embutido -->
+    <!-- Manifesto PWA dinâmico -->
     <link rel="manifest" id="dynamic-manifest">
 
-    <!-- Bibliotecas externas: Chart.js para gráficos e jsPDF para exportação de PDFs -->
+    <!-- Bibliotecas externas: Chart.js e jsPDF -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
    
@@ -30,7 +30,7 @@
             background-color: #f4f6f9;
             color: #333;
             padding: 15px;
-            padding-bottom: 90px; /* Espaço para a barra de navegação inferior fixa */
+            padding-bottom: 90px;
         }
 
         header {
@@ -75,7 +75,6 @@
             padding-bottom: 8px;
         }
 
-        /* Sistema de Abas (Navigation Tabs / Menu Inferior) */
         .app-section {
             display: none;
         }
@@ -125,7 +124,6 @@
             background-color: rgba(255, 255, 255, 0.05);
         }
 
-        /* Formulários e Inputs */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -158,7 +156,6 @@
             border-color: #f1c40f;
         }
 
-        /* Botões */
         .btn {
             background-color: #2c3e50;
             color: #fff;
@@ -173,55 +170,16 @@
             text-decoration: none;
         }
 
-        .btn:hover {
-            background-color: #1a252f;
-        }
+        .btn:hover { background-color: #1a252f; }
+        .btn-warning { background-color: #f1c40f; color: #2c3e50; }
+        .btn-warning:hover { background-color: #d4ac0d; }
+        .btn-voz { background-color: #e67e22; color: #fff; }
+        .btn-voz:hover { background-color: #d35400; }
+        .btn-danger { background-color: #e74c3c; color: #fff; padding: 5px 10px; font-size: 0.8rem; }
+        .btn-wsp { background-color: #25d366; color: #fff; }
+        .btn-wsp:hover { background-color: #1eb954; }
+        .btn-install { background-color: #3498db; color: #fff; display: none; }
 
-        .btn-warning {
-            background-color: #f1c40f;
-            color: #2c3e50;
-        }
-
-        .btn-warning:hover {
-            background-color: #d4ac0d;
-        }
-
-        .btn-voz {
-            background-color: #e67e22;
-            color: #fff;
-        }
-
-        .btn-voz:hover {
-            background-color: #d35400;
-        }
-
-        .btn-danger {
-            background-color: #e74c3c;
-            color: #fff;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-        }
-
-        .btn-wsp {
-            background-color: #25d366;
-            color: #fff;
-        }
-
-        .btn-wsp:hover {
-            background-color: #1eb954;
-        }
-
-        .btn-install {
-            background-color: #3498db;
-            color: #fff;
-            display: none;
-        }
-
-        .btn-install:hover {
-            background-color: #2980b9;
-        }
-
-        /* Tabelas */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -235,12 +193,8 @@
             border-bottom: 1px solid #ddd;
         }
 
-        th {
-            background-color: #ecf0f1;
-            color: #2c3e50;
-        }
+        th { background-color: #ecf0f1; color: #2c3e50; }
 
-        /* Resumo Dashboard */
         .dash-summary {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -256,22 +210,12 @@
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .dash-box h3 {
-            font-size: 0.85rem;
-            color: #7f8c8d;
-            margin-bottom: 5px;
-        }
-
-        .dash-box p {
-            font-size: 1.3rem;
-            font-weight: bold;
-        }
-
+        .dash-box h3 { font-size: 0.85rem; color: #7f8c8d; margin-bottom: 5px; }
+        .dash-box p { font-size: 1.3rem; font-weight: bold; }
         .val-entrada { color: #2ecc71; }
         .val-saida { color: #e74c3c; }
         .val-lucro { color: #2980b9; }
 
-        /* Foto e Preview */
         .preview-img {
             width: 100px;
             height: 80px;
@@ -283,23 +227,7 @@
             overflow: hidden;
         }
 
-        .preview-img img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: cover;
-        }
-
-        .grid-2col {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .grid-2col {
-                grid-template-columns: 1fr;
-            }
-        }
+        .preview-img img { max-width: 100%; max-height: 100%; object-fit: cover; }
 
         .ai-insight-item {
             background: #f8f9fa;
@@ -308,30 +236,58 @@
             margin-top: 10px;
             font-size: 0.9rem;
         }
+
+        .termos-box {
+            background: #fdfefe;
+            border: 1px solid #dcdde1;
+            padding: 12px;
+            border-radius: 6px;
+            max-height: 130px;
+            overflow-y: auto;
+            font-size: 0.78rem;
+            color: #555;
+            margin-top: 10px;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
 
 <div class="container">
 
-    <!-- TELA DE LOGIN SIMPLES -->
-    <div id="login-screen" class="card" style="max-width: 450px; margin: 50px auto;">
+    <!-- TELA DE LOGIN & TERMO DE USO -->
+    <div id="login-screen" class="card" style="max-width: 500px; margin: 30px auto;">
         <h2 style="text-align: center;">🚕 Login - Táxify</h2>
        
-        <!-- Botão de Instalação PWA -->
-        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 20px;" onclick="instalarPWAApp()">
+        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 15px;" onclick="instalarPWAApp()">
             📱 Instalar Aplicativo Táxify
         </button>
 
         <form id="form-login">
-            <div class="form-group" style="margin-bottom: 12px;">
+            <div class="form-group" style="margin-bottom: 10px;">
                 <label for="login-nome">Seu Nome</label>
                 <input type="text" id="login-nome" required placeholder="Digite seu nome completo">
             </div>
 
-            <div class="form-group" style="margin-bottom: 20px;">
+            <div class="form-group" style="margin-bottom: 15px;">
                 <label for="login-tel">Número de Telefone / WhatsApp</label>
                 <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
+            </div>
+
+            <!-- Termos de Uso com os Criadores -->
+            <div class="form-group" style="margin-bottom: 15px;">
+                <label>Termos de Uso e Política de Privacidade</label>
+                <div class="termos-box">
+                    <strong>Desenvolvedores Técnicos:</strong> Carla Miter e Clenilson Miter.<br>
+                    <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente local no dispositivo do usuário (localStorage).<br>
+                    <strong>2. Privacidade:</strong> Os criadores (Carla Miter e Clenilson Miter) não coletam, armazenam ou repassam dados financeiros ou pessoais para servidores externos.<br>
+                    <strong>3. Responsabilidade:</strong> O usuário é responsável por realizar backups regulares e manter a segurança de seu próprio dispositivo móvel.
+                </div>
+            </div>
+
+            <div style="display: flex; align-items: center; margin-bottom: 15px; font-size: 0.85rem;">
+                <input type="checkbox" id="aceite-termos" required style="width: auto; margin-right: 8px;">
+                <label for="aceite-termos" style="margin-bottom: 0; font-weight: normal; cursor: pointer;">Li e concordo com os Termos de Uso criados por Carla Miter e Clenilson Miter.</label>
             </div>
 
             <button type="submit" class="btn btn-warning" style="width: 100%;">Acessar Sistema</button>
@@ -351,6 +307,7 @@
         <div id="secao-inicio" class="app-section ativo">
             <div class="card">
                 <h2>👤 Perfil do Taxista & Veículo</h2>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">Seus dados ficam salvos automaticamente no aparelho. Clique em "Excluir Perfil" apenas se desejar redefinir.</p>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nome do Motorista</label>
@@ -373,7 +330,7 @@
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button class="btn" onclick="salvarPerfilTaxista()">💾 Salvar Perfil</button>
-                    <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Limpar Perfil</button>
+                    <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Excluir Perfil Permanentemente</button>
                 </div>
             </div>
 
@@ -411,12 +368,19 @@
                     <div id="ai-conteudo"></div>
                 </div>
             </div>
+
+            <!-- Card de Termos e Autoria na Tela Principal -->
+            <div class="card" style="border-top-color: #7f8c8d;">
+                <h2>⚖️ Informações & Termos do Sistema</h2>
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 8px;">Aplicativo desenvolvido por <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong> (Técnicos de Sistemas). Todos os registros financeiros, agenda e dados do motorista são mantidos em segurança no armazenamento local do seu navegador.</p>
+            </div>
         </div>
 
         <!-- ABA 2: FINANÇAS E RELATÓRIOS -->
         <div id="secao-financas" class="app-section">
             <div class="card">
                 <h2>💸 Novo Lançamento Financeiro</h2>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">As entradas e saídas cadastradas ficam salvas automaticamente e não se perdem ao fechar o app.</p>
                 <form id="form-transacao">
                     <div class="form-group" style="margin-bottom: 10px;">
                         <label>Data</label>
@@ -456,7 +420,7 @@
             </div>
 
             <div class="card">
-                <h2>📜 Histórico de Transações</h2>
+                <h2>📜 Histórico de Transações Salvas</h2>
                 <div style="overflow-x: auto;">
                     <table id="tabela-transacoes">
                         <thead>
@@ -475,7 +439,7 @@
             </div>
 
             <div class="card">
-                <h2>📈 Relatórios Financeiros & Exportação</h2>
+                <h2>📈 Relatórios Financeiros & Exportação PDF</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Filtrar Período</label>
@@ -500,8 +464,8 @@
                     <button class="btn" onclick="gerarRelatorio()">🔍 Visualizar Resumo</button>
                     <button class="btn btn-voz" id="btn-voz-rel" onclick="vozPreencherRelatorio()">🎤 Ditador de Dados</button>
                     <button class="btn" onclick="gerarPDFRelatorio(true)">📄 Baixar Relatório PDF</button>
-                    <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar WhatsApp</button>
-                    <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar E-mail</button>
+                    <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar PDF via WhatsApp</button>
+                    <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar PDF por E-mail</button>
                 </div>
 
                 <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
@@ -535,7 +499,7 @@
             </div>
 
             <div class="card" id="area-recibo">
-                <h2>🧾 Emissão de Recibo de Corrida</h2>
+                <h2>🧾 Emissão de Recibo de Corrida (PDF)</h2>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nome do Motorista ou Empresa</label>
@@ -574,8 +538,8 @@
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button class="btn btn-voz" id="btn-voz-recibo" onclick="vozPreencherRecibo()">🎤 Ditar Trajeto por Voz</button>
                     <button class="btn btn-warning" onclick="gerarPDFRecibo(true)">📄 Baixar Recibo PDF</button>
-                    <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar por WhatsApp</button>
-                    <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar por E-mail</button>
+                    <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar PDF por WhatsApp</button>
+                    <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar PDF por E-mail</button>
                 </div>
             </div>
         </div>
@@ -583,7 +547,7 @@
         <!-- ABA 4: AGENDA DE CLIENTES -->
         <div id="secao-agenda" class="app-section">
             <div class="card">
-                <h2>📇 Agenda de Clientes VIP</h2>
+                <h2>📇 Agenda de Clientes VIP (Salva Automaticamente)</h2>
                 <form id="form-agenda">
                     <div class="form-group" style="margin-bottom: 10px;">
                         <label>Nome do Cliente</label>
@@ -594,7 +558,7 @@
                         <input type="text" id="ag-tel" placeholder="(00) 00000-0000">
                     </div>
                     <div style="display: flex; gap: 5px; margin-bottom: 15px;">
-                        <button type="submit" class="btn" style="flex:1;">💾 Salvar</button>
+                        <button type="submit" class="btn" style="flex:1;">💾 Salvar Contato</button>
                         <button type="button" class="btn btn-voz" id="btn-voz-agenda" onclick="vozCadastrarCliente()">🎤 Falar Nome</button>
                     </div>
                 </form>
@@ -646,7 +610,7 @@
 </div>
 
 <script>
-    // --- GERENCIAMENTO DE ABAS (NAVIGATION TABS / MENU INFERIOR) ---
+    // --- GERENCIAMENTO DE ABAS (NAVIGATION TABS) ---
     function mudarSecao(secaoId, elementoBtn) {
         document.querySelectorAll('.app-section').forEach(sec => {
             sec.classList.remove('ativo');
@@ -681,20 +645,18 @@
     const blobManifesto = new Blob([JSON.stringify(manifestoPWA)], {type: 'application/json'});
     document.getElementById('dynamic-manifest').href = URL.createObjectURL(blobManifesto);
 
-    // --- SERVICE WORKER PARA SUPORTE OFFLINE PWA ---
+    // --- SERVICE WORKER OFFLINE ---
     if ('serviceWorker' in navigator) {
         const swCode = `
             self.addEventListener('install', e => {
-                e.waitUntil(caches.open('taxify-v1').then(cache => cache.addAll(['./index.html'])));
+                e.waitUntil(caches.open('taxify-v2').then(cache => cache.addAll(['./index.html'])));
             });
             self.addEventListener('fetch', e => {
                 e.respondWith(caches.match(e.request).then(response => response || fetch(e.request)));
             });
         `;
         const swBlob = new Blob([swCode], {type: 'application/javascript'});
-        navigator.serviceWorker.register(URL.createObjectURL(swBlob))
-            .then(() => console.log("Service Worker PWA registrado com sucesso!"))
-            .catch(err => console.log("Erro no Service Worker:", err));
+        navigator.serviceWorker.register(URL.createObjectURL(swBlob)).catch(() => {});
     }
 
     // --- PROMPT DE INSTALAÇÃO PWA ---
@@ -715,7 +677,7 @@
                 deferredPrompt = null;
             });
         } else {
-            alert('Para instalar, abra o menu do seu navegador e escolha "Adicionar à Tela Inicial" ou "Instalar Aplicativo".');
+            alert('Abra o menu do seu navegador e selecione "Adicionar à Tela Inicial" ou "Instalar Aplicativo".');
         }
     }
 
@@ -723,7 +685,7 @@
         return tel ? tel.replace(/\D/g, '') : '';
     }
 
-    // --- LOGIN SIMPLES ---
+    // --- LOGIN E SESSÃO ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -740,8 +702,12 @@
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
+
         carregarPerfilTaxista();
+        carregarDadosLocais();
         inicializarGrafico();
+        atualizarPainelFinanceiro();
+        renderizarAgenda();
     });
 
     function sairDoApp() {
@@ -749,6 +715,32 @@
         document.getElementById('login-screen').style.display = 'block';
         document.getElementById('login-tel').value = '';
         document.getElementById('login-nome').value = '';
+        document.getElementById('aceite-termos').checked = false;
+    }
+
+    // --- PERSISTÊNCIA COMPLETA (LOCALSTORAGE) ---
+    let transacoes = [];
+    let clientesAgenda = [];
+    let fotoVeiculoBase64 = "";
+
+    function carregarDadosLocais() {
+        const transSalvas = localStorage.getItem('taxify_transacoes');
+        if (transSalvas) {
+            try { transacoes = JSON.parse(transSalvas); } catch(e) { transacoes = []; }
+        }
+
+        const agendaSalva = localStorage.getItem('taxify_agenda');
+        if (agendaSalva) {
+            try { clientesAgenda = JSON.parse(agendaSalva); } catch(e) { clientesAgenda = []; }
+        }
+    }
+
+    function salvarTransacoesLocal() {
+        localStorage.setItem('taxify_transacoes', JSON.stringify(transacoes));
+    }
+
+    function salvarAgendaLocal() {
+        localStorage.setItem('taxify_agenda', JSON.stringify(clientesAgenda));
     }
 
     // --- RECONHECIMENTO DE VOZ ---
@@ -780,7 +772,7 @@
             alert('Não foi possível reconhecer a voz. Tente novamente.');
         };
 
-        recognition.onsend = recognition.onend = function() {
+        recognition.onend = function() {
             if (btnElement) {
                 btnElement.innerText = textoNormal;
                 btnElement.style.backgroundColor = '#e67e22';
@@ -788,7 +780,7 @@
         };
     }
 
-    // --- CALCULADORA DE CORRIDAS ---
+    // --- CALCULADORA ---
     const TARIFA_POR_KM = 4.50;
 
     function calcularViagem() {
@@ -834,8 +826,6 @@
     }
 
     // --- AGENDA DE CLIENTES ---
-    let clientesAgenda = [];
-
     const formAgenda = document.getElementById('form-agenda');
     formAgenda.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -853,6 +843,7 @@
 
         const cliente = { id: Date.now(), nome, tel };
         clientesAgenda.push(cliente);
+        salvarAgendaLocal();
         renderizarAgenda();
         formAgenda.reset();
     }
@@ -879,6 +870,7 @@
 
     function removerCliente(id) {
         clientesAgenda = clientesAgenda.filter(c => c.id !== id);
+        salvarAgendaLocal();
         renderizarAgenda();
     }
 
@@ -907,9 +899,7 @@
     }
 
     // --- FINANÇAS E GRÁFICO ---
-    let transacoes = [];
     let meuGrafico = null;
-
     document.getElementById('trans-data').valueAsDate = new Date();
 
     function inicializarGrafico() {
@@ -926,9 +916,7 @@
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: { position: 'bottom' }
-                }
+                plugins: { legend: { position: 'bottom' } }
             }
         });
     }
@@ -948,6 +936,7 @@
         }
 
         transacoes.push({ id: Date.now(), data, tipo, categoria, desc, valor });
+        salvarTransacoesLocal();
         atualizarPainelFinanceiro();
         formTransacao.reset();
         document.getElementById('trans-data').valueAsDate = new Date();
@@ -1007,6 +996,7 @@
 
     function removerTransacao(id) {
         transacoes = transacoes.filter(t => t.id !== id);
+        salvarTransacoesLocal();
         atualizarPainelFinanceiro();
     }
 
@@ -1029,7 +1019,55 @@
         painel.style.display = 'block';
     }
 
-    // --- RELATÓRIOS E RECIBOS PDF ---
+    // --- PERFIL DO TAXISTA (PERSISTENTE) ---
+    function carregarFotoVeiculo(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            fotoVeiculoBase64 = reader.result;
+            document.getElementById('box-preview-img').innerHTML = `<img src="${fotoVeiculoBase64}" alt="Veículo">`;
+        };
+        if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
+    }
+
+    function salvarPerfilTaxista() {
+        const perfil = {
+            nome: document.getElementById('taxista-nome').value,
+            doc: document.getElementById('taxista-doc').value,
+            foto: fotoVeiculoBase64
+        };
+        localStorage.setItem('taxify_perfil', JSON.stringify(perfil));
+        document.getElementById('rec-motorista').value = perfil.nome || '';
+        document.getElementById('rec-doc-motorista').value = perfil.doc || '';
+        alert('Perfil do taxista salvo com sucesso!');
+    }
+
+    function carregarPerfilTaxista() {
+        const perfilSalvo = localStorage.getItem('taxify_perfil');
+        if (perfilSalvo) {
+            const perfil = JSON.parse(perfilSalvo);
+            document.getElementById('taxista-nome').value = perfil.nome || '';
+            document.getElementById('taxista-doc').value = perfil.doc || '';
+            document.getElementById('rec-motorista').value = perfil.nome || '';
+            document.getElementById('rec-doc-motorista').value = perfil.doc || '';
+            if (perfil.foto) {
+                fotoVeiculoBase64 = perfil.foto;
+                document.getElementById('box-preview-img').innerHTML = `<img src="${perfil.foto}" alt="Veículo">`;
+            }
+        }
+    }
+
+    function limparPerfilTaxista() {
+        if (confirm('Deseja realmente excluir permanentemente o seu perfil e foto do veículo?')) {
+            localStorage.removeItem('taxify_perfil');
+            document.getElementById('taxista-nome').value = '';
+            document.getElementById('taxista-doc').value = '';
+            document.getElementById('box-preview-img').innerHTML = '<span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>';
+            fotoVeiculoBase64 = "";
+            alert('Perfil excluído com sucesso.');
+        }
+    }
+
+    // --- RELATÓRIOS E RECIBOS EM PDF UNIVERSAL ---
     function gerarRelatorio() {
         const periodo = document.getElementById('rel-periodo').value;
         document.getElementById('rel-data-emissao').innerText = `Emitido em: ${new Date().toLocaleString('pt-BR')}`;
@@ -1039,7 +1077,7 @@
             <p><strong>Filtro:</strong> ${periodo.toUpperCase()}</p>
             <p><strong>Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
             <p><strong>Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
-            <p><strong>Saldo:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
+            <p><strong>Saldo Líquido:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
         `;
     }
 
@@ -1059,69 +1097,41 @@
         const doc = new jsPDF();
         doc.setFontSize(16);
         doc.text("Táxify - Relatório Financeiro", 20, 20);
-        let y = 35;
+        doc.setFontSize(10);
+        doc.text(`Emitido em: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
+        let y = 40;
         transacoes.forEach(t => {
-            doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | R$ ${t.valor.toFixed(2)}`, 20, y);
+            if (y > 270) { doc.addPage(); y = 20; }
+            doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | ${t.desc} | R$ ${t.valor.toFixed(2)}`, 20, y);
             y += 8;
         });
-        if (download) doc.save("relatorio_taxify.pdf");
+        if (download) doc.save("relatorio_financeiro_taxify.pdf");
         return doc;
     }
 
     function enviarRelatorioWhatsAppPDF() {
         const wsp = limparTelefone(document.getElementById('rel-wsp').value);
-        if (!wsp) { alert('Informe o WhatsApp.'); return; }
-        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Segue o resumo financeiro Táxify.")}`, '_blank');
+        if (!wsp) { alert('Informe o WhatsApp de destino.'); return; }
+       
+        // Gera o PDF automaticamente e dispara o WhatsApp
+        const doc = gerarPDFRelatorio(false);
+        const pdfBlob = doc.output('blob');
+       
+        const urlWsp = `https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Olá! Segue em anexo o relatório financeiro do Táxify gerado por Carla Miter & Clenilson Miter.")}`;
+        window.open(urlWsp, '_blank');
+       
+        // Baixa o arquivo para facilitar o envio manual do arquivo PDF no chat
+        doc.save("relatorio_financeiro_taxify.pdf");
     }
 
     function enviarRelatorioEmailPDF() {
         const email = document.getElementById('rel-email').value;
-        if (!email) { alert('Informe o e-mail.'); return; }
-        window.location.href = `mailto:${email}?subject=Relatório Táxify&body=Segue o resumo em anexo.`;
-    }
-
-    let fotoVeiculoBase64 = "";
-    function carregarFotoVeiculo(event) {
-        const reader = new FileReader();
-        reader.onload = function() {
-            fotoVeiculoBase64 = reader.result;
-            document.getElementById('box-preview-img').innerHTML = `<img src="${fotoVeiculoBase64}" alt="Veículo">`;
-        };
-        if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
-    }
-
-    function salvarPerfilTaxista() {
-        const perfil = {
-            nome: document.getElementById('taxista-nome').value,
-            doc: document.getElementById('taxista-doc').value,
-            foto: fotoVeiculoBase64
-        };
-        localStorage.setItem('taxify_perfil', JSON.stringify(perfil));
-        alert('Perfil salvo com sucesso!');
-    }
-
-    function carregarPerfilTaxista() {
-        const perfilSalvo = localStorage.getItem('taxify_perfil');
-        if (perfilSalvo) {
-            const perfil = JSON.parse(perfilSalvo);
-            document.getElementById('taxista-nome').value = perfil.nome || '';
-            document.getElementById('taxista-doc').value = perfil.doc || '';
-            document.getElementById('rec-motorista').value = perfil.nome || '';
-            document.getElementById('rec-doc-motorista').value = perfil.doc || '';
-            if (perfil.foto) {
-                fotoVeiculoBase64 = perfil.foto;
-                document.getElementById('box-preview-img').innerHTML = `<img src="${perfil.foto}" alt="Veículo">`;
-            }
-        }
-    }
-
-    function limparPerfilTaxista() {
-        localStorage.removeItem('taxify_perfil');
-        document.getElementById('taxista-nome').value = '';
-        document.getElementById('taxista-doc').value = '';
-        document.getElementById('box-preview-img').innerHTML = '<span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>';
-        fotoVeiculoBase64 = "";
-        alert('Perfil limpo.');
+        if (!email) { alert('Informe o e-mail de destino.'); return; }
+       
+        const doc = gerarPDFRelatorio(false);
+        const pdfBase64 = doc.output('datauristring');
+       
+        window.location.href = `mailto:${email}?subject=Relatório Financeiro Táxify&body=Segue em anexo o resumo financeiro atualizado.&attachment=${encodeURIComponent(pdfBase64)}`;
     }
 
     function vozPreencherRecibo() {
@@ -1136,24 +1146,33 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         const motorista = document.getElementById('rec-motorista').value || "Motorista";
-        const cliente = document.getElementById('cliente-nome').value || "Cliente";
+        const docMotorista = document.getElementById('rec-doc-motorista').value || "";
+        const veiculo = document.getElementById('rec-veiculo').value || "";
+        const cliente = document.getElementById('cliente-nome').value || "Passageiro";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const obs = document.getElementById('corrida-obs').value || "Transporte";
+        const obs = document.getElementById('corrida-obs').value || "Serviço de Transporte";
 
         if (fotoVeiculoBase64) {
             try { doc.addImage(fotoVeiculoBase64, 'JPEG', 20, 15, 30, 25); } catch(e){}
         }
 
         doc.setFontSize(16);
-        doc.text("RECIBO DE CORRIDA - TÁXIFY", 60, 22);
+        doc.text("RECIBO DE CORRIDA - TÁXIFY", 55, 22);
         doc.setFontSize(10);
-        doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 60, 30);
-        doc.text(`Motorista: ${motorista}`, 20, 50);
-        doc.text(`Passageiro: ${cliente}`, 20, 60);
-        doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 70);
-        doc.text(`Referente a: ${obs}`, 20, 80);
+        doc.text(`Data/Hora: ${new Date().toLocaleString('pt-BR')}`, 55, 30);
+       
+        doc.line(20, 40, 190, 40);
+       
+        doc.text(`Motorista: ${motorista} (Doc: ${docMotorista})`, 20, 50);
+        doc.text(`Veículo: ${veiculo}`, 20, 60);
+        doc.text(`Passageiro: ${cliente}`, 20, 70);
+        doc.text(`Valor Recebido: R$ ${parseFloat(valor).toFixed(2)}`, 20, 80);
+        doc.text(`Trajeto / Observação: ${obs}`, 20, 90);
+       
+        doc.line(20, 110, 100, 110);
+        doc.text("Assinatura do Motorista", 35, 116);
 
-        if (download) doc.save("recibo_corrida.pdf");
+        if (download) doc.save("recibo_corrida_taxify.pdf");
         return doc;
     }
 
@@ -1161,13 +1180,20 @@
         const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
         const valor = document.getElementById('corrida-valor').value || "0,00";
         if (!wsp) { alert('Informe o WhatsApp do passageiro.'); return; }
-        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent(`Olá! Segue o recibo da corrida de R$ ${valor}.`)}`, '_blank');
+       
+        const doc = gerarPDFRecibo(false);
+        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent(`Olá! Segue o recibo digital da sua corrida no valor de R$ ${valor} emitido pelo Táxify.`)}`, '_blank');
+        doc.save("recibo_corrida_taxify.pdf");
     }
 
     function enviarReciboEmailPDF() {
         const email = document.getElementById('cliente-email').value;
         if (!email) { alert('Informe o e-mail do passageiro.'); return; }
-        window.location.href = `mailto:${email}?subject=Recibo Táxify&body=Segue o comprovante da corrida.`;
+       
+        const doc = gerarPDFRecibo(false);
+        const pdfBase64 = doc.output('datauristring');
+       
+        window.location.href = `mailto:${email}?subject=Recibo de Corrida - Táxify&body=Segue o recibo da corrida realizada.&attachment=${encodeURIComponent(pdfBase64)}`;
     }
 </script>
 
