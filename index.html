@@ -341,11 +341,6 @@
             📱 Instalar Aplicativo Táxify
         </button>
 
-        <!-- Botão Área Restrita Suporte Técnico -->
-        <button type="button" class="btn btn-admin" style="width: 100%; margin-bottom: 12px;" onclick="abrirModalAdmin()">
-            🔐 Área Restrita Suporte Técnico
-        </button>
-
         <!-- Botão de Suporte / WhatsApp Business -->
         <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Preciso de suporte técnico ou informações sobre o Táxify." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
             💬 Suporte Técnico (WhatsApp)
@@ -659,94 +654,6 @@
     </div>
 </div>
 
-<!-- MODAL: ÁREA RESTRITA SUPORTE TÉCNICO -->
-<div id="modal-admin" class="modal">
-    <div class="modal-content" style="max-width: 950px;">
-        <h3 style="color:#8e44ad; margin-bottom: 5px;">🔐 Área Restrita Suporte Técnico</h3>
-       
-        <div id="admin-login-box">
-            <div class="form-grid" style="max-width: 300px; margin: 0 auto; margin-top: 15px;">
-                <div class="form-group" style="grid-column: 1 / -1;">
-                    <label>Senha de Acesso</label>
-                    <input type="password" id="admin-senha" placeholder="Digite sua senha">
-                </div>
-                <button class="btn btn-admin" onclick="fazerLoginAdmin()" style="grid-column: 1 / -1;">Entrar no Painel</button>
-                <p id="admin-login-erro" style="color:red; font-size:0.8rem; text-align:center; display:none; grid-column: 1 / -1;">Senha incorreta.</p>
-            </div>
-            <div style="text-align: right; margin-top: 20px;">
-                <button class="btn btn-danger" onclick="fecharModalAdmin()">Fechar</button>
-            </div>
-        </div>
-
-        <div id="admin-painel-box" style="display: none;">
-           
-            <!-- FORMULÁRIO DE CADASTRO DE CLIENTE PELO ADMIN -->
-            <div class="card" style="border-top-color: #8e44ad; margin-bottom: 20px; background: #fdfcfe;">
-                <h4 style="font-size: 1rem; color: #8e44ad; margin-bottom: 12px;">➕ Cadastrar Novo Cliente Manualmente</h4>
-                <form id="form-admin-cadastrar" onsubmit="cadastrarClienteAdmin(event)">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label>Nome do Cliente</label>
-                            <input type="text" id="admin-novo-nome" required placeholder="Nome completo do taxista">
-                        </div>
-                        <div class="form-group">
-                            <label>Número de Telefone / WhatsApp</label>
-                            <input type="text" id="admin-novo-tel" required placeholder="(00) 00000-0000">
-                        </div>
-                        <div class="form-group">
-                            <label>Período / Licença</label>
-                            <select id="admin-novo-dias">
-                                <option value="7">7 Dias</option>
-                                <option value="30" selected>30 Dias</option>
-                                <option value="60">60 Dias</option>
-                                <option value="90">90 Dias</option>
-                                <option value="365">1 Ano (365 Dias)</option>
-                            </select>
-                        </div>
-                    </div>
-                    <button type="submit" class="btn btn-admin">Cadastrar e Liberar Acesso</button>
-                </form>
-            </div>
-
-            <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
-            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados</h4>
-            <div class="admin-tabs">
-                <button type="button" class="tab-btn active" onclick="trocarAbaAdmin('7')">Banco 7 Dias</button>
-                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('30')">Banco 30 Dias</button>
-                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('60')">Banco 60 Dias</button>
-                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('90')">Banco 90 Dias</button>
-                <button type="button" class="tab-btn" onclick="trocarAbaAdmin('365')">Banco 1 Ano</button>
-            </div>
-
-            <!-- SEÇÕES DE CADA BANCO -->
-            <div id="db-sec-7" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 7 Dias</h5>
-                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
-            </div>
-            <div id="db-sec-30" class="db-section active">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 30 Dias</h5>
-                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
-            </div>
-            <div id="db-sec-60" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 60 Dias</h5>
-                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
-            </div>
-            <div id="db-sec-90" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 90 Dias</h5>
-                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
-            </div>
-            <div id="db-sec-365" class="db-section">
-                <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 220px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status</th><th>Ações (Bloquear/Excluir)</th></tr></thead><tbody></tbody></table></div>
-            </div>
-
-            <div style="text-align: right; margin-top: 15px;">
-                <button class="btn btn-danger" onclick="fecharModalAdmin()">Sair da Área Restrita</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- MODAL DE TERMOS LEGAIS E PRIVACIDADE (LGPD) -->
 <div id="modal-legal" class="modal">
     <div class="modal-content">
@@ -887,155 +794,6 @@
     function salvarCompradoresDB(dias, lista) {
         const chave = `taxify_compradores_db_${dias}`;
         localStorage.setItem(chave, JSON.stringify(lista));
-    }
-
-    // --- CONTROLE DA ÁREA RESTRITA SUPORTE TÉCNICO ---
-    function abrirModalAdmin() {
-        document.getElementById('modal-admin').style.display = 'flex';
-        document.getElementById('admin-senha').value = '';
-        document.getElementById('admin-login-erro').style.display = 'none';
-        document.getElementById('admin-login-box').style.display = 'block';
-        document.getElementById('admin-painel-box').style.display = 'none';
-    }
-
-    function fecharModalAdmin() {
-        document.getElementById('modal-admin').style.display = 'none';
-    }
-
-    function fazerLoginAdmin() {
-        const senha = document.getElementById('admin-senha').value.trim();
-        const erro = document.getElementById('admin-login-erro');
-
-        if (senha === '312707') {
-            document.getElementById('admin-login-box').style.display = 'none';
-            document.getElementById('admin-painel-box').style.display = 'block';
-            renderizarTodasTabelasCompradores();
-        } else {
-            erro.style.display = 'block';
-        }
-    }
-
-    function trocarAbaAdmin(dias) {
-        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-        document.querySelectorAll('.db-section').forEach(sec => sec.classList.remove('active'));
-
-        event.target.classList.add('active');
-        document.getElementById(`db-sec-${dias}`).classList.add('active');
-    }
-
-    // --- CADASTRAR CLIENTE DIRETAMENTE PELA ÁREA RESTRITA ---
-    function cadastrarClienteAdmin(e) {
-        e.preventDefault();
-        const nome = document.getElementById('admin-novo-nome').value.trim();
-        const tel = limparTelefone(document.getElementById('admin-novo-tel').value);
-        const dias = document.getElementById('admin-novo-dias').value;
-
-        if (!nome || !tel) {
-            alert('Preencha o nome e o telefone do cliente.');
-            return;
-        }
-
-        const hojeObj = new Date();
-        const hojeStr = hojeObj.toISOString().split('T')[0];
-
-        const dVenc = new Date(hojeObj);
-        dVenc.setDate(dVenc.getDate() + parseInt(dias));
-        const vencimentoStr = dVenc.toISOString().split('T')[0];
-
-        const novoCliente = {
-            id: Date.now(),
-            nome: nome,
-            tel: tel,
-            dataCompra: hojeStr,
-            vencimento: vencimentoStr,
-            ativo: true
-        };
-
-        let listaBanco = obterCompradoresDB(dias);
-        // Remove duplicado caso já exista o telefone no mesmo banco
-        listaBanco = listaBanco.filter(c => limparTelefone(c.tel) !== tel);
-        listaBanco.push(novoCliente);
-        salvarCompradoresDB(dias, listaBanco);
-
-        document.getElementById('form-admin-cadastrar').reset();
-        renderizarTodasTabelasCompradores();
-        alert(`Cliente ${nome} cadastrado com sucesso no banco de ${dias} dias!`);
-    }
-
-    function renderizarTodasTabelasCompradores() {
-        periodosDB.forEach(dias => {
-            renderizarTabelaCompradoresPorBanco(dias);
-        });
-    }
-
-    function renderizarTabelaCompradoresPorBanco(dias) {
-        const lista = obterCompradoresDB(dias);
-        const tbody = document.querySelector(`#tabela-comp-${dias} tbody`);
-        if (!tbody) return;
-        tbody.innerHTML = '';
-
-        const hoje = new Date();
-        hoje.setHours(0,0,0,0);
-
-        lista.forEach(c => {
-            const row = tbody.insertRow();
-           
-            const dataVencObj = new Date(c.vencimento + 'T00:00:00');
-            const diffTime = dataVencObj - hoje;
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-            let badgePrazo = '';
-            if (diffDays < 0) {
-                badgePrazo = `<span style="background: #e74c3c; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🔴 Vencido (${Math.abs(diffDays)}d)</span>`;
-            } else if (diffDays <= 5) {
-                badgePrazo = `<span style="background: #e67e22; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">⚠️ Expira em ${diffDays}d</span>`;
-            } else {
-                badgePrazo = `<span style="background: #2ecc71; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🟢 Regular (${diffDays}d)</span>`;
-            }
-
-            row.innerHTML = `
-                <td><strong>${c.nome}</strong></td>
-                <td>${c.tel}</td>
-                <td>${c.dataCompra ? c.dataCompra.split('-').reverse().join('/') : '-'}</td>
-                <td><input type="date" value="${c.vencimento}" onchange="atualizarDataVencimento('${dias}', ${c.id}, this.value)" style="padding:4px; font-size:0.85rem;"></td>
-                <td>${badgePrazo}</td>
-                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? 'Liberado' : 'Bloqueado'}</span></td>
-                <td>
-                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? '🔒 Bloquear' : '🔓 Liberar'}</button>
-                    <button class="btn btn-danger" onclick="excluirComprador('${dias}', ${c.id})" style="margin-left:5px;">Excluir</button>
-                </td>
-            `;
-        });
-    }
-
-    function alternarStatusComprador(dias, id) {
-        let lista = obterCompradoresDB(dias);
-        lista = lista.map(c => {
-            if (c.id === id) c.ativo = !c.ativo;
-            return c;
-        });
-        salvarCompradoresDB(dias, lista);
-        renderizarTabelaCompradoresPorBanco(dias);
-    }
-
-    function atualizarDataVencimento(dias, id, novaData) {
-        let lista = obterCompradoresDB(dias);
-        lista = lista.map(c => {
-            if (c.id === id) c.vencimento = novaData;
-            return c;
-        });
-        salvarCompradoresDB(dias, lista);
-        renderizarTabelaCompradoresPorBanco(dias);
-        alert('Data de vencimento atualizada!');
-    }
-
-    function excluirComprador(dias, id) {
-        if (confirm('Tem certeza que deseja excluir este cliente deste banco de dados?')) {
-            let lista = obterCompradoresDB(dias);
-            lista = lista.filter(c => c.id !== id);
-            salvarCompradoresDB(dias, lista);
-            renderizarTabelaCompradoresPorBanco(dias);
-        }
     }
 
     // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO DO CLIENTE ---
@@ -1552,4 +1310,63 @@
         const veiculo = document.getElementById('rec-veiculo').value || "N/A";
         const cliente = document.getElementById('cliente-nome').value || "Cliente";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const obs = document.getElementByI 
+        const obs = document.getElementById('corrida-obs').value || "N/A";
+
+        doc.setFontSize(18);
+        doc.text("RECIBO DE CORRIDA - TÁXIFY", 20, 20);
+        doc.setFontSize(10);
+        doc.text(`Data de Emissão: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
+        doc.line(20, 32, 190, 32);
+
+        doc.setFontSize(12);
+        doc.text("DADOS DO MOTORISTA / VEÍCULO:", 20, 42);
+        doc.setFontSize(10);
+        doc.text(`Motorista: ${motorista} (CPF/CNPJ: ${docMotorista})`, 20, 50);
+        doc.text(`Veículo: ${veiculo}`, 20, 58);
+
+        if (fotoVeiculoBase64) {
+            try {
+                doc.addImage(fotoVeiculoBase64, 'JPEG', 140, 38, 45, 30);
+            } catch (e) {
+                console.log("Erro ao inserir imagem no PDF:", e);
+            }
+        }
+
+        doc.line(20, 75, 190, 75);
+        doc.setFontSize(12);
+        doc.text("DADOS DA CORRIDA / PASSAGEIRO:", 20, 85);
+        doc.setFontSize(10);
+        doc.text(`Passageiro: ${cliente}`, 20, 93);
+        doc.text(`Valor Cobrado: R$ ${parseFloat(valor).toFixed(2)}`, 20, 101);
+        doc.text(`Trajeto / Observações: ${obs}`, 20, 109);
+
+        doc.line(20, 130, 190, 130);
+        doc.text("__________________________________________", 60, 150);
+        doc.text("Assinatura do Motorista / Carimbo", 75, 158);
+
+        if (download) {
+            doc.save("recibo_taxify.pdf");
+        }
+        return doc;
+    }
+
+    function enviarReciboWspPDF() {
+        const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
+        if (!wsp) { alert('Informe o WhatsApp do passageiro.'); return; }
+        const passageiro = document.getElementById('cliente-nome').value || "Passageiro";
+        const valor = document.getElementById('corrida-valor').value || "0.00";
+        const texto = encodeURIComponent(`Olá ${passageiro}! Segue o recibo da sua corrida no valor de R$ ${valor} emitido pelo Táxify.`);
+        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
+    }
+
+    function enviarReciboEmailPDF() {
+        const email = document.getElementById('cliente-email').value;
+        if (!email) { alert('Informe o e-mail do passageiro.'); return; }
+        const assunto = encodeURIComponent("Recibo de Corrida - Táxify");
+        const corpo = encodeURIComponent("Segue em anexo o recibo referente à sua corrida.");
+        window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
+    }
+</script>
+
+</body>
+</html> 
