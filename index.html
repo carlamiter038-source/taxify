@@ -242,8 +242,9 @@
             background: #f8f9fa;
             border: 1px solid #dcdde1;
             border-radius: 6px;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 8px 10px;
+            margin-top: 6px;
+            margin-bottom: 12px;
             font-size: 0.82rem;
         }
 
@@ -258,7 +259,7 @@
             margin-top: 8px;
             color: #555;
             line-height: 1.4;
-            max-height: 130px;
+            max-height: 120px;
             overflow-y: auto;
             border-top: 1px solid #eee;
             padding-top: 8px;
@@ -288,20 +289,20 @@
                 <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
             </div>
 
-            <!-- Termos de Uso Ocultos (Só abrem ao clicar) -->
-            <details class="termos-ocultos">
-                <summary>📜 Ler Termos de Uso e Política de Privacidade</summary>
-                <div class="termos-conteudo-interno">
-                    <strong>Desenvolvedores Técnicos:</strong> Carla Miter e Clenilson Miter.<br>
-                    <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente segura e permanente no dispositivo do usuário.<br>
-                    <strong>2. Privacidade:</strong> Os criadores (Carla Miter e Clenilson Miter) não coletam ou armazenam dados financeiros em servidores externos.<br>
-                    <strong>3. Responsabilidade:</strong> O usuário mantém total autonomia e controle sobre seus registros de entradas e saídas.
+            <div style="display: flex; align-items: flex-start; margin-bottom: 15px; font-size: 0.85rem;">
+                <input type="checkbox" id="aceite-termos" required style="width: auto; margin-right: 8px; margin-top: 3px;">
+                <div style="flex: 1;">
+                    <label for="aceite-termos" style="margin-bottom: 0; font-weight: normal; cursor: pointer; display: inline;">Li e concordo com os Termos de Uso e Política de Privacidade.</label>
+                   
+                    <!-- Termos Ocultos em Gaveta -->
+                    <details class="termos-ocultos">
+                        <summary>Ler Termos de Uso e Política de Privacidade</summary>
+                        <div class="termos-conteudo-interno">
+                            <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente segura e permanente diretamente no dispositivo do usuário.<br>
+                            <strong>2. Privacidade:</strong> Os dados financeiros inseridos permanecem sob total autonomia e controle exclusivo do usuário em seu próprio aparelho.
+                        </div>
+                    </details>
                 </div>
-            </details>
-
-            <div style="display: flex; align-items: center; margin-bottom: 15px; font-size: 0.85rem;">
-                <input type="checkbox" id="aceite-termos" required style="width: auto; margin-right: 8px;">
-                <label for="aceite-termos" style="margin-bottom: 0; font-weight: normal; cursor: pointer;">Li e concordo com os Termos de Uso criados por Carla Miter e Clenilson Miter.</label>
             </div>
 
             <button type="submit" class="btn btn-warning" style="width: 100%;">Acessar Sistema</button>
@@ -381,14 +382,6 @@
                     <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
                     <div id="ai-conteudo"></div>
                 </div>
-            </div>
-
-            <!-- Card de Termos e Autoria na Tela Principal (Também oculto em gaveta) -->
-            <div class="card" style="border-top-color: #7f8c8d;">
-                <details class="termos-ocultos" style="margin-bottom: 0; background: transparent; border: none; padding: 0;">
-                    <summary style="font-size: 1.1rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px;">⚖️ Informações & Termos do Sistema (Clique para abrir)</summary>
-                    <p style="font-size: 0.85rem; color: #555; margin-top: 10px; line-height: 1.4;">Aplicativo desenvolvido por técnicos de sistema <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todos os registros financeiros, agenda e dados do motorista são mantidos permanentemente no armazenamento local do seu dispositivo.</p>
-                </details>
             </div>
         </div>
 
@@ -767,7 +760,6 @@
         localStorage.setItem('taxify_agenda', JSON.stringify(clientesAgenda));
     }
 
-    // Carregamento automático imediato ao abrir a página em segundo plano
     carregarDadosLocais();
 
     // --- RECONHECIMENTO DE VOZ ---
@@ -962,7 +954,6 @@
             return;
         }
 
-        // Adiciona e salva de forma permanente imediatamente
         transacoes.push({ id: Date.now(), data, tipo, categoria, desc, valor });
         salvarTransacoesLocal();
         atualizarPainelFinanceiro();
@@ -972,7 +963,6 @@
     });
 
     function atualizarPainelFinanceiro() {
-        // Assegura que os dados mais recentes do armazenamento sejam lidos
         carregarDadosLocais();
 
         let totalEntradas = 0;
@@ -1151,7 +1141,7 @@
         if (!wsp) { alert('Informe o WhatsApp de destino.'); return; }
        
         const doc = gerarPDFRelatorio(false);
-        const urlWsp = `https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Olá! Segue em anexo o relatório financeiro permanente do Táxify criado por Carla Miter & Clenilson Miter.")}`;
+        const urlWsp = `https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Olá! Segue em anexo o relatório financeiro permanente do Táxify.")}`;
         window.open(urlWsp, '_blank');
         doc.save("relatorio_financeiro_taxify.pdf");
     }
