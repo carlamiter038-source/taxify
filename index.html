@@ -166,15 +166,6 @@
             background-color: #1eb954;
         }
 
-        .btn-admin {
-            background-color: #8e44ad;
-            color: #fff;
-        }
-
-        .btn-admin:hover {
-            background-color: #732d91;
-        }
-
         .btn-install {
             background-color: #3498db;
             color: #fff;
@@ -235,60 +226,6 @@
         .val-saida { color: #e74c3c; }
         .val-lucro { color: #2980b9; }
 
-        /* Modais */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal-content {
-            background: #fff;
-            padding: 25px;
-            border-radius: 8px;
-            max-width: 950px;
-            width: 90%;
-            max-height: 85vh;
-            overflow-y: auto;
-        }
-
-        /* Abas na Área Restrita */
-        .admin-tabs {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 15px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            background: #ecf0f1;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 0.85rem;
-            color: #2c3e50;
-        }
-
-        .tab-btn.active {
-            background: #8e44ad;
-            color: #fff;
-        }
-
-        .db-section {
-            display: none;
-        }
-
-        .db-section.active {
-            display: block;
-        }
-
         /* Foto e Preview */
         .preview-img {
             width: 100px;
@@ -332,19 +269,14 @@
 
 <div class="container">
 
-    <!-- TELA DE LOGIN & BOTÕES DE ACESSO -->
+    <!-- TELA DE LOGIN SIMPLES -->
     <div id="login-screen" class="card" style="max-width: 450px; margin: 50px auto;">
         <h2 style="text-align: center;">🚕 Login - Táxify</h2>
        
         <!-- Botão de Instalação PWA -->
-        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 12px;" onclick="instalarPWAApp()">
+        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 20px;" onclick="instalarPWAApp()">
             📱 Instalar Aplicativo Táxify
         </button>
-
-        <!-- Botão de Suporte / WhatsApp Business -->
-        <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Preciso de suporte técnico ou informações sobre o Táxify." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
-            💬 Suporte Técnico (WhatsApp)
-        </a>
 
         <form id="form-login">
             <div class="form-group" style="margin-bottom: 12px;">
@@ -352,24 +284,16 @@
                 <input type="text" id="login-nome" required placeholder="Digite seu nome completo">
             </div>
 
-            <div class="form-group" style="margin-bottom: 12px;">
+            <div class="form-group" style="margin-bottom: 20px;">
                 <label for="login-tel">Número de Telefone / WhatsApp</label>
                 <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
             </div>
 
-            <div style="font-size: 0.8rem; margin-bottom: 15px; display: flex; align-items: flex-start; gap: 8px;">
-                <input type="checkbox" id="aceite-termos" style="width: auto; margin-top: 3px;" onchange="validarAceiteTermos()">
-                <label for="aceite-termos" style="font-weight: normal;">
-                    Li e concordo com os <a href="#" onclick="abrirModalLegal()">Termos de Uso e Política de Privacidade (LGPD)</a>.
-                </label>
-            </div>
-
-            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Ativar e Acessar Sistema</button>
-            <p id="login-msg" style="color: red; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;"></p>
+            <button type="submit" class="btn btn-warning" style="width: 100%;">Acessar Sistema</button>
         </form>
     </div>
 
-    <!-- TELA PRINCIPAL DO SISTEMA DO CLIENTE -->
+    <!-- TELA PRINCIPAL DO SISTEMA -->
     <div id="app-content" style="display: none;">
        
         <header>
@@ -654,47 +578,6 @@
     </div>
 </div>
 
-<!-- MODAL DE TERMOS LEGAIS E PRIVACIDADE (LGPD) -->
-<div id="modal-legal" class="modal">
-    <div class="modal-content">
-        <h3 style="color:#2c3e50; margin-bottom: 10px;">Termos de Uso, Licenciamento e Privacidade (LGPD)</h3>
-        <div style="max-height: 380px; overflow-y: auto; padding-right: 5px;">
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>1. TITULARIDADE E PROPRIEDADE INTELECTUAL:</strong><br>
-                Este aplicativo ("Táxify") é de autoria e propriedade intelectual exclusiva de <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todo o código-fonte, design visual, logotipos, estruturação de banco de dados e marcas associadas são protegidos pelas leis de direitos autorais e propriedade industrial brasileira. É expressamente proibida a cópia, engenharia reversa, redistribuição ou comercialização não autorizada.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante ativação ou cadastro direto realizado pelo suporte ou pelo próprio usuário. O compartilhamento de credenciais ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>3. SUPORTE TÉCNICO:</strong><br>
-                O suporte técnico e esclarecimento de dúvidas sobre o Táxify são realizados através do canal de atendimento via WhatsApp oficial.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
-                Em conformidade com a LGPD (Lei nº 13.709/2018), informamos que os dados financeiros, agenda de clientes e perfis inseridos no aplicativo são armazenados localmente no navegador e dispositivo do próprio usuário. Os desenvolvedores não mantêm cópias centralizadas dos registros financeiros dos clientes. Portanto, é de inteira responsabilidade do usuário realizar backups periódicos de suas informações.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
-                O nome e o número de telefone informados no login são armazenados no banco de dados restrito unicamente para fins de validação de licença, controle de vigência e acesso ao software.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
-                O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador ou instabilidades na rede de internet.
-            </p>
-            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>7. ATUALIZAÇÕES DOS TERMOS:</strong><br>
-                Estes termos poderão ser revistos e atualizados periodicamente para refletir melhorias no sistema ou adequações legais. O uso continuado da aplicação implica na concordância automática com a versão vigente.
-            </p>
-        </div>
-        <div style="text-align: right; margin-top: 15px;">
-            <button class="btn btn-warning" onclick="aceitarPeloModal()">Concordar e Continuar</button>
-            <button class="btn btn-danger" onclick="fecharModalLegal()">Fechar</button>
-        </div>
-    </div>
-</div>
-
 <script>
     // --- GERAÇÃO AUTOMÁTICA DE MANIFESTO PWA EM BASE64 ---
     const manifestoPWA = {
@@ -753,113 +636,25 @@
         }
     }
 
-    function validarAceiteTermos() {
-        const checkbox = document.getElementById('aceite-termos');
-        const btnEntrar = document.getElementById('btn-entrar');
-        btnEntrar.disabled = !checkbox.checked;
-    }
-
-    function abrirModalLegal() {
-        document.getElementById('modal-legal').style.display = 'flex';
-    }
-
-    function fecharModalLegal() {
-        document.getElementById('modal-legal').style.display = 'none';
-    }
-
-    function aceitarPeloModal() {
-        document.getElementById('aceite-termos').checked = true;
-        validarAceiteTermos();
-        fecharModalLegal();
-    }
-
-    // --- BANCOS DE DADOS SEPARADOS POR PERÍODO (LOCALSTORAGE) ---
-    const periodosDB = ['7', '30', '60', '90', '365'];
-
     function limparTelefone(tel) {
         return tel ? tel.replace(/\D/g, '') : '';
     }
 
-    function obterCompradoresDB(dias) {
-        const chave = `taxify_compradores_db_${dias}`;
-        const dados = localStorage.getItem(chave);
-        if (dados) {
-            return JSON.parse(dados);
-        }
-        let inicial = [];
-        localStorage.setItem(chave, JSON.stringify(inicial));
-        return inicial;
-    }
-
-    function salvarCompradoresDB(dias, lista) {
-        const chave = `taxify_compradores_db_${dias}`;
-        localStorage.setItem(chave, JSON.stringify(lista));
-    }
-
-    // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO DO CLIENTE ---
+    // --- CONTROLE DE LOGIN SIMPLES ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
         const nomeInput = document.getElementById('login-nome').value.trim();
-        const telInput = limparTelefone(document.getElementById('login-tel').value);
-        const msgErro = document.getElementById('login-msg');
+        const telInput = document.getElementById('login-tel').value.trim();
 
-        let compradorEncontrado = null;
-        let bancoEncontrado = '30';
-
-        for (let dias of periodosDB) {
-            let lista = obterCompradoresDB(dias);
-            let achei = lista.find(c => limparTelefone(c.tel) === telInput);
-            if (achei) {
-                compradorEncontrado = achei;
-                bancoEncontrado = dias;
-                break;
-            }
+        if (!nomeInput || !telInput) {
+            alert('Preencha seu nome e telefone.');
+            return;
         }
 
-        const hojeObj = new Date();
-        const hojeStr = hojeObj.toISOString().split('T')[0];
-
-        if (!compradorEncontrado) {
-            // Auto-liberação: Se o telefone não existe, cadastra automaticamente no banco de 30 dias com acesso liberado
-            const dVenc = new Date(hojeObj);
-            dVenc.setDate(dVenc.getDate() + 30);
-            const vencimentoStr = dVenc.toISOString().split('T')[0];
-
-            compradorEncontrado = {
-                id: Date.now(),
-                nome: nomeInput,
-                tel: telInput,
-                dataCompra: hojeStr,
-                vencimento: vencimentoStr,
-                ativo: true
-            };
-
-            let lista30 = obterCompradoresDB('30');
-            lista30.push(compradorEncontrado);
-            salvarCompradoresDB('30', lista30);
-        } else {
-            // Verifica se está bloqueado pelo administrador
-            if (!compradorEncontrado.ativo) {
-                msgErro.innerText = 'Seu acesso está BLOQUEADO pelo suporte técnico.';
-                msgErro.style.display = 'block';
-                return;
-            }
-
-            if (compradorEncontrado.vencimento < hojeStr) {
-                // Auto-renovação de 30 dias caso estivesse vencido
-                const dVenc = new Date(hojeObj);
-                dVenc.setDate(dVenc.getDate() + 30);
-                compradorEncontrado.vencimento = dVenc.toISOString().split('T')[0];
-                compradorEncontrado.ativo = true;
-            }
-
-            compradorEncontrado.nome = nomeInput;
-           
-            let listaBanco = obterCompradoresDB(bancoEncontrado);
-            listaBanco = listaBanco.map(c => c.id === compradorEncontrado.id ? compradorEncontrado : c);
-            salvarCompradoresDB(bancoEncontrado, listaBanco);
-        }
+        // Salva as informações básicas no perfil inicial
+        document.getElementById('taxista-nome').value = nomeInput;
+        document.getElementById('rec-motorista').value = nomeInput;
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
@@ -872,8 +667,6 @@
         document.getElementById('login-screen').style.display = 'block';
         document.getElementById('login-tel').value = '';
         document.getElementById('login-nome').value = '';
-        document.getElementById('aceite-termos').checked = false;
-        validarAceiteTermos();
     }
 
     // --- RECONHECIMENTO DE VOZ GENÉRICO ---
@@ -1310,52 +1103,44 @@
         const veiculo = document.getElementById('rec-veiculo').value || "N/A";
         const cliente = document.getElementById('cliente-nome').value || "Cliente";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const obs = document.getElementById('corrida-obs').value || "N/A";
-
-        doc.setFontSize(18);
-        doc.text("RECIBO DE CORRIDA - TÁXIFY", 20, 20);
-        doc.setFontSize(10);
-        doc.text(`Data de Emissão: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
-        doc.line(20, 32, 190, 32);
-
-        doc.setFontSize(12);
-        doc.text("DADOS DO MOTORISTA / VEÍCULO:", 20, 42);
-        doc.setFontSize(10);
-        doc.text(`Motorista: ${motorista} (CPF/CNPJ: ${docMotorista})`, 20, 50);
-        doc.text(`Veículo: ${veiculo}`, 20, 58);
+        const obs = document.getElementById('corrida-obs').value || "Serviço de Transporte de Passageiros";
 
         if (fotoVeiculoBase64) {
-            try {
-                doc.addImage(fotoVeiculoBase64, 'JPEG', 140, 38, 45, 30);
-            } catch (e) {
-                console.log("Erro ao inserir imagem no PDF:", e);
-            }
+            try { doc.addImage(fotoVeiculoBase64, 'JPEG', 20, 15, 30, 25); } catch(e){}
         }
 
-        doc.line(20, 75, 190, 75);
-        doc.setFontSize(12);
-        doc.text("DADOS DA CORRIDA / PASSAGEIRO:", 20, 85);
+        doc.setFontSize(16);
+        doc.text("RECIBO DE CORRIDA - TÁXIFY", 60, 22);
         doc.setFontSize(10);
-        doc.text(`Passageiro: ${cliente}`, 20, 93);
-        doc.text(`Valor Cobrado: R$ ${parseFloat(valor).toFixed(2)}`, 20, 101);
-        doc.text(`Trajeto / Observações: ${obs}`, 20, 109);
+        doc.text(`Data/Hora: ${new Date().toLocaleString('pt-BR')}`, 60, 30);
+        doc.line(20, 42, 190, 42);
 
-        doc.line(20, 130, 190, 130);
-        doc.text("__________________________________________", 60, 150);
-        doc.text("Assinatura do Motorista / Carimbo", 75, 158);
+        doc.text(`Motorista: ${motorista}`, 20, 52);
+        doc.text(`Doc / Alvará: ${docMotorista}`, 20, 60);
+        doc.text(`Veículo: ${veiculo}`, 20, 68);
+        doc.line(20, 74, 190, 74);
+
+        doc.text(`Recebemos de: ${cliente}`, 20, 84);
+        doc.setFontSize(14);
+        doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 96);
+        doc.setFontSize(10);
+        doc.text(`Referente a: ${obs}`, 20, 106);
+        doc.line(20, 116, 190, 116);
+
+        doc.text("__________________________________________", 60, 140);
+        doc.text("Assinatura do Motorista", 85, 148);
 
         if (download) {
-            doc.save("recibo_taxify.pdf");
+            doc.save("recibo_corrida.pdf");
         }
         return doc;
     }
 
     function enviarReciboWspPDF() {
         const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
-        if (!wsp) { alert('Informe o WhatsApp do passageiro.'); return; }
-        const passageiro = document.getElementById('cliente-nome').value || "Passageiro";
-        const valor = document.getElementById('corrida-valor').value || "0.00";
-        const texto = encodeURIComponent(`Olá ${passageiro}! Segue o recibo da sua corrida no valor de R$ ${valor} emitido pelo Táxify.`);
+        const valor = document.getElementById('corrida-valor').value || "0,00";
+        if (!wsp) { alert('Informe o número de WhatsApp do passageiro.'); return; }
+        const texto = encodeURIComponent(`Olá, ${document.getElementById('cliente-nome').value || 'Passageiro'}! Segue o recibo da sua corrida no valor de R$ ${valor}.`);
         window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
     }
 
@@ -1363,7 +1148,7 @@
         const email = document.getElementById('cliente-email').value;
         if (!email) { alert('Informe o e-mail do passageiro.'); return; }
         const assunto = encodeURIComponent("Recibo de Corrida - Táxify");
-        const corpo = encodeURIComponent("Segue em anexo o recibo referente à sua corrida.");
+        const corpo = encodeURIComponent("Segue em anexo o comprovante da sua corrida de táxi.");
         window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
     }
 </script>
