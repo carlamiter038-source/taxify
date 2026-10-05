@@ -5,18 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Táxify - Gestão Financeira para Taxistas</title>
    
-    <!-- Configurações PWA -->
+    <!-- Configurações PWA (Progressive Web App) -->
     <meta name="theme-color" content="#2c3e50">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Táxify">
    
-    <!-- Manifesto dinâmico embutido -->
+    <!-- Manifesto PWA dinâmico embutido -->
     <link rel="manifest" id="dynamic-manifest">
 
     <!-- Bibliotecas externas: Chart.js para gráficos e jsPDF para exportação de PDFs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+   
     <style>
         * {
             box-sizing: border-box;
@@ -29,7 +30,7 @@
             background-color: #f4f6f9;
             color: #333;
             padding: 15px;
-            padding-bottom: 85px; /* Espaço para não cobrir o conteúdo na parte inferior */
+            padding-bottom: 90px; /* Espaço para a barra de navegação inferior fixa */
         }
 
         header {
@@ -74,7 +75,7 @@
             padding-bottom: 8px;
         }
 
-        /* Sistema de Abas / Seções para a Navegação Inferior */
+        /* Sistema de Abas (Navigation Tabs / Menu Inferior) */
         .app-section {
             display: none;
         }
@@ -83,7 +84,7 @@
             display: block;
         }
 
-        /* Barra de Navegação Inferior */
+        /* Bottom Navigation Bar */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -196,13 +197,6 @@
 
         .btn-danger {
             background-color: #e74c3c;
-            color: #fff;
-            padding: 5px 10px;
-            font-size: 0.8rem;
-        }
-
-        .btn-success {
-            background-color: #2ecc71;
             color: #fff;
             padding: 5px 10px;
             font-size: 0.8rem;
@@ -344,7 +338,7 @@
         </form>
     </div>
 
-    <!-- TELA PRINCIPAL DO SISTEMA -->
+    <!-- TELA PRINCIPAL DO APLICATIVO -->
     <div id="app-content" style="display: none;">
        
         <header>
@@ -355,7 +349,6 @@
 
         <!-- ABA 1: INÍCIO / RESUMO & PERFIL -->
         <div id="secao-inicio" class="app-section ativo">
-            <!-- PERFIL DO TAXISTA & VEÍCULO -->
             <div class="card">
                 <h2>👤 Perfil do Taxista & Veículo</h2>
                 <div class="form-grid">
@@ -384,7 +377,6 @@
                 </div>
             </div>
 
-            <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
             <div class="card">
                 <h2>📊 Resumo Financeiro & Indicadores</h2>
                 <div class="dash-summary">
@@ -463,7 +455,6 @@
                 </form>
             </div>
 
-            <!-- TABELA DE EXIBIÇÃO DAS TRANSAÇÕES -->
             <div class="card">
                 <h2>📜 Histórico de Transações</h2>
                 <div style="overflow-x: auto;">
@@ -483,7 +474,6 @@
                 </div>
             </div>
 
-            <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
             <div class="card">
                 <h2>📈 Relatórios Financeiros & Exportação</h2>
                 <div class="form-grid">
@@ -523,7 +513,6 @@
 
         <!-- ABA 3: CALCULADORA & RECIBOS -->
         <div id="secao-calculadora" class="app-section">
-            <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
             <div class="card">
                 <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
                 <div class="form-grid">
@@ -545,7 +534,6 @@
                 <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
             </div>
 
-            <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
             <div class="card" id="area-recibo">
                 <h2>🧾 Emissão de Recibo de Corrida</h2>
                 <div class="form-grid">
@@ -634,7 +622,7 @@
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA -->
+        <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (BOTTOM NAVIGATION) -->
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="mudarSecao('inicio', this)">
                 <span class="nav-icon">🏠</span>
@@ -658,29 +646,23 @@
 </div>
 
 <script>
-    // --- GERENCIAMENTO DE ABAS DA NAVEGAÇÃO INFERIOR ---
+    // --- GERENCIAMENTO DE ABAS (NAVIGATION TABS / MENU INFERIOR) ---
     function mudarSecao(secaoId, elementoBtn) {
-        // Oculta todas as seções
         document.querySelectorAll('.app-section').forEach(sec => {
             sec.classList.remove('ativo');
         });
-
-        // Exibe a seção selecionada
         document.getElementById('secao-' + secaoId).classList.add('ativo');
 
-        // Atualiza os estilos dos botões da barra inferior
         document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
             btn.classList.remove('active');
         });
         if (elementoBtn) {
             elementoBtn.classList.add('active');
         }
-
-        // Rola a página para o topo ao trocar de aba
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- GERAÇÃO AUTOMÁTICA DE MANIFESTO PWA EM BASE64 ---
+    // --- MANIFESTO PWA DINÂMICO ---
     const manifestoPWA = {
         name: "Táxify - Gestão para Taxistas",
         short_name: "Táxify",
@@ -699,7 +681,7 @@
     const blobManifesto = new Blob([JSON.stringify(manifestoPWA)], {type: 'application/json'});
     document.getElementById('dynamic-manifest').href = URL.createObjectURL(blobManifesto);
 
-    // --- REGISTRO DO SERVICE WORKER PWA ---
+    // --- SERVICE WORKER PARA SUPORTE OFFLINE PWA ---
     if ('serviceWorker' in navigator) {
         const swCode = `
             self.addEventListener('install', e => {
@@ -715,7 +697,7 @@
             .catch(err => console.log("Erro no Service Worker:", err));
     }
 
-    // --- CAPTURA DE INSTALAÇÃO DO APP (PROMPT) ---
+    // --- PROMPT DE INSTALAÇÃO PWA ---
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
@@ -733,7 +715,7 @@
                 deferredPrompt = null;
             });
         } else {
-            alert('Para instalar, abra o menu do seu navegador (três pontinhos ou compartilhar) e escolha "Adicionar à Tela Inicial".');
+            alert('Para instalar, abra o menu do seu navegador e escolha "Adicionar à Tela Inicial" ou "Instalar Aplicativo".');
         }
     }
 
@@ -741,7 +723,7 @@
         return tel ? tel.replace(/\D/g, '') : '';
     }
 
-    // --- CONTROLE DE LOGIN SIMPLES ---
+    // --- LOGIN SIMPLES ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -753,7 +735,6 @@
             return;
         }
 
-        // Salva as informações básicas no perfil inicial
         document.getElementById('taxista-nome').value = nomeInput;
         document.getElementById('rec-motorista').value = nomeInput;
 
@@ -770,7 +751,7 @@
         document.getElementById('login-nome').value = '';
     }
 
-    // --- RECONHECIMENTO DE VOZ GENÉRICO ---
+    // --- RECONHECIMENTO DE VOZ ---
     function escutarVoz(callbackSucesso, btnElement, textoNormal) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
@@ -807,7 +788,7 @@
         };
     }
 
-    // --- CALCULADORA DE VIAGEM (KM x R$ 4,50) ---
+    // --- CALCULADORA DE CORRIDAS ---
     const TARIFA_POR_KM = 4.50;
 
     function calcularViagem() {
@@ -844,8 +825,8 @@
         const valorCalculado = calcularViagem();
         if (valorCalculado > 0) {
             document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
-            alert(`R$ ${valorCalculado.toFixed(2)} foi inserido diretamente no recibo!`);
-            // Alterna automaticamente para a aba de recibos/calculadora se necessário ou rola até lá
+            alert(`R$ ${valorCalculado.toFixed(2)} inserido no recibo!`);
+            mudarSecao('calculadora', document.querySelectorAll('.bottom-nav .nav-item')[2]);
             document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
         } else {
             alert('Digite ou fale uma distância válida primeiro.');
@@ -861,9 +842,9 @@
         salvarCliente();
     });
 
-    function salvarCliente(nomeCustom, telCustom) {
-        const nome = nomeCustom || document.getElementById('ag-nome').value.trim();
-        const tel = telCustom || document.getElementById('ag-tel').value.trim();
+    function salvarCliente() {
+        const nome = document.getElementById('ag-nome').value.trim();
+        const tel = document.getElementById('ag-tel').value.trim();
 
         if (!nome || !tel) {
             alert('Preencha Nome e Telefone para salvar na agenda.');
@@ -925,7 +906,7 @@
         }, btn, '🎤');
     }
 
-    // --- ESTADO FINANCEIRO DA APLICAÇÃO ---
+    // --- FINANÇAS E GRÁFICO ---
     let transacoes = [];
     let meuGrafico = null;
 
@@ -1029,62 +1010,36 @@
         atualizarPainelFinanceiro();
     }
 
-    // --- ASSISTENTE DE IA ---
     function analisarComIA() {
         const painel = document.getElementById('ai-painel');
         const conteudo = document.getElementById('ai-conteudo');
         let lucro = parseFloat(document.getElementById('dash-lucro').innerText);
 
         if (transacoes.length === 0) {
-            alert('Insira lançamentos primeiro para gerar a análise da IA.');
+            alert('Insira lançamentos primeiro para gerar a análise.');
             return;
         }
 
-        let sugestao = '';
-        if (lucro > 0) {
-            sugestao = ' Margem positiva! Recomendamos destinar 20% do lucro líquido para a Reserva de Emergência ou manutenção do veículo.';
-        } else if (lucro < 0) {
-            sugestao = ' Atenção: Suas despesas superaram a receita. Revise gastos com combustível ou despesas variáveis acumuladas.';
-        } else {
-            sugestao = ' Seu balanço está neutro. Procure registrar corridas adicionais para criar uma margem de lucro segura.';
-        }
-
+        let sugestao = lucro > 0 ? 'Margem positiva! Recomendamos destinar parte do lucro para a reserva de emergência.' : 'Atenção: Suas despesas superaram a receita.';
         conteudo.innerHTML = `
-            <div class="ai-insight-item">
-                <strong>Análise do Período:</strong> Foram registrados <strong>${transacoes.length}</strong> lançamentos.
-            </div>
-            <div class="ai-insight-item">
-                <strong>Diagnóstico de Lucratividade:</strong> Lucro Líquido atual de <strong>R$ ${lucro.toFixed(2)}</strong>.
-            </div>
-            <div class="ai-insight-item">
-                <strong>Recomendação IA:</strong> ${sugestao}
-            </div>
+            <div class="ai-insight-item"><strong>Registros:</strong> ${transacoes.length} movimentações analisadas.</div>
+            <div class="ai-insight-item"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)}</div>
+            <div class="ai-insight-item"><strong>Recomendação:</strong> ${sugestao}</div>
         `;
         painel.style.display = 'block';
     }
 
-    // --- RELATÓRIOS E COMPARTILHAMENTO ---
+    // --- RELATÓRIOS E RECIBOS PDF ---
     function gerarRelatorio() {
         const periodo = document.getElementById('rel-periodo').value;
-        const dataEmissao = document.getElementById('rel-data-emissao');
-        const relConteudo = document.getElementById('rel-conteudo');
-
-        dataEmissao.innerText = `Emitido em: ${new Date().toLocaleString('pt-BR')}`;
-
-        let entradas = 0;
-        let saidas = 0;
-
-        transacoes.forEach(t => {
-            if (t.tipo === 'Entrada') entradas += t.valor;
-            else saidas += t.valor;
-        });
-
-        relConteudo.innerHTML = `
-            <p><strong>Filtro Utilizado:</strong> ${periodo.toUpperCase()}</p>
-            <p><strong>Total de Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
-            <p><strong>Total de Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
-            <p><strong>Saldo Final do Período:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
-            <p><strong>Total de Registros:</strong> ${transacoes.length} movimentação(ões).</p>
+        document.getElementById('rel-data-emissao').innerText = `Emitido em: ${new Date().toLocaleString('pt-BR')}`;
+        let entradas = 0, saidas = 0;
+        transacoes.forEach(t => { if (t.tipo === 'Entrada') entradas += t.valor; else saidas += t.valor; });
+        document.getElementById('rel-conteudo').innerHTML = `
+            <p><strong>Filtro:</strong> ${periodo.toUpperCase()}</p>
+            <p><strong>Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
+            <p><strong>Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
+            <p><strong>Saldo:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
         `;
     }
 
@@ -1095,8 +1050,6 @@
             if (numeros.length >= 8) {
                 document.getElementById('rel-wsp').value = numeros;
                 alert(`Contato carregado: ${numeros}`);
-            } else {
-                alert(`Conteúdo de áudio capturado: "${texto}"`);
             }
         }, btn, '🎤 Ditador de Dados');
     }
@@ -1104,54 +1057,37 @@
     function gerarPDFRelatorio(download = true) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
         doc.setFontSize(16);
         doc.text("Táxify - Relatório Financeiro", 20, 20);
-        doc.setFontSize(10);
-        doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
-        doc.line(20, 32, 190, 32);
-
-        let y = 40;
-        transacoes.forEach((t) => {
+        let y = 35;
+        transacoes.forEach(t => {
             doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | R$ ${t.valor.toFixed(2)}`, 20, y);
             y += 8;
-            if (y > 280) { doc.addPage(); y = 20; }
         });
-
-        if (download) {
-            doc.save("relatorio_taxify.pdf");
-        }
+        if (download) doc.save("relatorio_taxify.pdf");
         return doc;
     }
 
     function enviarRelatorioWhatsAppPDF() {
         const wsp = limparTelefone(document.getElementById('rel-wsp').value);
-        if (!wsp) { alert('Informe o número de WhatsApp primeiro.'); return; }
-        const texto = encodeURIComponent("Olá! Segue o resumo financeiro gerado pelo Táxify.");
-        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
+        if (!wsp) { alert('Informe o WhatsApp.'); return; }
+        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Segue o resumo financeiro Táxify.")}`, '_blank');
     }
 
     function enviarRelatorioEmailPDF() {
         const email = document.getElementById('rel-email').value;
-        if (!email) { alert('Informe o e-mail de destino.'); return; }
-        const assunto = encodeURIComponent("Relatório Financeiro - Táxify");
-        const corpo = encodeURIComponent("Segue em anexo o resumo do relatório financeiro.");
-        window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
+        if (!email) { alert('Informe o e-mail.'); return; }
+        window.location.href = `mailto:${email}?subject=Relatório Táxify&body=Segue o resumo em anexo.`;
     }
 
-    // --- FOTO DO VEÍCULO & PERFIL DO TAXISTA ---
     let fotoVeiculoBase64 = "";
-
     function carregarFotoVeiculo(event) {
         const reader = new FileReader();
         reader.onload = function() {
             fotoVeiculoBase64 = reader.result;
-            const container = document.getElementById('box-preview-img');
-            container.innerHTML = `<img src="${fotoVeiculoBase64}" alt="Foto Veículo">`;
+            document.getElementById('box-preview-img').innerHTML = `<img src="${fotoVeiculoBase64}" alt="Veículo">`;
         };
-        if (event.target.files[0]) {
-            reader.readAsDataURL(event.target.files[0]);
-        }
+        if (event.target.files[0]) reader.readAsDataURL(event.target.files[0]);
     }
 
     function salvarPerfilTaxista() {
@@ -1161,7 +1097,7 @@
             foto: fotoVeiculoBase64
         };
         localStorage.setItem('taxify_perfil', JSON.stringify(perfil));
-        alert('Dados do motorista salvos localmente com sucesso!');
+        alert('Perfil salvo com sucesso!');
     }
 
     function carregarPerfilTaxista() {
@@ -1174,7 +1110,7 @@
             document.getElementById('rec-doc-motorista').value = perfil.doc || '';
             if (perfil.foto) {
                 fotoVeiculoBase64 = perfil.foto;
-                document.getElementById('box-preview-img').innerHTML = `<img src="${perfil.foto}" alt="Foto Veículo">`;
+                document.getElementById('box-preview-img').innerHTML = `<img src="${perfil.foto}" alt="Veículo">`;
             }
         }
     }
@@ -1185,7 +1121,7 @@
         document.getElementById('taxista-doc').value = '';
         document.getElementById('box-preview-img').innerHTML = '<span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>';
         fotoVeiculoBase64 = "";
-        alert('Dados do motorista removidos.');
+        alert('Perfil limpo.');
     }
 
     function vozPreencherRecibo() {
@@ -1199,13 +1135,10 @@
     function gerarPDFRecibo(download = true) {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
-
-        const motorista = document.getElementById('rec-motorista').value || "Motorista / Empresa";
-        const docMotorista = document.getElementById('rec-doc-motorista').value || "N/A";
-        const veiculo = document.getElementById('rec-veiculo').value || "N/A";
+        const motorista = document.getElementById('rec-motorista').value || "Motorista";
         const cliente = document.getElementById('cliente-nome').value || "Cliente";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const obs = document.getElementById('corrida-obs').value || "Serviço de Transporte de Passageiros";
+        const obs = document.getElementById('corrida-obs').value || "Transporte";
 
         if (fotoVeiculoBase64) {
             try { doc.addImage(fotoVeiculoBase64, 'JPEG', 20, 15, 30, 25); } catch(e){}
@@ -1214,44 +1147,27 @@
         doc.setFontSize(16);
         doc.text("RECIBO DE CORRIDA - TÁXIFY", 60, 22);
         doc.setFontSize(10);
-        doc.text(`Data/Hora: ${new Date().toLocaleString('pt-BR')}`, 60, 30);
-        doc.line(20, 42, 190, 42);
+        doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 60, 30);
+        doc.text(`Motorista: ${motorista}`, 20, 50);
+        doc.text(`Passageiro: ${cliente}`, 20, 60);
+        doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 70);
+        doc.text(`Referente a: ${obs}`, 20, 80);
 
-        doc.text(`Motorista: ${motorista}`, 20, 52);
-        doc.text(`Doc / Alvará: ${docMotorista}`, 20, 60);
-        doc.text(`Veículo: ${veiculo}`, 20, 68);
-        doc.line(20, 74, 190, 74);
-
-        doc.text(`Recebemos de: ${cliente}`, 20, 84);
-        doc.setFontSize(14);
-        doc.text(`Valor: R$ ${parseFloat(valor).toFixed(2)}`, 20, 96);
-        doc.setFontSize(10);
-        doc.text(`Referente a: ${obs}`, 20, 106);
-        doc.line(20, 116, 190, 116);
-
-        doc.text("__________________________________________", 60, 140);
-        doc.text("Assinatura do Motorista", 85, 148);
-
-        if (download) {
-            doc.save("recibo_corrida.pdf");
-        }
+        if (download) doc.save("recibo_corrida.pdf");
         return doc;
     }
 
     function enviarReciboWspPDF() {
         const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
         const valor = document.getElementById('corrida-valor').value || "0,00";
-        if (!wsp) { alert('Informe o número de WhatsApp do passageiro.'); return; }
-        const texto = encodeURIComponent(`Olá, ${document.getElementById('cliente-nome').value || 'Passageiro'}! Segue o recibo da sua corrida no valor de R$ ${valor}.`);
-        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
+        if (!wsp) { alert('Informe o WhatsApp do passageiro.'); return; }
+        window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent(`Olá! Segue o recibo da corrida de R$ ${valor}.`)}`, '_blank');
     }
 
     function enviarReciboEmailPDF() {
         const email = document.getElementById('cliente-email').value;
         if (!email) { alert('Informe o e-mail do passageiro.'); return; }
-        const assunto = encodeURIComponent("Recibo de Corrida - Táxify");
-        const corpo = encodeURIComponent("Segue em anexo o comprovante da sua corrida de táxi.");
-        window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
+        window.location.href = `mailto:${email}?subject=Recibo Táxify&body=Segue o comprovante da corrida.`;
     }
 </script>
 
