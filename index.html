@@ -23,47 +23,12 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            scroll-behavior: smooth;
         }
 
         body {
             background-color: #f4f6f9;
             color: #333;
             padding: 15px;
-            padding-top: 75px; /* Espaço para a barra fixa */
-        }
-
-        /* Barra de Navegação Superior Fixa */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            z-index: 1001;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .top-nav a {
-            color: #ecf0f1;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .top-nav a:hover, .top-nav a.active {
-            background-color: #f1c40f;
-            color: #2c3e50;
         }
 
         header {
@@ -201,6 +166,15 @@
             background-color: #1eb954;
         }
 
+        .btn-admin {
+            background-color: #8e44ad;
+            color: #fff;
+        }
+
+        .btn-admin:hover {
+            background-color: #732d91;
+        }
+
         .btn-install {
             background-color: #3498db;
             color: #fff;
@@ -283,6 +257,38 @@
             overflow-y: auto;
         }
 
+        /* Abas na Área Restrita */
+        .admin-tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #2c3e50;
+        }
+
+        .tab-btn.active {
+            background: #8e44ad;
+            color: #fff;
+        }
+
+        .db-section {
+            display: none;
+        }
+
+        .db-section.active {
+            display: block;
+        }
+
         /* Foto e Preview */
         .preview-img {
             width: 100px;
@@ -324,27 +330,21 @@
 </head>
 <body>
 
-<!-- BARRA DE NAVEGAÇÃO SUPERIOR FIXA -->
-<nav class="top-nav" id="app-navbar" style="display: none;">
-    <a href="#sec-perfil" onclick="destacarNav(this)">Perfil</a>
-    <a href="#sec-calculadora" onclick="destacarNav(this)">Calculadora GPS</a>
-    <a href="#sec-financeiro" onclick="destacarNav(this)">Finanças</a>
-    <a href="#sec-agenda" onclick="destacarNav(this)">Agenda VIP</a>
-    <a href="#sec-dashboard" onclick="destacarNav(this)">Dashboard & IA</a>
-    <a href="#sec-relatorios" onclick="destacarNav(this)">Relatórios</a>
-    <a href="#sec-recibo" onclick="destacarNav(this)">Recibos</a>
-</nav>
-
 <div class="container">
 
     <!-- TELA DE LOGIN & BOTÕES DE ACESSO -->
-    <div id="login-screen" class="card" style="max-width: 450px; margin: 30px auto;">
+    <div id="login-screen" class="card" style="max-width: 450px; margin: 50px auto;">
         <h2 style="text-align: center;">🚕 Login - Táxify</h2>
        
         <!-- Botão de Instalação PWA -->
-        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 20px;" onclick="instalarPWAApp()">
+        <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 12px;" onclick="instalarPWAApp()">
             📱 Instalar Aplicativo Táxify
         </button>
+
+        <!-- Botão de Suporte / WhatsApp Business -->
+        <a href="https://api.whatsapp.com/send?phone=5531975644571&text=Olá! Preciso de suporte técnico ou informações sobre o Táxify." target="_blank" class="btn btn-wsp" style="width: 100%; margin-bottom: 20px; display: block; text-align: center; box-sizing: border-box;">
+            💬 Suporte Técnico (WhatsApp)
+        </a>
 
         <form id="form-login">
             <div class="form-group" style="margin-bottom: 12px;">
@@ -374,12 +374,12 @@
        
         <header>
             <h1>🚖 TÁXIFY</h1>
-            <p>Sistema Inteligente de Gestão Financeira e Emissão de Recibos</p>
+            <p>Sistema de Gestão Financeira e Emissão de Recibos para Taxistas</p>
             <button class="btn btn-danger" style="margin-top: 10px; padding: 5px 10px; font-size: 0.8rem;" onclick="sairDoApp()">Sair / Trocar Conta</button>
         </header>
 
         <!-- PERFIL DO TAXISTA & VEÍCULO -->
-        <div class="card" id="sec-perfil">
+        <div class="card">
             <h2>👤 Perfil do Taxista & Veículo</h2>
             <div class="form-grid">
                 <div class="form-group">
@@ -407,38 +407,23 @@
             </div>
         </div>
 
-        <!-- CALCULADORA DE CORRIDAS (POR KM, ENDEREÇO OU GPS) -->
-        <div class="card" id="sec-calculadora">
+        <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
+        <div class="card">
             <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
             <div class="form-grid">
-                <div class="form-group">
-                    <label>Origem (Endereço ou GPS)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="calc-origem" placeholder="Ex: Av. Central, 100">
-                        <button class="btn btn-success" onclick="capturarGPSEndereco('origem')" title="Usar GPS Atual">📍 GPS</button>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Destino (Endereço ou GPS)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="calc-destino" placeholder="Ex: Aeroporto / Praça">
-                        <button class="btn btn-success" onclick="capturarGPSEndereco('destino')" title="Usar GPS Atual">📍 GPS</button>
-                    </div>
-                </div>
                 <div class="form-group">
                     <label>Quilometragem (KM)</label>
                     <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
                 </div>
                 <div class="form-group">
-                    <label>Comando por Voz (KM)</label>
-                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância</button>
+                    <label>Comando por Voz</label>
+                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância (KM)</button>
                 </div>
-            </div>
-           
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
-                <button class="btn btn-warning" onclick="calcularRotaPorEndereco()">🗺️ Calcular por Endereço/GPS</button>
-                <div style="font-size: 1.2rem; font-weight: bold; color: #27ae60;">
-                    Valor Estimado: R$ <span id="calc-resultado">0,00</span>
+                <div class="form-group">
+                    <label>Valor Estimado</label>
+                    <p style="font-size: 1.4rem; font-weight: bold; color: #27ae60; padding-top: 5px;">
+                        R$ <span id="calc-resultado">0,00</span>
+                    </p>
                 </div>
             </div>
             <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
@@ -446,7 +431,7 @@
 
         <div class="grid-2col">
             <!-- LANÇAMENTO FINANCEIRO -->
-            <div class="card" id="sec-financeiro">
+            <div class="card">
                 <h2>💸 Novo Lançamento Financeiro</h2>
                 <form id="form-transacao">
                     <div class="form-group" style="margin-bottom: 10px;">
@@ -487,7 +472,7 @@
             </div>
 
             <!-- AGENDA DE CLIENTES -->
-            <div class="card" id="sec-agenda">
+            <div class="card">
                 <h2>📇 Agenda de Clientes VIP</h2>
                 <form id="form-agenda">
                     <div class="form-group" style="margin-bottom: 10px;">
@@ -527,9 +512,9 @@
             </div>
         </div>
 
-        <!-- DASHBOARD FINANCEIRO & IA -->
-        <div class="card" id="sec-dashboard">
-            <h2>📊 Resumo Financeiro & Atualização em IA</h2>
+        <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
+        <div class="card">
+            <h2>📊 Resumo Financeiro & Indicadores</h2>
             <div class="dash-summary">
                 <div class="dash-box">
                     <h3>TOTAL ENTRADAS</h3>
@@ -554,11 +539,11 @@
             </div>
 
             <div style="text-align: center;">
-                <button class="btn btn-warning" onclick="analisarComIA()">🤖 Executar Atualização e Diagnóstico de IA</button>
+                <button class="btn btn-warning" onclick="analisarComIA()">🤖 Gerar Diagnóstico com Inteligência Artificial</button>
             </div>
 
             <div id="ai-painel" style="display: none; margin-top: 15px;">
-                <h3 style="font-size: 1rem; color: #2980b9;">Relatório Inteligente (Táxify AI):</h3>
+                <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
                 <div id="ai-conteudo"></div>
             </div>
         </div>
@@ -584,7 +569,7 @@
         </div>
 
         <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
-        <div class="card" id="sec-relatorios">
+        <div class="card">
             <h2>📈 Relatórios Financeiros & Exportação</h2>
             <div class="form-grid">
                 <div class="form-group">
@@ -621,7 +606,7 @@
         </div>
 
         <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
-        <div class="card" id="sec-recibo">
+        <div class="card" id="area-recibo">
             <h2>🧾 Emissão de Recibo de Corrida</h2>
             <div class="form-grid">
                 <div class="form-group">
@@ -680,19 +665,27 @@
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
                 <strong>2. LICENCIAMENTO DE USO E PRAZO:</strong><br>
-                O direito de acesso ao sistema é concedido mediante ativação ou cadastro direto realizado pelo usuário. O compartilhamento de credenciais ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
+                O direito de acesso ao sistema é concedido mediante ativação ou cadastro direto realizado pelo suporte ou pelo próprio usuário. O compartilhamento de credenciais ou a utilização simultânea por terceiros não autorizados constitui violação contratual, resultando no bloqueio imediato e definitivo do acesso.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>3. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
+                <strong>3. SUPORTE TÉCNICO:</strong><br>
+                O suporte técnico e esclarecimento de dúvidas sobre o Táxify são realizados através do canal de atendimento via WhatsApp oficial.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>4. ARMAZENAMENTO DE DADOS E RESPONSABILIDADE DO USUÁRIO:</strong><br>
                 Em conformidade com a LGPD (Lei nº 13.709/2018), informamos que os dados financeiros, agenda de clientes e perfis inseridos no aplicativo são armazenados localmente no navegador e dispositivo do próprio usuário. Os desenvolvedores não mantêm cópias centralizadas dos registros financeiros dos clientes. Portanto, é de inteira responsabilidade do usuário realizar backups periódicos de suas informações.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>4. COLETA DE DADOS DE CADASTRO:</strong><br>
+                <strong>5. COLETA DE DADOS DE CADASTRO:</strong><br>
                 O nome e o número de telefone informados no login são armazenados no banco de dados restrito unicamente para fins de validação de licença, controle de vigência e acesso ao software.
             </p>
             <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
-                <strong>5. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
+                <strong>6. LIMITAÇÃO DE RESPONSABILIDADE TÉCNICA:</strong><br>
                 O Táxify é fornecido "no estado em que se encontra" (as-is). Os autores não se responsabilizam por eventuais falhas decorrentes de mau funcionamento do dispositivo do usuário, exclusão acidental de dados do navegador ou instabilidades na rede de internet.
+            </p>
+            <p style="font-size:0.83rem; line-height: 1.4; color:#555; margin-bottom: 10px;">
+                <strong>7. ATUALIZAÇÕES DOS TERMOS:</strong><br>
+                Estes termos poderão ser revistos e atualizados periodicamente para refletir melhorias no sistema ou adequações legais. O uso continuado da aplicação implica na concordância automática com a versão vigente.
             </p>
         </div>
         <div style="text-align: right; margin-top: 15px;">
@@ -760,11 +753,6 @@
         }
     }
 
-    function destacarNav(el) {
-        document.querySelectorAll('.top-nav a').forEach(a => a.classList.remove('active'));
-        el.classList.add('active');
-    }
-
     function validarAceiteTermos() {
         const checkbox = document.getElementById('aceite-termos');
         const btnEntrar = document.getElementById('btn-entrar');
@@ -785,7 +773,7 @@
         fecharModalLegal();
     }
 
-    // --- BANCOS DE DADOS DE CLIENTES (LOCALSTORAGE) ---
+    // --- BANCOS DE DADOS SEPARADOS POR PERÍODO (LOCALSTORAGE) ---
     const periodosDB = ['7', '30', '60', '90', '365'];
 
     function limparTelefone(tel) {
@@ -808,7 +796,7 @@
         localStorage.setItem(chave, JSON.stringify(lista));
     }
 
-    // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO ---
+    // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO DO CLIENTE ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -833,6 +821,7 @@
         const hojeStr = hojeObj.toISOString().split('T')[0];
 
         if (!compradorEncontrado) {
+            // Auto-liberação: Se o telefone não existe, cadastra automaticamente no banco de 30 dias com acesso liberado
             const dVenc = new Date(hojeObj);
             dVenc.setDate(dVenc.getDate() + 30);
             const vencimentoStr = dVenc.toISOString().split('T')[0];
@@ -850,13 +839,15 @@
             lista30.push(compradorEncontrado);
             salvarCompradoresDB('30', lista30);
         } else {
+            // Verifica se está bloqueado pelo administrador
             if (!compradorEncontrado.ativo) {
-                msgErro.innerText = 'Seu acesso está BLOQUEADO.';
+                msgErro.innerText = 'Seu acesso está BLOQUEADO pelo suporte técnico.';
                 msgErro.style.display = 'block';
                 return;
             }
 
             if (compradorEncontrado.vencimento < hojeStr) {
+                // Auto-renovação de 30 dias caso estivesse vencido
                 const dVenc = new Date(hojeObj);
                 dVenc.setDate(dVenc.getDate() + 30);
                 compradorEncontrado.vencimento = dVenc.toISOString().split('T')[0];
@@ -864,6 +855,7 @@
             }
 
             compradorEncontrado.nome = nomeInput;
+           
             let listaBanco = obterCompradoresDB(bancoEncontrado);
             listaBanco = listaBanco.map(c => c.id === compradorEncontrado.id ? compradorEncontrado : c);
             salvarCompradoresDB(bancoEncontrado, listaBanco);
@@ -871,14 +863,12 @@
 
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app-content').style.display = 'block';
-        document.getElementById('app-navbar').style.display = 'flex';
         carregarPerfilTaxista();
         inicializarGrafico();
     });
 
     function sairDoApp() {
         document.getElementById('app-content').style.display = 'none';
-        document.getElementById('app-navbar').style.display = 'none';
         document.getElementById('login-screen').style.display = 'block';
         document.getElementById('login-tel').value = '';
         document.getElementById('login-nome').value = '';
@@ -923,79 +913,8 @@
         };
     }
 
-    // --- CALCULADORA DE VIAGEM COM GPS EM TEMPO REAL ---
+    // --- CALCULADORA DE VIAGEM (KM x R$ 4,50) ---
     const TARIFA_POR_KM = 4.50;
-    let gpsCoordsOrigem = null;
-    let gpsCoordsDestino = null;
-
-    function capturarGPSEndereco(tipo) {
-        if (!navigator.geolocation) {
-            alert('Seu navegador não suporta geolocalização por GPS.');
-            return;
-        }
-
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                const coordsTexto = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
-
-                if (tipo === 'origem') {
-                    gpsCoordsOrigem = { lat, lon };
-                    document.getElementById('calc-origem').value = `GPS Atual (${coordsTexto})`;
-                    alert('Origem capturada via GPS com sucesso!');
-                } else {
-                    gpsCoordsDestino = { lat, lon };
-                    document.getElementById('calc-destino').value = `GPS Atual (${coordsTexto})`;
-                    alert('Destino capturado via GPS com sucesso!');
-                }
-            },
-            (error) => {
-                alert('Erro ao obter localização por GPS. Verifique as permissões do navegador.');
-            },
-            { enableHighAccuracy: true, timeout: 10000 }
-        );
-    }
-
-    function calcularDistanciaHaversine(lat1, lon1, lat2, lon2) {
-        const R = 6371; // Raio da Terra em km
-        const dLat = (lat2 - lat1) * Math.PI / 180;
-        const dLon = (lon2 - lon1) * Math.PI / 180;
-        const a =
-            Math.sin(dLat/2) * Math.sin(dLat/2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
-            Math.sin(dLon/2) * Math.sin(dLon/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c; // Distância em KM
-    }
-
-    function calcularRotaPorEndereco() {
-        const origem = document.getElementById('calc-origem').value.trim();
-        const destino = document.getElementById('calc-destino').value.trim();
-
-        if (!origem || !destino) {
-            alert('Informe ou capture via GPS a origem e o destino.');
-            return;
-        }
-
-        let distanciaKm = 0;
-
-        if (gpsCoordsOrigem && gpsCoordsDestino) {
-            // Se ambos usaram GPS, calcula a distância real geodésica multiplicada por fator de rota urbana (1.3)
-            const distDireta = calcularDistanciaHaversine(
-                gpsCoordsOrigem.lat, gpsCoordsOrigem.lon,
-                gpsCoordsDestino.lat, gpsCoordsDestino.lon
-            );
-            distanciaKm = distDireta * 1.3;
-        } else {
-            // Simulação inteligente baseada no tamanho dos textos dos endereços inseridos
-            distanciaKm = Math.max(3.5, (origem.length + destino.length) % 15 + 4.2);
-        }
-
-        document.getElementById('calc-km').value = distanciaKm.toFixed(1);
-        calcularViagem();
-        alert(`Rota calculada com sucesso! Distância estimada: ${distanciaKm.toFixed(1)} KM.`);
-    }
 
     function calcularViagem() {
         const kmInput = parseFloat(document.getElementById('calc-km').value);
@@ -1024,7 +943,7 @@
             } else {
                 alert(`Não foi possível identificar a quilometragem no áudio: "${texto}"`);
             }
-        }, btnVoz, '🎤 Falar Distância');
+        }, btnVoz, '🎤 Falar Distância (KM)');
     }
 
     function copiarValorParaRecibo() {
@@ -1032,9 +951,9 @@
         if (valorCalculado > 0) {
             document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
             alert(`R$ ${valorCalculado.toFixed(2)} foi inserido diretamente no recibo!`);
-            document.getElementById('sec-recibo').scrollIntoView({ behavior: 'smooth' });
+            document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
         } else {
-            alert('Calcule ou informe uma quilometragem válida primeiro.');
+            alert('Digite ou fale uma distância válida primeiro.');
         }
     }
 
@@ -1111,7 +1030,7 @@
         }, btn, '🎤');
     }
 
-    // --- ESTADO FINANCEIRO & IA ---
+    // --- ESTADO FINANCEIRO DA APLICAÇÃO ---
     let transacoes = [];
     let meuGrafico = null;
 
@@ -1215,41 +1134,35 @@
         atualizarPainelFinanceiro();
     }
 
-    // --- MÓDULO DE ATUALIZAÇÃO EM INTELIGÊNCIA ARTIFICIAL (IA) ---
+    // --- ASSISTENTE DE IA ---
     function analisarComIA() {
         const painel = document.getElementById('ai-painel');
         const conteudo = document.getElementById('ai-conteudo');
         let lucro = parseFloat(document.getElementById('dash-lucro').innerText);
-        let entradas = parseFloat(document.getElementById('dash-entradas').innerText);
-        let saidas = parseFloat(document.getElementById('dash-saidas').innerText);
 
         if (transacoes.length === 0) {
-            alert('Insira lançamentos financeiros para ativar a atualização e análise da IA.');
+            alert('Insira lançamentos primeiro para gerar a análise da IA.');
             return;
         }
 
-        let projecaoMensal = lucro * 30;
-        let recomendacaoCombustivel = saidas > entradas * 0.5 ? 'Alto gasto com insumos detectado. Priorize postos com melhor custo por litro.' : 'Eficiência de combustível estável.';
-       
-        let statusIA = '';
+        let sugestao = '';
         if (lucro > 0) {
-            statusIA = `Lucratividade saudável! A IA projeta um ganho estimado de R$ ${projecaoMensal.toFixed(2)} ao manter este ritmo.`;
+            sugestao = ' Margem positiva! Recomendamos destinar 20% do lucro líquido para a Reserva de Emergência ou manutenção do veículo.';
+        } else if (lucro < 0) {
+            sugestao = ' Atenção: Suas despesas superaram a receita. Revise gastos com combustível ou despesas variáveis acumuladas.';
         } else {
-            statusIA = `Alerta de Otimização: Suas despesas ultrapassaram o faturamento. A IA sugere focar em rotas de maior demanda urbana ou aeroportos.`;
+            sugestao = ' Seu balanço está neutro. Procure registrar corridas adicionais para criar uma margem de lucro segura.';
         }
 
         conteudo.innerHTML = `
             <div class="ai-insight-item">
-                <strong>Status do Sistema Táxify AI:</strong> Versão atualizada com algoritmos preditivos de fluxo de caixa.
+                <strong>Análise do Período:</strong> Foram registrados <strong>${transacoes.length}</strong> lançamentos.
             </div>
             <div class="ai-insight-item">
-                <strong>Análise de Margem:</strong> Faturamento de R$ ${entradas.toFixed(2)} com despesas de R$ ${saidas.toFixed(2)}.
+                <strong>Diagnóstico de Lucratividade:</strong> Lucro Líquido atual de <strong>R$ ${lucro.toFixed(2)}</strong>.
             </div>
             <div class="ai-insight-item">
-                <strong>Previsão de Desempenho:</strong> ${statusIA}
-            </div>
-            <div class="ai-insight-item">
-                <strong>Sugestão Operacional:</strong> ${recomendacaoCombustivel}
+                <strong>Recomendação IA:</strong> ${sugestao}
             </div>
         `;
         painel.style.display = 'block';
