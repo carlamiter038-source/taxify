@@ -1,281 +1,244 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Táxify - Gestão Financeira para Taxistas</title>
-   
-    <!-- Configurações PWA -->
-    <meta name="theme-color" content="#2c3e50">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Táxify">
-   
-    <!-- Manifesto dinâmico embutido -->
-    <link rel="manifest" id="dynamic-manifest">
-
-    <!-- Bibliotecas externas: Chart.js para gráficos, jsPDF para exportação de PDFs e Google Maps API -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_DE_API_DO_GOOGLE&libraries=places"></script>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: #f4f6f9;
-            color: #333;
-            padding: 15px;
-            padding-top: 75px; /* Espaço para a barra fixa */
-        }
-
-        /* Barra de Navegação Superior Fixa */
-        .top-nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background-color: #2c3e50;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
-            z-index: 1001;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .top-nav a {
-            color: #ecf0f1;
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-weight: bold;
-            padding: 6px 12px;
-            border-radius: 4px;
-            transition: background 0.3s, color 0.3s;
-        }
-
-        .top-nav a:hover, .top-nav a.active {
-            background-color: #f1c40f;
-            color: #2c3e50;
-        }
-
-        header {
-            background-color: #2c3e50;
-            color: #f1c40f;
-            padding: 20px;
-            text-align: center;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            color: #ecf0f1;
-            font-size: 0.9rem;
-        }
-
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
-
-        .card {
-            background: #ffffff;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            border-top: 4px solid #f1c40f;
-        }
-
-        .card h2 {
-            font-size: 1.2rem;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #ecf0f1;
-            padding-bottom: 8px;
-        }
-
-        /* Formulários e Inputs */
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        label {
-            font-size: 0.85rem;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #34495e;
-        }
-
-        input, select, textarea {
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            width: 100%;
-        }
-
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #f1c40f;
-        }
-
-        /* Botões */
-        .btn {
-            background-color: #2c3e50;
-            color: #fff;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .btn:hover {
-            background-color: #34495e;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Táxify - Gestão Financeira para Taxistas</title>
+​<!-- Configurações PWA -->
+<meta name="theme-color" content="#2c3e50">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Táxify">
+​<!-- Manifesto dinâmico embutido -->
+<link rel="manifest" id="dynamic-manifest">
+​<!-- Bibliotecas externas: Chart.js para gráficos, jsPDF para exportação de PDFs e Google Maps API -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=SUA_CHAVE_DE_API_DO_GOOGLE&libraries=places"></script>
+​<style>
+* {
+box-sizing: border-box;
+margin: 0;
+padding: 0;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+scroll-behavior: smooth;
+}
+​body {
+background-color: #f4f6f9;
+color: #333;
+padding: 15px;
+padding-top: 75px; /* Espaço para a barra fixa */
+}
+​/* Barra de Navegação Superior Fixa */
+.top-nav {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+background-color: #2c3e50;
+display: flex;
+justify-content: center;
+align-items: center;
+gap: 10px;
+padding: 10px 15px;
+z-index: 1001;
+box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+overflow-x: auto;
+white-space: nowrap;
+}
+​.top-nav a {
+color: #ecf0f1;
+text-decoration: none;
+font-size: 0.85rem;
+font-weight: bold;
+padding: 6px 12px;
+border-radius: 4px;
+transition: background 0.3s, color 0.3s;
+}
+​.top-nav a:hover, .top-nav a.active {
+background-color: #f1c40f;
+color: #2c3e50;
+}
+​header {
+background-color: #2c3e50;
+color: #f1c40f;
+padding: 20px;
+text-align: center;
+border-radius: 8px;
+margin-bottom: 20px;
+box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+​header h1 {
+font-size: 1.8rem;
+margin-bottom: 5px;
+}
+​header p {
+color: #ecf0f1;
+font-size: 0.9rem;
+}
+​.container {
+max-width: 1100px;
+margin: 0 auto;
+}
+​.card {
+background: #ffffff;
+border-radius: 8px;
+padding: 20px;
+margin-bottom: 20px;
+box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+border-top: 4px solid #f1c40f;
+}
+​.card h2 {
+font-size: 1.2rem;
+color: #2c3e50;
+margin-bottom: 15px;
+border-bottom: 2px solid #ecf0f1;
+padding-bottom: 8px;
+}
+​/* Formulários e Inputs */
+.form-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 12px;
+margin-bottom: 15px;
+}
+​.form-group {
+display: flex;
+flex-direction: column;
+}
+​label {
+font-size: 0.85rem;
+font-weight: bold;
+margin-bottom: 5px;
+color: #34495e;
+}
+​input, select, textarea {
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 0.9rem;
+width: 100%;
+}
+​input:focus, select:focus, textarea:focus {
+outline: none;
+border-color: #f1c40f;
+}
+​/* Botões */
+.btn {
+background-color: #2c3e50;
+color: #fff;
+padding: 10px 15px;
+border: none;
+border-radius: 5px;
+font-weight: bold;
+cursor: pointer;
+transition: background 0.3s;
+}
+​.btn:hover {
+background-color: #34495e;
+}
+</style>
 </head>
 <body>
-
-    <!-- Barra de Navegação -->
-    <nav class="top-nav">
-        <a href="#calculadora-corrida">Calculadora de Rota</a>
-        <a href="#painel">Painel Financeiro</a>
-    </nav>
-
-    <div class="container">
-        <header>
-            <h1>Táxify</h1>
-            <p>Gestão Financeira e Calculadora Inteligente para Taxistas</p>
-        </header>
-
-        <!-- Nova Calculadora de Corrida por Endereço (Google Maps) -->
-        <div class="card" id="calculadora-corrida">
-            <h2>Calculadora de Corrida por Endereço (Google Maps)</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="origem">Endereço de Origem</label>
-                    <input type="text" id="origem" placeholder="Ex: Av. Paulista, 1000 - São Paulo">
-                </div>
-                <div class="form-group">
-                    <label for="destino">Endereço de Destino</label>
-                    <input type="text" id="destino" placeholder="Ex: Aeroporto de Congonhas - São Paulo">
-                </div>
-                <div class="form-group">
-                    <label for="valor-km">Valor por Km (R$)</label>
-                    <input type="number" id="valor-km" value="3.50" step="0.10">
-                </div>
-                <div class="form-group">
-                    <label for="bandeira">Bandeira / Adicional</label>
-                    <select id="bandeira">
-                        <option value="1">Bandeira 1 (Normal)</option>
-                        <option value="2">Bandeira 2 (+20%)</option>
-                    </select>
-                </div>
-            </div>
-            <button class="btn" onclick="calcularRotaGoogle()">Calcular Corrida</button>
-           
-            <div id="resultado-calculadora" style="margin-top: 15px; font-size: 0.95rem; display: none; background: #f8f9fa; padding: 15px; border-radius: 5px;">
-                <p><strong>Distância:</strong> <span id="res-distancia">-</span></p>
-                <p><strong>Tempo Estimado:</strong> <span id="res-tempo">-</span></p>
-                <p><strong>Valor Calculado:</strong> <span id="res-valor" style="color: #27ae60; font-weight: bold; font-size: 1.2rem;">-</span></p>
-            </div>
-        </div>
-
-        <!-- Demais seções do app continuam aqui... -->
-        <div class="card" id="painel">
-            <h2>Painel Financeiro</h2>
-            <p>Acompanhe suas corridas e despesas abaixo.</p>
-        </div>
-    </div>
-
-    <script>
-        // Inicializar o Google Places Autocomplete nos inputs de endereço
-        window.addEventListener('load', () => {
-            const inputOrigem = document.getElementById('origem');
-            const inputDestino = document.getElementById('destino');
-            if (window.google && google.maps && google.maps.places) {
-                new google.maps.places.Autocomplete(inputOrigem);
-                new google.maps.places.Autocomplete(inputDestino);
-            }
-        });
-
-        // Função de cálculo de rota utilizando o Google Maps DirectionsService
-        function calcularRotaGoogle() {
-            const origem = document.getElementById('origem').value;
-            const destino = document.getElementById('destino').value;
-            const valorKm = parseFloat(document.getElementById('valor-km').value) || 0;
-            const bandeira = parseInt(document.getElementById('bandeira').value) || 1;
-
-            if (!origem || !destino) {
-                alert('Por favor, preencha a origem e o destino.');
-                return;
-            }
-
-            if (!window.google || !google.maps) {
-                alert('A API do Google Maps não foi carregada corretamente. Verifique sua chave de API.');
-                return;
-            }
-
-            const directionsService = new google.maps.DirectionsService();
-
-            const request = {
-                origin: origem,
-                destination: destino,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-
-            directionsService.route(request, function(result, status) {
-                if (status === 'OK') {
-                    const route = result.routes[0].legs[0];
-                    const distanciaMetros = route.distance.value; // em metros
-                    const distanciaKm = distanciaMetros / 1000;
-                    const tempoTexto = route.duration.text;
-
-                    // Cálculo do valor base por km
-                    let valorTotal = distanciaKm * valorKm;
-
-                    // Aplicação da bandeira (ex: Bandeira 2 acrescenta 20%)
-                    if (bandeira === 2) {
-                        valorTotal *= 1.20;
-                    }
-
-                    // Exibir resultados na tela
-                    document.getElementById('res-distancia').innerText = `${distanciaKm.toFixed(2)} km`;
-                    document.getElementById('res-tempo').innerText = tempoTexto;
-                    document.getElementById('res-valor').innerText = `R$ ${valorTotal.toFixed(2)}`;
-                    document.getElementById('resultado-calculadora').style.display = 'block';
-
-                } else {
-                    alert('Não foi possível calcular a rota. Verifique os endereços informados. Erro: ' + status);
-                }
-            });
-        }
-    </script>
+​<!-- Barra de Navegação -->
+<nav class="top-nav">
+<a href="#calculadora">Calculadora de Corridas</a>
+<a href="#painel">Painel Financeiro</a>
+</nav>
+​<div class="container">
+<header>
+<h1>Táxify</h1>
+<p>Gestão Financeira e Calculadora Inteligente para Taxistas</p>
+</header>
+​<!-- Seção Dedicada à Calculadora de Corridas -->
+<div class="card" id="calculadora">
+<h2>Calculadora de Corridas (Rotas por Endereço)</h2>
+<div class="form-grid">
+<div class="form-group">
+<label for="origem">Endereço de Origem</label>
+<input type="text" id="origem" placeholder="Ex: Av. Paulista, 1000 - São Paulo">
+</div>
+<div class="form-group">
+<label for="destino">Endereço de Destino</label>
+<input type="text" id="destino" placeholder="Ex: Aeroporto de Congonhas - São Paulo">
+</div>
+<div class="form-group">
+<label for="valor-km">Valor por Km (R$)</label>
+<input type="number" id="valor-km" value="3.50" step="0.10">
+</div>
+<div class="form-group">
+<label for="bandeira">Bandeira / Adicional</label>
+<select id="bandeira">
+<option value="1">Bandeira 1 (Normal)</option>
+<option value="2">Bandeira 2 (+20%)</option>
+</select>
+</div>
+</div>
+<button class="btn" onclick="calcularRotaGoogle()">Calcular Corrida</button>
+​<div id="resultado-calculadora" style="margin-top: 15px; font-size: 0.95rem; display: none; background: #f8f9fa; padding: 15px; border-radius: 5px; border-left: 4px solid #27ae60;">
+<p><strong>Distância:</strong> <span id="res-distancia">-</span></p>
+<p><strong>Tempo Estimado:</strong> <span id="res-tempo">-</span></p>
+<p><strong>Valor Calculado:</strong> <span id="res-valor" style="color: #27ae60; font-weight: bold; font-size: 1.2rem;">-</span></p>
+</div>
+</div>
+​<!-- Demais seções do app -->
+<div class="card" id="painel">
+<h2>Painel Financeiro</h2>
+<p>Acompanhe suas corridas, despesas e relatórios financeiros aqui.</p>
+</div>
+</div>
+​<script>
+// Inicializar o Google Places Autocomplete nos inputs de endereço
+window.addEventListener('load', () => {
+const inputOrigem = document.getElementById('origem');
+const inputDestino = document.getElementById('destino');
+if (window.google && google.maps && google.maps.places) {
+new google.maps.places.Autocomplete(inputOrigem);
+new google.maps.places.Autocomplete(inputDestino);
+}
+});
+​// Função de cálculo de rota utilizando o Google Maps DirectionsService
+function calcularRotaGoogle() {
+const origem = document.getElementById('origem').value;
+const destino = document.getElementById('destino').value;
+const valorKm = parseFloat(document.getElementById('valor-km').value) || 0;
+const bandeira = parseInt(document.getElementById('bandeira').value) || 1;
+​if (!origem || !destino) {
+alert('Por favor, preencha a origem e o destino.');
+return;
+}
+​if (!window.google || !google.maps) {
+alert('A API do Google Maps não foi carregada corretamente. Verifique sua chave de API.');
+return;
+}
+​const directionsService = new google.maps.DirectionsService();
+​const request = {
+origin: origem,
+destination: destino,
+travelMode: google.maps.TravelMode.DRIVING
+};
+​directionsService.route(request, function(result, status) {
+if (status === 'OK') {
+const route = result.routes[0].legs[0];
+const distanciaMetros = route.distance.value; // em metros
+const distanciaKm = distanciaMetros / 1000;
+const tempoTexto = route.duration.text;
+​// Cálculo do valor base por km
+let valorTotal = distanciaKm * valorKm;
+​// Aplicação da bandeira (ex: Bandeira 2 acrescenta 20%)
+if (bandeira === 2) {
+valorTotal *= 1.20;
+}
+​// Exibir resultados na tela
+document.getElementById('res-distancia').innerText = ${distanciaKm.toFixed(2)} km;
+document.getElementById('res-tempo').innerText = tempoTexto;
+document.getElementById('res-valor').innerText = R$ ${valorTotal.toFixed(2)};
+document.getElementById('resultado-calculadora').style.display = 'block';
+​} else {
+alert('Não foi possível calcular a rota. Verifique os endereços informados. Erro: ' + status);
+}
+});
+}
+</script>
 </body>
 </html> 
