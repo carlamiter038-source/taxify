@@ -279,9 +279,9 @@
                 <label>Termos de Uso e Política de Privacidade</label>
                 <div class="termos-box">
                     <strong>Desenvolvedores Técnicos:</strong> Carla Miter e Clenilson Miter.<br>
-                    <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente local no dispositivo do usuário (localStorage).<br>
-                    <strong>2. Privacidade:</strong> Os criadores (Carla Miter e Clenilson Miter) não coletam, armazenam ou repassam dados financeiros ou pessoais para servidores externos.<br>
-                    <strong>3. Responsabilidade:</strong> O usuário é responsável por realizar backups regulares e manter a segurança de seu próprio dispositivo móvel.
+                    <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente segura e permanente no dispositivo do usuário.<br>
+                    <strong>2. Privacidade:</strong> Os criadores (Carla Miter e Clenilson Miter) não coletam ou armazenam dados financeiros em servidores externos.<br>
+                    <strong>3. Responsabilidade:</strong> O usuário mantém total autonomia e controle sobre seus registros de entradas e saídas.
                 </div>
             </div>
 
@@ -372,7 +372,7 @@
             <!-- Card de Termos e Autoria na Tela Principal -->
             <div class="card" style="border-top-color: #7f8c8d;">
                 <h2>⚖️ Informações & Termos do Sistema</h2>
-                <p style="font-size: 0.85rem; color: #555; margin-bottom: 8px;">Aplicativo desenvolvido por <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong> (Técnicos de Sistemas). Todos os registros financeiros, agenda e dados do motorista são mantidos em segurança no armazenamento local do seu navegador.</p>
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 8px;">Aplicativo desenvolvido por técnicos de sistema <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todos os registros financeiros, agenda e dados do motorista são mantidos permanentemente no armazenamento local do seu dispositivo.</p>
             </div>
         </div>
 
@@ -380,7 +380,7 @@
         <div id="secao-financas" class="app-section">
             <div class="card">
                 <h2>💸 Novo Lançamento Financeiro</h2>
-                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">As entradas e saídas cadastradas ficam salvas automaticamente e não se perdem ao fechar o app.</p>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 12px;">As entradas e saídas cadastradas ficam salvas permanentemente no sistema e não se perdem ao fechar o aplicativo.</p>
                 <form id="form-transacao">
                     <div class="form-group" style="margin-bottom: 10px;">
                         <label>Data</label>
@@ -415,12 +415,12 @@
                         <label>Valor (R$)</label>
                         <input type="number" step="0.01" id="trans-valor" placeholder="0.00" required>
                     </div>
-                    <button type="submit" class="btn btn-warning" style="width: 100%;">➕ Registrar Movimentação</button>
+                    <button type="submit" class="btn btn-warning" style="width: 100%;">➕ Registrar Movimentação Salva</button>
                 </form>
             </div>
 
             <div class="card">
-                <h2>📜 Histórico de Transações Salvas</h2>
+                <h2>📜 Histórico de Transações Salvas (Permanente)</h2>
                 <div style="overflow-x: auto;">
                     <table id="tabela-transacoes">
                         <thead>
@@ -470,7 +470,7 @@
 
                 <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
                     <small id="rel-data-emissao" style="color: #7f8c8d;"></small>
-                    <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período.</div>
+                    <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período com base nas movimentações salvas.</div>
                 </div>
             </div>
         </div>
@@ -649,7 +649,7 @@
     if ('serviceWorker' in navigator) {
         const swCode = `
             self.addEventListener('install', e => {
-                e.waitUntil(caches.open('taxify-v2').then(cache => cache.addAll(['./index.html'])));
+                e.waitUntil(caches.open('taxify-v3').then(cache => cache.addAll(['./index.html'])));
             });
             self.addEventListener('fetch', e => {
                 e.respondWith(caches.match(e.request).then(response => response || fetch(e.request)));
@@ -718,7 +718,7 @@
         document.getElementById('aceite-termos').checked = false;
     }
 
-    // --- PERSISTÊNCIA COMPLETA (LOCALSTORAGE) ---
+    // --- PERSISTÊNCIA COMPLETA E SEGURA DE FINANÇAS ---
     let transacoes = [];
     let clientesAgenda = [];
     let fotoVeiculoBase64 = "";
@@ -726,12 +726,20 @@
     function carregarDadosLocais() {
         const transSalvas = localStorage.getItem('taxify_transacoes');
         if (transSalvas) {
-            try { transacoes = JSON.parse(transSalvas); } catch(e) { transacoes = []; }
+            try {
+                transacoes = JSON.parse(transSalvas);
+            } catch(e) {
+                transacoes = [];
+            }
         }
 
         const agendaSalva = localStorage.getItem('taxify_agenda');
         if (agendaSalva) {
-            try { clientesAgenda = JSON.parse(agendaSalva); } catch(e) { clientesAgenda = []; }
+            try {
+                clientesAgenda = JSON.parse(agendaSalva);
+            } catch(e) {
+                clientesAgenda = [];
+            }
         }
     }
 
@@ -742,6 +750,9 @@
     function salvarAgendaLocal() {
         localStorage.setItem('taxify_agenda', JSON.stringify(clientesAgenda));
     }
+
+    // Carregamento automático imediato ao abrir a página em segundo plano
+    carregarDadosLocais();
 
     // --- RECONHECIMENTO DE VOZ ---
     function escutarVoz(callbackSucesso, btnElement, textoNormal) {
@@ -935,14 +946,19 @@
             return;
         }
 
+        // Adiciona e salva de forma permanente imediatamente
         transacoes.push({ id: Date.now(), data, tipo, categoria, desc, valor });
         salvarTransacoesLocal();
         atualizarPainelFinanceiro();
+       
         formTransacao.reset();
         document.getElementById('trans-data').valueAsDate = new Date();
     });
 
     function atualizarPainelFinanceiro() {
+        // Assegura que os dados mais recentes do armazenamento sejam lidos
+        carregarDadosLocais();
+
         let totalEntradas = 0;
         let totalSaidas = 0;
         let totalMetas = 0;
@@ -995,9 +1011,11 @@
     }
 
     function removerTransacao(id) {
-        transacoes = transacoes.filter(t => t.id !== id);
-        salvarTransacoesLocal();
-        atualizarPainelFinanceiro();
+        if (confirm('Deseja realmente excluir esta movimentação financeira?')) {
+            transacoes = transacoes.filter(t => t.id !== id);
+            salvarTransacoesLocal();
+            atualizarPainelFinanceiro();
+        }
     }
 
     function analisarComIA() {
@@ -1069,12 +1087,14 @@
 
     // --- RELATÓRIOS E RECIBOS EM PDF UNIVERSAL ---
     function gerarRelatorio() {
+        carregarDadosLocais();
         const periodo = document.getElementById('rel-periodo').value;
         document.getElementById('rel-data-emissao').innerText = `Emitido em: ${new Date().toLocaleString('pt-BR')}`;
         let entradas = 0, saidas = 0;
         transacoes.forEach(t => { if (t.tipo === 'Entrada') entradas += t.valor; else saidas += t.valor; });
         document.getElementById('rel-conteudo').innerHTML = `
             <p><strong>Filtro:</strong> ${periodo.toUpperCase()}</p>
+            <p><strong>Total de Registros Salvos:</strong> ${transacoes.length}</p>
             <p><strong>Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
             <p><strong>Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
             <p><strong>Saldo Líquido:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
@@ -1093,6 +1113,7 @@
     }
 
     function gerarPDFRelatorio(download = true) {
+        carregarDadosLocais();
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
         doc.setFontSize(16);
@@ -1113,14 +1134,9 @@
         const wsp = limparTelefone(document.getElementById('rel-wsp').value);
         if (!wsp) { alert('Informe o WhatsApp de destino.'); return; }
        
-        // Gera o PDF automaticamente e dispara o WhatsApp
         const doc = gerarPDFRelatorio(false);
-        const pdfBlob = doc.output('blob');
-       
-        const urlWsp = `https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Olá! Segue em anexo o relatório financeiro do Táxify gerado por Carla Miter & Clenilson Miter.")}`;
+        const urlWsp = `https://api.whatsapp.com/send?phone=${wsp}&text=${encodeURIComponent("Olá! Segue em anexo o relatório financeiro permanente do Táxify criado por Carla Miter & Clenilson Miter.")}`;
         window.open(urlWsp, '_blank');
-       
-        // Baixa o arquivo para facilitar o envio manual do arquivo PDF no chat
         doc.save("relatorio_financeiro_taxify.pdf");
     }
 
