@@ -237,17 +237,31 @@
             font-size: 0.9rem;
         }
 
-        .termos-box {
-            background: #fdfefe;
+        /* Estilo da gaveta de Termos Ocultos */
+        details.termos-ocultos {
+            background: #f8f9fa;
             border: 1px solid #dcdde1;
-            padding: 12px;
             border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 0.82rem;
+        }
+
+        details.termos-ocultos summary {
+            cursor: pointer;
+            font-weight: bold;
+            color: #2980b9;
+            outline: none;
+        }
+
+        .termos-conteudo-interno {
+            margin-top: 8px;
+            color: #555;
+            line-height: 1.4;
             max-height: 130px;
             overflow-y: auto;
-            font-size: 0.78rem;
-            color: #555;
-            margin-top: 10px;
-            line-height: 1.4;
+            border-top: 1px solid #eee;
+            padding-top: 8px;
         }
     </style>
 </head>
@@ -274,16 +288,16 @@
                 <input type="text" id="login-tel" required placeholder="Ex: (00) 00000-0000">
             </div>
 
-            <!-- Termos de Uso com os Criadores -->
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label>Termos de Uso e Política de Privacidade</label>
-                <div class="termos-box">
+            <!-- Termos de Uso Ocultos (Só abrem ao clicar) -->
+            <details class="termos-ocultos">
+                <summary>📜 Ler Termos de Uso e Política de Privacidade</summary>
+                <div class="termos-conteudo-interno">
                     <strong>Desenvolvedores Técnicos:</strong> Carla Miter e Clenilson Miter.<br>
                     <strong>1. Armazenamento Local:</strong> Todos os lançamentos financeiros, agenda de clientes, recibos e perfis cadastrados neste PWA são salvos de forma estritamente segura e permanente no dispositivo do usuário.<br>
                     <strong>2. Privacidade:</strong> Os criadores (Carla Miter e Clenilson Miter) não coletam ou armazenam dados financeiros em servidores externos.<br>
                     <strong>3. Responsabilidade:</strong> O usuário mantém total autonomia e controle sobre seus registros de entradas e saídas.
                 </div>
-            </div>
+            </details>
 
             <div style="display: flex; align-items: center; margin-bottom: 15px; font-size: 0.85rem;">
                 <input type="checkbox" id="aceite-termos" required style="width: auto; margin-right: 8px;">
@@ -369,10 +383,12 @@
                 </div>
             </div>
 
-            <!-- Card de Termos e Autoria na Tela Principal -->
+            <!-- Card de Termos e Autoria na Tela Principal (Também oculto em gaveta) -->
             <div class="card" style="border-top-color: #7f8c8d;">
-                <h2>⚖️ Informações & Termos do Sistema</h2>
-                <p style="font-size: 0.85rem; color: #555; margin-bottom: 8px;">Aplicativo desenvolvido por técnicos de sistema <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todos os registros financeiros, agenda e dados do motorista são mantidos permanentemente no armazenamento local do seu dispositivo.</p>
+                <details class="termos-ocultos" style="margin-bottom: 0; background: transparent; border: none; padding: 0;">
+                    <summary style="font-size: 1.1rem; border-bottom: 2px solid #ecf0f1; padding-bottom: 8px;">⚖️ Informações & Termos do Sistema (Clique para abrir)</summary>
+                    <p style="font-size: 0.85rem; color: #555; margin-top: 10px; line-height: 1.4;">Aplicativo desenvolvido por técnicos de sistema <strong>Carla Miter</strong> e <strong>Clenilson Miter</strong>. Todos os registros financeiros, agenda e dados do motorista são mantidos permanentemente no armazenamento local do seu dispositivo.</p>
+                </details>
             </div>
         </div>
 
