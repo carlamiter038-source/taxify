@@ -237,7 +237,6 @@
             font-size: 0.9rem;
         }
 
-        /* Estilo da gaveta de Termos Ocultos */
         details.termos-ocultos {
             background: #f8f9fa;
             border: 1px solid #dcdde1;
@@ -294,7 +293,6 @@
                 <div style="flex: 1;">
                     <label for="aceite-termos" style="margin-bottom: 0; font-weight: normal; cursor: pointer; display: inline;">Li e concordo com os Termos de Uso e Política de Privacidade.</label>
                    
-                    <!-- Termos Ocultos em Gaveta -->
                     <details class="termos-ocultos">
                         <summary>Ler Termos de Uso e Política de Privacidade</summary>
                         <div class="termos-conteudo-interno">
@@ -423,7 +421,7 @@
                     </div>
                     <div class="form-group" style="margin-bottom: 15px;">
                         <label>Valor (R$)</label>
-                        <input type="number" step="0.01" id="trans-valor" placeholder="0.00" required>
+                        <input type="text" id="trans-valor" placeholder="0,00" required>
                     </div>
                     <button type="submit" class="btn btn-warning" style="width: 100%;">➕ Registrar Movimentação Salva</button>
                 </form>
@@ -492,7 +490,7 @@
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Quilometragem (KM)</label>
-                        <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
+                        <input type="text" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
                     </div>
                     <div class="form-group">
                         <label>Comando por Voz</label>
@@ -505,7 +503,7 @@
                         </p>
                     </div>
                 </div>
-                <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
+                <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡ Enviar Valor para Emissão de Recibo</button>
             </div>
 
             <div class="card" id="area-recibo">
@@ -529,7 +527,7 @@
                     </div>
                     <div class="form-group">
                         <label>Valor da Corrida (R$)</label>
-                        <input type="number" step="0.01" id="corrida-valor" placeholder="0.00">
+                        <input type="text" id="corrida-valor" placeholder="0,00">
                     </div>
                     <div class="form-group">
                         <label>WhatsApp do Passageiro</label>
@@ -596,7 +594,7 @@
             </div>
         </div>
 
-        <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA (BOTTOM NAVIGATION) -->
+        <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA -->
         <nav class="bottom-nav">
             <button class="nav-item active" onclick="mudarSecao('inicio', this)">
                 <span class="nav-icon">🏠</span>
@@ -620,7 +618,20 @@
 </div>
 
 <script>
-    // --- GERENCIAMENTO DE ABAS (NAVIGATION TABS) ---
+    // --- FUNÇÃO AUXILIAR PARA PARSE DE VALORES COM VÍRGULA/PONTO ---
+    function parseMoeda(valorStr) {
+        if (!valorStr) return 0;
+        let limpo = String(valorStr).replace('R$', '').trim();
+        if (limpo.includes('.') && limpo.includes(',')) {
+            limpo = limpo.replace(/\./g, '').replace(',', '.');
+        } else {
+            limpo = limpo.replace(',', '.');
+        }
+        let num = parseFloat(limpo);
+        return isNaN(num) ? 0 : num;
+    }
+
+    // --- GERENCIAMENTO DE ABAS ---
     function mudarSecao(secaoId, elementoBtn) {
         document.querySelectorAll('.app-section').forEach(sec => {
             sec.classList.remove('ativo');
@@ -659,7 +670,7 @@
     if ('serviceWorker' in navigator) {
         const swCode = `
             self.addEventListener('install', e => {
-                e.waitUntil(caches.open('taxify-v3').then(cache => cache.addAll(['./index.html'])));
+                e.waitUntil(caches.open('taxify-v5').then(cache => cache.addAll(['./index.html'])));
             });
             self.addEventListener('fetch', e => {
                 e.respondWith(caches.match(e.request).then(response => response || fetch(e.request)));
@@ -736,20 +747,12 @@
     function carregarDadosLocais() {
         const transSalvas = localStorage.getItem('taxify_transacoes');
         if (transSalvas) {
-            try {
-                transacoes = JSON.parse(transSalvas);
-            } catch(e) {
-                transacoes = [];
-            }
+            try { transacoes = JSON.parse(transSalvas); } catch(e) { transacoes = []; }
         }
 
         const agendaSalva = localStorage.getItem('taxify_agenda');
         if (agendaSalva) {
-            try {
-                clientesAgenda = JSON.parse(agendaSalva);
-            } catch(e) {
-                clientesAgenda = [];
-            }
+            try { clientesAgenda = JSON.parse(agendaSalva); } catch(e) { clientesAgenda = []; }
         }
     }
 
@@ -804,7 +807,7 @@
     const TARIFA_POR_KM = 4.50;
 
     function calcularViagem() {
-        const kmInput = parseFloat(document.getElementById('calc-km').value);
+        const kmInput = parseMoeda(document.getElementById('calc-km').value);
         const resultadoSpan = document.getElementById('calc-resultado');
 
         if (!isNaN(kmInput) && kmInput > 0) {
@@ -820,11 +823,9 @@
     function vozInformarKm() {
         const btnVoz = document.getElementById('btn-voz-km');
         escutarVoz(texto => {
-            const textoTratado = texto.replace(',', '.');
-            const numeros = textoTratado.match(/\d+(\.\d+)?/);
-           
+            const numeros = texto.match(/\d+([.,]\d+)?/);
             if (numeros && numeros.length > 0) {
-                document.getElementById('calc-km').value = parseFloat(numeros[0]);
+                document.getElementById('calc-km').value = numeros[0];
                 calcularViagem();
                 alert(`Quilometragem capturada: ${numeros[0]} KM`);
             } else {
@@ -836,7 +837,7 @@
     function copiarValorParaRecibo() {
         const valorCalculado = calcularViagem();
         if (valorCalculado > 0) {
-            document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
+            document.getElementById('corrida-valor').value = valorCalculado.toFixed(2).replace('.', ',');
             alert(`R$ ${valorCalculado.toFixed(2)} inserido no recibo!`);
             mudarSecao('calculadora', document.querySelectorAll('.bottom-nav .nav-item')[2]);
             document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
@@ -948,7 +949,7 @@
         const tipo = document.getElementById('trans-tipo').value;
         const categoria = document.getElementById('trans-categoria').value;
         const desc = document.getElementById('trans-desc').value.trim();
-        const valor = parseFloat(document.getElementById('trans-valor').value);
+        const valor = parseMoeda(document.getElementById('trans-valor').value);
 
         if (!data || !desc || isNaN(valor) || valor <= 0) {
             alert('Preencha todos os campos do lançamento corretamente.');
@@ -993,17 +994,17 @@
                 <td style="color: ${t.tipo === 'Entrada' ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${t.tipo}</td>
                 <td>${t.categoria}</td>
                 <td>${t.desc}</td>
-                <td>R$ ${t.valor.toFixed(2)}</td>
+                <td>R$ ${t.valor.toFixed(2).replace('.', ',')}</td>
                 <td><button class="btn btn-danger" onclick="removerTransacao(${t.id})">X</button></td>
             `;
         });
 
         const lucroLiquido = totalEntradas - totalSaidas;
 
-        document.getElementById('dash-entradas').innerText = totalEntradas.toFixed(2);
-        document.getElementById('dash-saidas').innerText = totalSaidas.toFixed(2);
-        document.getElementById('dash-lucro').innerText = lucroLiquido.toFixed(2);
-        document.getElementById('dash-metas').innerText = totalMetas.toFixed(2);
+        document.getElementById('dash-entradas').innerText = totalEntradas.toFixed(2).replace('.', ',');
+        document.getElementById('dash-saidas').innerText = totalSaidas.toFixed(2).replace('.', ',');
+        document.getElementById('dash-lucro').innerText = lucroLiquido.toFixed(2).replace('.', ',');
+        document.getElementById('dash-metas').innerText = totalMetas.toFixed(2).replace('.', ',');
 
         if (meuGrafico) {
             const despesasVariaveis = totalSaidas - totalMetas - totalDividas;
@@ -1028,7 +1029,7 @@
     function analisarComIA() {
         const painel = document.getElementById('ai-painel');
         const conteudo = document.getElementById('ai-conteudo');
-        let lucro = parseFloat(document.getElementById('dash-lucro').innerText);
+        let lucro = parseMoeda(document.getElementById('dash-lucro').innerText);
 
         if (transacoes.length === 0) {
             alert('Insira lançamentos primeiro para gerar a análise.');
@@ -1038,13 +1039,13 @@
         let sugestao = lucro > 0 ? 'Margem positiva! Recomendamos destinar parte do lucro para a reserva de emergência.' : 'Atenção: Suas despesas superaram a receita.';
         conteudo.innerHTML = `
             <div class="ai-insight-item"><strong>Registros:</strong> ${transacoes.length} movimentações analisadas.</div>
-            <div class="ai-insight-item"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2)}</div>
+            <div class="ai-insight-item"><strong>Lucro Líquido:</strong> R$ ${lucro.toFixed(2).replace('.', ',')}</div>
             <div class="ai-insight-item"><strong>Recomendação:</strong> ${sugestao}</div>
         `;
         painel.style.display = 'block';
     }
 
-    // --- PERFIL DO TAXISTA (PERSISTENTE) ---
+    // --- PERFIL DO TAXISTA ---
     function carregarFotoVeiculo(event) {
         const reader = new FileReader();
         reader.onload = function() {
@@ -1092,7 +1093,7 @@
         }
     }
 
-    // --- RELATÓRIOS E RECIBOS EM PDF UNIVERSAL ---
+    // --- RELATÓRIOS E RECIBOS EM PDF ---
     function gerarRelatorio() {
         carregarDadosLocais();
         const periodo = document.getElementById('rel-periodo').value;
@@ -1102,9 +1103,9 @@
         document.getElementById('rel-conteudo').innerHTML = `
             <p><strong>Filtro:</strong> ${periodo.toUpperCase()}</p>
             <p><strong>Total de Registros Salvos:</strong> ${transacoes.length}</p>
-            <p><strong>Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
-            <p><strong>Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
-            <p><strong>Saldo Líquido:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
+            <p><strong>Entradas:</strong> R$ ${entradas.toFixed(2).replace('.', ',')}</p>
+            <p><strong>Saídas:</strong> R$ ${saidas.toFixed(2).replace('.', ',')}</p>
+            <p><strong>Saldo Líquido:</strong> R$ ${(entradas - saidas).toFixed(2).replace('.', ',')}</p>
         `;
     }
 
@@ -1130,7 +1131,7 @@
         let y = 40;
         transacoes.forEach(t => {
             if (y > 270) { doc.addPage(); y = 20; }
-            doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | ${t.desc} | R$ ${t.valor.toFixed(2)}`, 20, y);
+            doc.text(`${t.data} | ${t.tipo} | ${t.categoria} | ${t.desc} | R$ ${t.valor.toFixed(2).replace('.', ',')}`, 20, y);
             y += 8;
         });
         if (download) doc.save("relatorio_financeiro_taxify.pdf");
@@ -1172,7 +1173,7 @@
         const docMotorista = document.getElementById('rec-doc-motorista').value || "";
         const veiculo = document.getElementById('rec-veiculo').value || "";
         const cliente = document.getElementById('cliente-nome').value || "Passageiro";
-        const valor = document.getElementById('corrida-valor').value || "0.00";
+        const valor = parseMoeda(document.getElementById('corrida-valor').value);
         const obs = document.getElementById('corrida-obs').value || "Serviço de Transporte";
 
         if (fotoVeiculoBase64) {
@@ -1189,11 +1190,8 @@
         doc.text(`Motorista: ${motorista} (Doc: ${docMotorista})`, 20, 50);
         doc.text(`Veículo: ${veiculo}`, 20, 60);
         doc.text(`Passageiro: ${cliente}`, 20, 70);
-        doc.text(`Valor Recebido: R$ ${parseFloat(valor).toFixed(2)}`, 20, 80);
+        doc.text(`Valor Recebido: R$ ${valor.toFixed(2).replace('.', ',')}`, 20, 80);
         doc.text(`Trajeto / Observação: ${obs}`, 20, 90);
-       
-        doc.line(20, 110, 100, 110);
-        doc.text("Assinatura do Motorista", 35, 116);
 
         if (download) doc.save("recibo_corrida_taxify.pdf");
         return doc;
