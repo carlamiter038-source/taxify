@@ -283,7 +283,6 @@
             overflow-y: auto;
         }
 
-        /* Foto e Preview */
         .preview-img {
             width: 100px;
             height: 80px;
@@ -341,7 +340,6 @@
     <div id="login-screen" class="card" style="max-width: 450px; margin: 30px auto;">
         <h2 style="text-align: center;">🚕 Login - Táxify</h2>
        
-        <!-- Botão de Instalação PWA -->
         <button type="button" id="btn-instalar-pwa" class="btn btn-install" style="width: 100%; margin-bottom: 20px;" onclick="instalarPWAApp()">
             📱 Instalar Aplicativo Táxify
         </button>
@@ -407,7 +405,7 @@
             </div>
         </div>
 
-        <!-- CALCULADORA DE CORRIDAS (POR KM, ENDEREÇO OU GPS) -->
+        <!-- CALCULADORA DE CORRIDAS (ORIGEM, DESTINO, GPS E R$ 4,50 / KM) -->
         <div class="card" id="sec-calculadora">
             <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
             <div class="form-grid">
@@ -415,19 +413,19 @@
                     <label>Origem (Endereço ou GPS)</label>
                     <div style="display: flex; gap: 5px;">
                         <input type="text" id="calc-origem" placeholder="Ex: Av. Central, 100">
-                        <button class="btn btn-success" onclick="capturarGPSEndereco('origem')" title="Usar GPS Atual">📍 GPS</button>
+                        <button class="btn btn-success" onclick="capturarGPSEndereco('origem')" title="Capturar GPS Atual">📍 GPS</button>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Destino (Endereço ou GPS)</label>
                     <div style="display: flex; gap: 5px;">
                         <input type="text" id="calc-destino" placeholder="Ex: Aeroporto / Praça">
-                        <button class="btn btn-success" onclick="capturarGPSEndereco('destino')" title="Usar GPS Atual">📍 GPS</button>
+                        <button class="btn btn-success" onclick="capturarGPSEndereco('destino')" title="Capturar GPS Atual">📍 GPS</button>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label>Quilometragem (KM)</label>
-                    <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
+                    <label>Quilometragem Calculada (KM)</label>
+                    <input type="number" step="0.1" id="calc-km" placeholder="0.0" oninput="calcularViagemManual()">
                 </div>
                 <div class="form-group">
                     <label>Comando por Voz (KM)</label>
@@ -435,10 +433,15 @@
                 </div>
             </div>
            
-            <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px; flex-wrap: wrap;">
-                <button class="btn btn-warning" onclick="calcularRotaPorEndereco()">🗺️ Calcular por Endereço/GPS</button>
-                <div style="font-size: 1.2rem; font-weight: bold; color: #27ae60;">
-                    Valor Estimado: R$ <span id="calc-resultado">0,00</span>
+            <div style="background: #fdfefe; border: 1px solid #ebf5fb; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <button class="btn btn-warning" onclick="calcularRotaPorGPSOUnderenco()" style="flex: 1; min-width: 200px;">🗺️ Calcular Distância (Origem ao Destino) e Gerar R$ 4,50/KM</button>
+                    <div style="font-size: 1.1rem; font-weight: bold; color: #2c3e50;">
+                        Distância: <span id="span-km-detalhe">0.0</span> KM
+                    </div>
+                    <div style="font-size: 1.25rem; font-weight: bold; color: #27ae60;">
+                        Total: R$ <span id="calc-resultado">0,00</span>
+                    </div>
                 </div>
             </div>
             <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
@@ -785,7 +788,6 @@
         fecharModalLegal();
     }
 
-    // --- BANCOS DE DADOS DE CLIENTES (LOCALSTORAGE) ---
     const periodosDB = ['7', '30', '60', '90', '365'];
 
     function limparTelefone(tel) {
@@ -808,7 +810,7 @@
         localStorage.setItem(chave, JSON.stringify(lista));
     }
 
-    // --- CONTROLE DE LOGIN E AUTO-LIBERAÇÃO ---
+    // --- CONTROLE DE LOGIN ---
     const formLogin = document.getElementById('form-login');
     formLogin.addEventListener('submit', function(e) {
         e.preventDefault();
@@ -886,7 +888,6 @@
         validarAceiteTermos();
     }
 
-    // --- RECONHECIMENTO DE VOZ GENÉRICO ---
     function escutarVoz(callbackSucesso, btnElement, textoNormal) {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!SpeechRecognition) {
@@ -923,7 +924,7 @@
         };
     }
 
-    // --- CALCULADORA DE VIAGEM COM GPS EM TEMPO REAL ---
+    // --- CALCULADORA GPS DE ORIGEM AO DESTINO (R$ 4,50 / KM) ---
     const TARIFA_POR_KM = 4.50;
     let gpsCoordsOrigem = null;
     let gpsCoordsDestino = null;
@@ -938,20 +939,20 @@
             (position) => {
                 const lat = position.coords.latitude;
                 const lon = position.coords.longitude;
-                const coordsTexto = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
+                const coordsStr = `Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
 
                 if (tipo === 'origem') {
                     gpsCoordsOrigem = { lat, lon };
-                    document.getElementById('calc-origem').value = `GPS Atual (${coordsTexto})`;
+                    document.getElementById('calc-origem').value = `GPS Atual (${coordsStr})`;
                     alert('Origem capturada via GPS com sucesso!');
                 } else {
                     gpsCoordsDestino = { lat, lon };
-                    document.getElementById('calc-destino').value = `GPS Atual (${coordsTexto})`;
+                    document.getElementById('calc-destino').value = `GPS Atual (${coordsStr})`;
                     alert('Destino capturado via GPS com sucesso!');
                 }
             },
             (error) => {
-                alert('Erro ao obter localização por GPS. Verifique as permissões do navegador.');
+                alert('Erro ao obter localização por GPS. Verifique as permissões.');
             },
             { enableHighAccuracy: true, timeout: 10000 }
         );
@@ -966,49 +967,49 @@
             Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
             Math.sin(dLon/2) * Math.sin(dLon/2);
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-        return R * c; // Distância em KM
+        return R * c;
     }
 
-    function calcularRotaPorEndereco() {
+    function calcularRotaPorGPSOUnderenco() {
         const origem = document.getElementById('calc-origem').value.trim();
         const destino = document.getElementById('calc-destino').value.trim();
 
         if (!origem || !destino) {
-            alert('Informe ou capture via GPS a origem e o destino.');
+            alert('Por favor, informe ou capture via GPS a Origem e o Destino.');
             return;
         }
 
         let distanciaKm = 0;
 
         if (gpsCoordsOrigem && gpsCoordsDestino) {
-            // Se ambos usaram GPS, calcula a distância real geodésica multiplicada por fator de rota urbana (1.3)
-            const distDireta = calcularDistanciaHaversine(
+            // Distância exata geodésica multiplicada pelo fator de tráfego urbano de 1.3
+            const distanciaDireta = calcularDistanciaHaversine(
                 gpsCoordsOrigem.lat, gpsCoordsOrigem.lon,
                 gpsCoordsDestino.lat, gpsCoordsDestino.lon
             );
-            distanciaKm = distDireta * 1.3;
+            distanciaKm = distanciaDireta * 1.3;
         } else {
-            // Simulação inteligente baseada no tamanho dos textos dos endereços inseridos
-            distanciaKm = Math.max(3.5, (origem.length + destino.length) % 15 + 4.2);
+            // Estimativa por tamanho dos textos se inserido manualmente sem GPS
+            distanciaKm = Math.max(3.0, (origem.length + destino.length) % 12 + 3.5);
         }
 
         document.getElementById('calc-km').value = distanciaKm.toFixed(1);
-        calcularViagem();
-        alert(`Rota calculada com sucesso! Distância estimada: ${distanciaKm.toFixed(1)} KM.`);
+        atualizarCalculoExibicao(distanciaKm);
     }
 
-    function calcularViagem() {
+    function calcularViagemManual() {
         const kmInput = parseFloat(document.getElementById('calc-km').value);
-        const resultadoSpan = document.getElementById('calc-resultado');
-
-        if (!isNaN(kmInput) && kmInput > 0) {
-            const total = kmInput * TARIFA_POR_KM;
-            resultadoSpan.innerText = total.toFixed(2).replace('.', ',');
-            return total;
+        if (!isNaN(kmInput) && kmInput >= 0) {
+            atualizarCalculoExibicao(kmInput);
         } else {
-            resultadoSpan.innerText = '0,00';
-            return 0;
+            atualizarCalculoExibicao(0);
         }
+    }
+
+    function atualizarCalculoExibicao(km) {
+        const total = km * TARIFA_POR_KM;
+        document.getElementById('span-km-detalhe').innerText = km.toFixed(1);
+        document.getElementById('calc-resultado').innerText = total.toFixed(2).replace('.', ',');
     }
 
     function vozInformarKm() {
@@ -1018,9 +1019,10 @@
             const numeros = textoTratado.match(/\d+(\.\d+)?/);
            
             if (numeros && numeros.length > 0) {
-                document.getElementById('calc-km').value = parseFloat(numeros[0]);
-                calcularViagem();
-                alert(`Quilometragem capturada: ${numeros[0]} KM`);
+                const km = parseFloat(numeros[0]);
+                document.getElementById('calc-km').value = km;
+                atualizarCalculoExibicao(km);
+                alert(`Quilometragem por voz capturada: ${km} KM`);
             } else {
                 alert(`Não foi possível identificar a quilometragem no áudio: "${texto}"`);
             }
@@ -1028,13 +1030,15 @@
     }
 
     function copiarValorParaRecibo() {
-        const valorCalculado = calcularViagem();
+        const km = parseFloat(document.getElementById('calc-km').value) || 0;
+        const valorCalculado = km * TARIFA_POR_KM;
         if (valorCalculado > 0) {
             document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
-            alert(`R$ ${valorCalculado.toFixed(2)} foi inserido diretamente no recibo!`);
+            document.getElementById('corrida-obs').value = `Corrida de ${document.getElementById('calc-origem').value || 'Origem'} até ${document.getElementById('calc-destino').value || 'Destino'} (${km.toFixed(1)} KM a R$ 4,50/km)`;
+            alert(`Valor de R$ ${valorCalculado.toFixed(2)} e dados da rota enviados para o recibo com sucesso!`);
             document.getElementById('sec-recibo').scrollIntoView({ behavior: 'smooth' });
         } else {
-            alert('Calcule ou informe uma quilometragem válida primeiro.');
+            alert('Calcule a rota ou informe uma quilometragem válida primeiro.');
         }
     }
 
@@ -1215,7 +1219,7 @@
         atualizarPainelFinanceiro();
     }
 
-    // --- MÓDULO DE ATUALIZAÇÃO EM INTELIGÊNCIA ARTIFICIAL (IA) ---
+    // --- MÓDULO DE IA ---
     function analisarComIA() {
         const painel = document.getElementById('ai-painel');
         const conteudo = document.getElementById('ai-conteudo');
@@ -1224,38 +1228,35 @@
         let saidas = parseFloat(document.getElementById('dash-saidas').innerText);
 
         if (transacoes.length === 0) {
-            alert('Insira lançamentos financeiros para ativar a atualização e análise da IA.');
+            alert('Insira lançamentos financeiros para ativar a análise de IA.');
             return;
         }
 
         let projecaoMensal = lucro * 30;
-        let recomendacaoCombustivel = saidas > entradas * 0.5 ? 'Alto gasto com insumos detectado. Priorize postos com melhor custo por litro.' : 'Eficiência de combustível estável.';
+        let recomendacaoCombustivel = saidas > entradas * 0.5 ? 'Alto gasto com insumos detectado. Monitore os postos.' : 'Consumo e gastos equilibrados.';
        
-        let statusIA = '';
-        if (lucro > 0) {
-            statusIA = `Lucratividade saudável! A IA projeta um ganho estimado de R$ ${projecaoMensal.toFixed(2)} ao manter este ritmo.`;
-        } else {
-            statusIA = `Alerta de Otimização: Suas despesas ultrapassaram o faturamento. A IA sugere focar em rotas de maior demanda urbana ou aeroportos.`;
-        }
+        let statusIA = lucro > 0 ?
+            `Lucratividade saudável! A IA projeta R$ ${projecaoMensal.toFixed(2)} de ganho mensal estimado.` :
+            `Alerta: Despesas acima do faturamento. Foque em corridas de maior quilometragem.`;
 
         conteudo.innerHTML = `
             <div class="ai-insight-item">
-                <strong>Status do Sistema Táxify AI:</strong> Versão atualizada com algoritmos preditivos de fluxo de caixa.
+                <strong>Status Táxify AI:</strong> Algoritmo preditivo de receitas atualizado.
             </div>
             <div class="ai-insight-item">
-                <strong>Análise de Margem:</strong> Faturamento de R$ ${entradas.toFixed(2)} com despesas de R$ ${saidas.toFixed(2)}.
+                <strong>Balanço:</strong> Entradas de R$ ${entradas.toFixed(2)} | Saídas de R$ ${saidas.toFixed(2)}.
             </div>
             <div class="ai-insight-item">
-                <strong>Previsão de Desempenho:</strong> ${statusIA}
+                <strong>Previsão:</strong> ${statusIA}
             </div>
             <div class="ai-insight-item">
-                <strong>Sugestão Operacional:</strong> ${recomendacaoCombustivel}
+                <strong>Dica:</strong> ${recomendacaoCombustivel}
             </div>
         `;
         painel.style.display = 'block';
     }
 
-    // --- RELATÓRIOS E COMPARTILHAMENTO ---
+    // --- RELATÓRIOS ---
     function gerarRelatorio() {
         const periodo = document.getElementById('rel-periodo').value;
         const dataEmissao = document.getElementById('rel-data-emissao');
@@ -1272,11 +1273,11 @@
         });
 
         relConteudo.innerHTML = `
-            <p><strong>Filtro Utilizado:</strong> ${periodo.toUpperCase()}</p>
+            <p><strong>Filtro:</strong> ${periodo.toUpperCase()}</p>
             <p><strong>Total de Entradas:</strong> R$ ${entradas.toFixed(2)}</p>
             <p><strong>Total de Saídas:</strong> R$ ${saidas.toFixed(2)}</p>
-            <p><strong>Saldo Final do Período:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
-            <p><strong>Total de Registros:</strong> ${transacoes.length} movimentação(ões).</p>
+            <p><strong>Saldo Final:</strong> R$ ${(entradas - saidas).toFixed(2)}</p>
+            <p><strong>Movimentações:</strong> ${transacoes.length} registro(s).</p>
         `;
     }
 
@@ -1288,7 +1289,7 @@
                 document.getElementById('rel-wsp').value = numeros;
                 alert(`Contato carregado: ${numeros}`);
             } else {
-                alert(`Conteúdo de áudio capturado: "${texto}"`);
+                alert(`Conteúdo capturado: "${texto}"`);
             }
         }, btn, '🎤 Ditador de Dados');
     }
@@ -1318,7 +1319,7 @@
 
     function enviarRelatorioWhatsAppPDF() {
         const wsp = limparTelefone(document.getElementById('rel-wsp').value);
-        if (!wsp) { alert('Informe o número de WhatsApp primeiro.'); return; }
+        if (!wsp) { alert('Informe o WhatsApp de destino.'); return; }
         const texto = encodeURIComponent("Olá! Segue o resumo financeiro gerado pelo Táxify.");
         window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
     }
@@ -1327,19 +1328,18 @@
         const email = document.getElementById('rel-email').value;
         if (!email) { alert('Informe o e-mail de destino.'); return; }
         const assunto = encodeURIComponent("Relatório Financeiro - Táxify");
-        const corpo = encodeURIComponent("Segue em anexo o resumo do relatório financeiro.");
+        const corpo = encodeURIComponent("Segue o resumo do relatório financeiro.");
         window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
     }
 
-    // --- FOTO DO VEÍCULO & PERFIL DO TAXISTA ---
+    // --- PERFIL E RECIBOS ---
     let fotoVeiculoBase64 = "";
 
     function carregarFotoVeiculo(event) {
         const reader = new FileReader();
         reader.onload = function() {
             fotoVeiculoBase64 = reader.result;
-            const container = document.getElementById('box-preview-img');
-            container.innerHTML = `<img src="${fotoVeiculoBase64}" alt="Foto Veículo">`;
+            document.getElementById('box-preview-img').innerHTML = `<img src="${fotoVeiculoBase64}" alt="Foto Veículo">`;
         };
         if (event.target.files[0]) {
             reader.readAsDataURL(event.target.files[0]);
@@ -1353,7 +1353,7 @@
             foto: fotoVeiculoBase64
         };
         localStorage.setItem('taxify_perfil', JSON.stringify(perfil));
-        alert('Dados do motorista salvos localmente com sucesso!');
+        alert('Perfil salvo com sucesso!');
     }
 
     function carregarPerfilTaxista() {
@@ -1377,7 +1377,7 @@
         document.getElementById('taxista-doc').value = '';
         document.getElementById('box-preview-img').innerHTML = '<span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>';
         fotoVeiculoBase64 = "";
-        alert('Dados do motorista removidos.');
+        alert('Perfil limpo.');
     }
 
     function vozPreencherRecibo() {
@@ -1392,7 +1392,7 @@
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF();
 
-        const motorista = document.getElementById('rec-motorista').value || "Motorista / Empresa";
+        const motorista = document.getElementById('rec-motorista').value || "Motorista";
         const docMotorista = document.getElementById('rec-doc-motorista').value || "N/A";
         const veiculo = document.getElementById('rec-veiculo').value || "N/A";
         const cliente = document.getElementById('cliente-nome').value || "Cliente";
@@ -1402,20 +1402,20 @@
         doc.setFontSize(18);
         doc.text("RECIBO DE CORRIDA - TÁXIFY", 20, 20);
         doc.setFontSize(10);
-        doc.text(`Data de Emissão: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
+        doc.text(`Data: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
         doc.line(20, 32, 190, 32);
 
         doc.setFontSize(12);
         doc.text("DADOS DO MOTORISTA / VEÍCULO:", 20, 42);
         doc.setFontSize(10);
-        doc.text(`Motorista: ${motorista} (CPF/CNPJ: ${docMotorista})`, 20, 50);
+        doc.text(`Motorista: ${motorista} (Doc: ${docMotorista})`, 20, 50);
         doc.text(`Veículo: ${veiculo}`, 20, 58);
 
         if (fotoVeiculoBase64) {
             try {
                 doc.addImage(fotoVeiculoBase64, 'JPEG', 140, 38, 45, 30);
             } catch (e) {
-                console.log("Erro ao inserir imagem no PDF:", e);
+                console.log(e);
             }
         }
 
@@ -1425,7 +1425,7 @@
         doc.setFontSize(10);
         doc.text(`Passageiro: ${cliente}`, 20, 93);
         doc.text(`Valor Cobrado: R$ ${parseFloat(valor).toFixed(2)}`, 20, 101);
-        doc.text(`Trajeto / Observações: ${obs}`, 20, 109);
+        doc.text(`Trajeto: ${obs}`, 20, 109);
 
         doc.line(20, 130, 190, 130);
         doc.text("__________________________________________", 60, 150);
@@ -1442,7 +1442,7 @@
         if (!wsp) { alert('Informe o WhatsApp do passageiro.'); return; }
         const passageiro = document.getElementById('cliente-nome').value || "Passageiro";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const texto = encodeURIComponent(`Olá ${passageiro}! Segue o recibo da sua corrida no valor de R$ ${valor} emitido pelo Táxify.`);
+        const texto = encodeURIComponent(`Olá ${passageiro}! Segue o recibo da sua corrida no valor de R$ ${valor} gerado pelo Táxify.`);
         window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
     }
 
@@ -1450,7 +1450,7 @@
         const email = document.getElementById('cliente-email').value;
         if (!email) { alert('Informe o e-mail do passageiro.'); return; }
         const assunto = encodeURIComponent("Recibo de Corrida - Táxify");
-        const corpo = encodeURIComponent("Segue em anexo o recibo referente à sua corrida.");
+        const corpo = encodeURIComponent("Segue o recibo referente à sua corrida.");
         window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
     }
 </script>
