@@ -29,6 +29,7 @@
             background-color: #f4f6f9;
             color: #333;
             padding: 15px;
+            padding-bottom: 85px; /* Espaço para não cobrir o conteúdo na parte inferior */
         }
 
         header {
@@ -71,6 +72,56 @@
             margin-bottom: 15px;
             border-bottom: 2px solid #ecf0f1;
             padding-bottom: 8px;
+        }
+
+        /* Sistema de Abas / Seções para a Navegação Inferior */
+        .app-section {
+            display: none;
+        }
+
+        .app-section.ativo {
+            display: block;
+        }
+
+        /* Barra de Navegação Inferior */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 70px;
+            background-color: #2c3e50;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.15);
+            z-index: 1000;
+            border-top: 3px solid #f1c40f;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #bdc3c7;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+        }
+
+        .nav-item span.nav-icon {
+            font-size: 1.4rem;
+            margin-bottom: 3px;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #f1c40f;
+            background-color: rgba(255, 255, 255, 0.05);
         }
 
         /* Formulários e Inputs */
@@ -302,59 +353,76 @@
             <button class="btn btn-danger" style="margin-top: 10px; padding: 5px 10px; font-size: 0.8rem;" onclick="sairDoApp()">Sair / Trocar Conta</button>
         </header>
 
-        <!-- PERFIL DO TAXISTA & VEÍCULO -->
-        <div class="card">
-            <h2>👤 Perfil do Taxista & Veículo</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Nome do Motorista</label>
-                    <input type="text" id="taxista-nome" placeholder="Ex: João da Silva">
-                </div>
-                <div class="form-group">
-                    <label>CPF/CNPJ / Alvará</label>
-                    <input type="text" id="taxista-doc" placeholder="Ex: 000.000.000-00">
-                </div>
-                <div class="form-group">
-                    <label>Foto do Veículo (para Recibos)</label>
-                    <input type="file" id="taxista-foto" accept="image/*" onchange="carregarFotoVeiculo(event)">
-                </div>
-                <div class="form-group">
-                    <label>Preview</label>
-                    <div class="preview-img" id="box-preview-img">
-                        <span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>
+        <!-- ABA 1: INÍCIO / RESUMO & PERFIL -->
+        <div id="secao-inicio" class="app-section ativo">
+            <!-- PERFIL DO TAXISTA & VEÍCULO -->
+            <div class="card">
+                <h2>👤 Perfil do Taxista & Veículo</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nome do Motorista</label>
+                        <input type="text" id="taxista-nome" placeholder="Ex: João da Silva">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF/CNPJ / Alvará</label>
+                        <input type="text" id="taxista-doc" placeholder="Ex: 000.000.000-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Foto do Veículo (para Recibos)</label>
+                        <input type="file" id="taxista-foto" accept="image/*" onchange="carregarFotoVeiculo(event)">
+                    </div>
+                    <div class="form-group">
+                        <label>Preview</label>
+                        <div class="preview-img" id="box-preview-img">
+                            <span style="font-size:0.75em; color:#666; text-align:center;">Sem Foto</span>
+                        </div>
                     </div>
                 </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="salvarPerfilTaxista()">💾 Salvar Perfil</button>
+                    <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Limpar Perfil</button>
+                </div>
             </div>
-            <div style="display: flex; gap: 10px;">
-                <button class="btn" onclick="salvarPerfilTaxista()">💾 Salvar Perfil</button>
-                <button class="btn btn-danger" onclick="limparPerfilTaxista()">🗑 Limpar Perfil</button>
+
+            <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
+            <div class="card">
+                <h2>📊 Resumo Financeiro & Indicadores</h2>
+                <div class="dash-summary">
+                    <div class="dash-box">
+                        <h3>TOTAL ENTRADAS</h3>
+                        <p class="val-entrada">R$ <span id="dash-entradas">0,00</span></p>
+                    </div>
+                    <div class="dash-box">
+                        <h3>TOTAL SAÍDAS</h3>
+                        <p class="val-saida">R$ <span id="dash-saidas">0,00</span></p>
+                    </div>
+                    <div class="dash-box">
+                        <h3>LUCRO LÍQUIDO</h3>
+                        <p class="val-lucro">R$ <span id="dash-lucro">0,00</span></p>
+                    </div>
+                    <div class="dash-box">
+                        <h3>RESERVAS / METAS</h3>
+                        <p style="color: #8e44ad;">R$ <span id="dash-metas">0,00</span></p>
+                    </div>
+                </div>
+
+                <div style="max-width: 350px; margin: 0 auto 20px auto;">
+                    <canvas id="meuGrafico"></canvas>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn btn-warning" onclick="analisarComIA()">🤖 Gerar Diagnóstico com Inteligência Artificial</button>
+                </div>
+
+                <div id="ai-painel" style="display: none; margin-top: 15px;">
+                    <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
+                    <div id="ai-conteudo"></div>
+                </div>
             </div>
         </div>
 
-        <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
-        <div class="card">
-            <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Quilometragem (KM)</label>
-                    <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
-                </div>
-                <div class="form-group">
-                    <label>Comando por Voz</label>
-                    <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância (KM)</button>
-                </div>
-                <div class="form-group">
-                    <label>Valor Estimado</label>
-                    <p style="font-size: 1.4rem; font-weight: bold; color: #27ae60; padding-top: 5px;">
-                        R$ <span id="calc-resultado">0,00</span>
-                    </p>
-                </div>
-            </div>
-            <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
-        </div>
-
-        <div class="grid-2col">
-            <!-- LANÇAMENTO FINANCEIRO -->
+        <!-- ABA 2: FINANÇAS E RELATÓRIOS -->
+        <div id="secao-financas" class="app-section">
             <div class="card">
                 <h2>💸 Novo Lançamento Financeiro</h2>
                 <form id="form-transacao">
@@ -395,7 +463,137 @@
                 </form>
             </div>
 
-            <!-- AGENDA DE CLIENTES -->
+            <!-- TABELA DE EXIBIÇÃO DAS TRANSAÇÕES -->
+            <div class="card">
+                <h2>📜 Histórico de Transações</h2>
+                <div style="overflow-x: auto;">
+                    <table id="tabela-transacoes">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Categoria</th>
+                                <th>Descrição</th>
+                                <th>Valor</th>
+                                <th>Ação</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
+            <div class="card">
+                <h2>📈 Relatórios Financeiros & Exportação</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Filtrar Período</label>
+                        <select id="rel-periodo">
+                            <option value="hoje">Hoje</option>
+                            <option value="semana">Esta Semana</option>
+                            <option value="mes">Este Mês</option>
+                            <option value="todos">Todo o Histórico</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp de Destino</label>
+                        <input type="text" id="rel-wsp" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail de Destino</label>
+                        <input type="email" id="rel-email" placeholder="cliente@email.com">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
+                    <button class="btn" onclick="gerarRelatorio()">🔍 Visualizar Resumo</button>
+                    <button class="btn btn-voz" id="btn-voz-rel" onclick="vozPreencherRelatorio()">🎤 Ditador de Dados</button>
+                    <button class="btn" onclick="gerarPDFRelatorio(true)">📄 Baixar Relatório PDF</button>
+                    <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar WhatsApp</button>
+                    <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar E-mail</button>
+                </div>
+
+                <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
+                    <small id="rel-data-emissao" style="color: #7f8c8d;"></small>
+                    <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 3: CALCULADORA & RECIBOS -->
+        <div id="secao-calculadora" class="app-section">
+            <!-- CALCULADORA DE CORRIDAS (KM x R$ 4,50) -->
+            <div class="card">
+                <h2>🧮 Calculadora Rápida de Corrida (R$ 4,50 / KM)</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Quilometragem (KM)</label>
+                        <input type="number" step="0.1" id="calc-km" placeholder="Ex: 12.5" oninput="calcularViagem()">
+                    </div>
+                    <div class="form-group">
+                        <label>Comando por Voz</label>
+                        <button class="btn btn-voz" id="btn-voz-km" onclick="vozInformarKm()">🎤 Falar Distância (KM)</button>
+                    </div>
+                    <div class="form-group">
+                        <label>Valor Estimado</label>
+                        <p style="font-size: 1.4rem; font-weight: bold; color: #27ae60; padding-top: 5px;">
+                            R$ <span id="calc-resultado">0,00</span>
+                        </p>
+                    </div>
+                </div>
+                <button class="btn btn-warning" onclick="copiarValorParaRecibo()">➡️ Enviar Valor para Emissão de Recibo</button>
+            </div>
+
+            <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
+            <div class="card" id="area-recibo">
+                <h2>🧾 Emissão de Recibo de Corrida</h2>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nome do Motorista ou Empresa</label>
+                        <input type="text" id="rec-motorista" placeholder="Ex: João da Silva / Táxi VIP Ltda">
+                    </div>
+                    <div class="form-group">
+                        <label>CPF ou CNPJ</label>
+                        <input type="text" id="rec-doc-motorista" placeholder="Ex: 00.000.000/0001-00">
+                    </div>
+                    <div class="form-group">
+                        <label>Veículo (Modelo e Placa)</label>
+                        <input type="text" id="rec-veiculo" placeholder="Ex: Chevrolet Spin - ABC-1234">
+                    </div>
+                    <div class="form-group">
+                        <label>Nome do Passageiro</label>
+                        <input type="text" id="cliente-nome" placeholder="Ex: Maria Oliveira">
+                    </div>
+                    <div class="form-group">
+                        <label>Valor da Corrida (R$)</label>
+                        <input type="number" step="0.01" id="corrida-valor" placeholder="0.00">
+                    </div>
+                    <div class="form-group">
+                        <label>WhatsApp do Passageiro</label>
+                        <input type="text" id="cliente-wsp" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label>E-mail do Passageiro</label>
+                        <input type="email" id="cliente-email" placeholder="passageiro@email.com">
+                    </div>
+                </div>
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label>Trajeto / Observações</label>
+                    <textarea id="corrida-obs" rows="2" placeholder="Ex: Corrida do Aeroporto ao Centro"></textarea>
+                </div>
+
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-voz" id="btn-voz-recibo" onclick="vozPreencherRecibo()">🎤 Ditar Trajeto por Voz</button>
+                    <button class="btn btn-warning" onclick="gerarPDFRecibo(true)">📄 Baixar Recibo PDF</button>
+                    <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar por WhatsApp</button>
+                    <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar por E-mail</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ABA 4: AGENDA DE CLIENTES -->
+        <div id="secao-agenda" class="app-section">
             <div class="card">
                 <h2>📇 Agenda de Clientes VIP</h2>
                 <form id="form-agenda">
@@ -421,7 +619,7 @@
                     </div>
                 </div>
 
-                <div style="max-height: 180px; overflow-y: auto;">
+                <div style="max-height: 280px; overflow-y: auto;">
                     <table id="tabela-agenda">
                         <thead>
                             <tr>
@@ -436,149 +634,52 @@
             </div>
         </div>
 
-        <!-- DASHBOARD FINANCEIRO & GRÁFICO -->
-        <div class="card">
-            <h2>📊 Resumo Financeiro & Indicadores</h2>
-            <div class="dash-summary">
-                <div class="dash-box">
-                    <h3>TOTAL ENTRADAS</h3>
-                    <p class="val-entrada">R$ <span id="dash-entradas">0,00</span></p>
-                </div>
-                <div class="dash-box">
-                    <h3>TOTAL SAÍDAS</h3>
-                    <p class="val-saida">R$ <span id="dash-saidas">0,00</span></p>
-                </div>
-                <div class="dash-box">
-                    <h3>LUCRO LÍQUIDO</h3>
-                    <p class="val-lucro">R$ <span id="dash-lucro">0,00</span></p>
-                </div>
-                <div class="dash-box">
-                    <h3>RESERVAS / METAS</h3>
-                    <p style="color: #8e44ad;">R$ <span id="dash-metas">0,00</span></p>
-                </div>
-            </div>
-
-            <div style="max-width: 350px; margin: 0 auto 20px auto;">
-                <canvas id="meuGrafico"></canvas>
-            </div>
-
-            <div style="text-align: center;">
-                <button class="btn btn-warning" onclick="analisarComIA()">🤖 Gerar Diagnóstico com Inteligência Artificial</button>
-            </div>
-
-            <div id="ai-painel" style="display: none; margin-top: 15px;">
-                <h3 style="font-size: 1rem; color: #2980b9;">Diagnóstico de Saúde Financeira (IA):</h3>
-                <div id="ai-conteudo"></div>
-            </div>
-        </div>
-
-        <!-- TABELA DE EXIBIÇÃO DAS TRANSAÇÕES -->
-        <div class="card">
-            <h2>📜 Histórico de Transações</h2>
-            <div style="overflow-x: auto;">
-                <table id="tabela-transacoes">
-                    <thead>
-                        <tr>
-                            <th>Data</th>
-                            <th>Tipo</th>
-                            <th>Categoria</th>
-                            <th>Descrição</th>
-                            <th>Valor</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- GERADOR DE RELATÓRIOS & COMPARTILHAMENTO -->
-        <div class="card">
-            <h2>📈 Relatórios Financeiros & Exportação</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Filtrar Período</label>
-                    <select id="rel-periodo">
-                        <option value="hoje">Hoje</option>
-                        <option value="semana">Esta Semana</option>
-                        <option value="mes">Este Mês</option>
-                        <option value="todos">Todo o Histórico</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp de Destino</label>
-                    <input type="text" id="rel-wsp" placeholder="(00) 00000-0000">
-                </div>
-                <div class="form-group">
-                    <label>E-mail de Destino</label>
-                    <input type="email" id="rel-email" placeholder="cliente@email.com">
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px;">
-                <button class="btn" onclick="gerarRelatorio()">🔍 Visualizar Resumo</button>
-                <button class="btn btn-voz" id="btn-voz-rel" onclick="vozPreencherRelatorio()">🎤 Ditador de Dados</button>
-                <button class="btn" onclick="gerarPDFRelatorio(true)">📄 Baixar Relatório PDF</button>
-                <button class="btn btn-wsp" onclick="enviarRelatorioWhatsAppPDF()">📱 Enviar WhatsApp</button>
-                <button class="btn" style="background:#8e44ad;" onclick="enviarRelatorioEmailPDF()">✉ Enviar E-mail</button>
-            </div>
-
-            <div id="box-relatorio-pre" style="background:#f9f9f9; padding: 15px; border-radius: 5px; border: 1px solid #ddd;">
-                <small id="rel-data-emissao" style="color: #7f8c8d;"></small>
-                <div id="rel-conteudo" style="margin-top: 10px;">Clique em "Visualizar Resumo" para compilar o relatório do período.</div>
-            </div>
-        </div>
-
-        <!-- EMISSÃO DE RECIBOS AO PASSAGEIRO -->
-        <div class="card" id="area-recibo">
-            <h2>🧾 Emissão de Recibo de Corrida</h2>
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Nome do Motorista ou Empresa</label>
-                    <input type="text" id="rec-motorista" placeholder="Ex: João da Silva / Táxi VIP Ltda">
-                </div>
-                <div class="form-group">
-                    <label>CPF ou CNPJ</label>
-                    <input type="text" id="rec-doc-motorista" placeholder="Ex: 00.000.000/0001-00">
-                </div>
-                <div class="form-group">
-                    <label>Veículo (Modelo e Placa)</label>
-                    <input type="text" id="rec-veiculo" placeholder="Ex: Chevrolet Spin - ABC-1234">
-                </div>
-                <div class="form-group">
-                    <label>Nome do Passageiro</label>
-                    <input type="text" id="cliente-nome" placeholder="Ex: Maria Oliveira">
-                </div>
-                <div class="form-group">
-                    <label>Valor da Corrida (R$)</label>
-                    <input type="number" step="0.01" id="corrida-valor" placeholder="0.00">
-                </div>
-                <div class="form-group">
-                    <label>WhatsApp do Passageiro</label>
-                    <input type="text" id="cliente-wsp" placeholder="(00) 00000-0000">
-                </div>
-                <div class="form-group">
-                    <label>E-mail do Passageiro</label>
-                    <input type="email" id="cliente-email" placeholder="passageiro@email.com">
-                </div>
-            </div>
-            <div class="form-group" style="margin-bottom: 15px;">
-                <label>Trajeto / Observações</label>
-                <textarea id="corrida-obs" rows="2" placeholder="Ex: Corrida do Aeroporto ao Centro"></textarea>
-            </div>
-
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="btn btn-voz" id="btn-voz-recibo" onclick="vozPreencherRecibo()">🎤 Ditar Trajeto por Voz</button>
-                <button class="btn btn-warning" onclick="gerarPDFRecibo(true)">📄 Baixar Recibo PDF</button>
-                <button class="btn btn-wsp" onclick="enviarReciboWspPDF()">📱 Enviar por WhatsApp</button>
-                <button class="btn" style="background:#8e44ad;" onclick="enviarReciboEmailPDF()">✉️ Enviar por E-mail</button>
-            </div>
-        </div>
+        <!-- BARRA DE NAVEGAÇÃO INFERIOR FIXA -->
+        <nav class="bottom-nav">
+            <button class="nav-item active" onclick="mudarSecao('inicio', this)">
+                <span class="nav-icon">🏠</span>
+                <span>Início</span>
+            </button>
+            <button class="nav-item" onclick="mudarSecao('financas', this)">
+                <span class="nav-icon">💸</span>
+                <span>Finanças</span>
+            </button>
+            <button class="nav-item" onclick="mudarSecao('calculadora', this)">
+                <span class="nav-icon">🧾</span>
+                <span>Recibos</span>
+            </button>
+            <button class="nav-item" onclick="mudarSecao('agenda', this)">
+                <span class="nav-icon">📇</span>
+                <span>Agenda</span>
+            </button>
+        </nav>
 
     </div>
 </div>
 
 <script>
+    // --- GERENCIAMENTO DE ABAS DA NAVEGAÇÃO INFERIOR ---
+    function mudarSecao(secaoId, elementoBtn) {
+        // Oculta todas as seções
+        document.querySelectorAll('.app-section').forEach(sec => {
+            sec.classList.remove('ativo');
+        });
+
+        // Exibe a seção selecionada
+        document.getElementById('secao-' + secaoId).classList.add('ativo');
+
+        // Atualiza os estilos dos botões da barra inferior
+        document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        if (elementoBtn) {
+            elementoBtn.classList.add('active');
+        }
+
+        // Rola a página para o topo ao trocar de aba
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     // --- GERAÇÃO AUTOMÁTICA DE MANIFESTO PWA EM BASE64 ---
     const manifestoPWA = {
         name: "Táxify - Gestão para Taxistas",
@@ -744,6 +845,7 @@
         if (valorCalculado > 0) {
             document.getElementById('corrida-valor').value = valorCalculado.toFixed(2);
             alert(`R$ ${valorCalculado.toFixed(2)} foi inserido diretamente no recibo!`);
+            // Alterna automaticamente para a aba de recibos/calculadora se necessário ou rola até lá
             document.getElementById('area-recibo').scrollIntoView({ behavior: 'smooth' });
         } else {
             alert('Digite ou fale uma distância válida primeiro.');
