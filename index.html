@@ -353,7 +353,7 @@
 
         <form id="form-login">
             <div class="form-group" style="margin-bottom: 12px;">
-                <label for="login-nome">Seu Nome</label>
+                <label for="login-nome">Seu Nome (para Auto-liberação)</label>
                 <input type="text" id="login-nome" required placeholder="Digite seu nome completo">
             </div>
 
@@ -369,7 +369,7 @@
                 </label>
             </div>
 
-            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Acessar Sistema</button>
+            <button type="submit" id="btn-entrar" class="btn btn-warning" style="width: 100%;" disabled>Ativar e Acessar Sistema</button>
             <p id="login-msg" style="color: red; font-size: 0.8rem; text-align: center; margin-top: 10px; display: none;"></p>
         </form>
     </div>
@@ -684,7 +684,7 @@
 
         <div id="admin-painel-box" style="display: none;">
             <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
-            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados (Bloqueio / Desbloqueio)</h4>
+            <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados</h4>
             <div class="admin-tabs">
                 <button type="button" class="tab-btn active" onclick="trocarAbaAdmin('7')">Banco 7 Dias</button>
                 <button type="button" class="tab-btn" onclick="trocarAbaAdmin('30')">Banco 30 Dias</button>
@@ -696,23 +696,23 @@
             <!-- SEÇÕES DE CADA BANCO -->
             <div id="db-sec-7" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 7 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Status Acesso</th><th>Ações de Bloqueio/Desbloqueio</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-7"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-30" class="db-section active">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 30 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Status Acesso</th><th>Ações de Bloqueio/Desbloqueio</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-30"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-60" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 60 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Status Acesso</th><th>Ações de Bloqueio/Desbloqueio</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-60"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-90" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 90 Dias</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Status Acesso</th><th>Ações de Bloqueio/Desbloqueio</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-90"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
             <div id="db-sec-365" class="db-section">
                 <h5 style="color: #8e44ad; margin-bottom: 5px;">Clientes - Licença de 1 Ano (365 Dias)</h5>
-                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Cadastro</th><th>Vencimento</th><th>Status Acesso</th><th>Ações de Bloqueio/Desbloqueio</th></tr></thead><tbody></tbody></table></div>
+                <div style="max-height: 250px; overflow-y: auto;"><table id="tabela-comp-365"><thead><tr><th>Nome</th><th>Telefone</th><th>Data Cadastro</th><th>Vencimento</th><th>Prazo</th><th>Status de Acesso</th><th>Ações de Controle</th></tr></thead><tbody></tbody></table></div>
             </div>
 
             <div style="text-align: right; margin-top: 15px;">
@@ -912,17 +912,34 @@
         if (!tbody) return;
         tbody.innerHTML = '';
 
+        const hoje = new Date();
+        hoje.setHours(0,0,0,0);
+
         lista.forEach(c => {
             const row = tbody.insertRow();
            
+            const dataVencObj = new Date(c.vencimento + 'T00:00:00');
+            const diffTime = dataVencObj - hoje;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            let badgePrazo = '';
+            if (diffDays < 0) {
+                badgePrazo = `<span style="background: #e74c3c; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🔴 Vencido (${Math.abs(diffDays)}d)</span>`;
+            } else if (diffDays <= 5) {
+                badgePrazo = `<span style="background: #e67e22; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">⚠️ Expira em ${diffDays}d</span>`;
+            } else {
+                badgePrazo = `<span style="background: #2ecc71; color: #fff; padding: 3px 6px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">🟢 Regular (${diffDays}d)</span>`;
+            }
+
             row.innerHTML = `
                 <td><strong>${c.nome}</strong></td>
                 <td>${c.tel}</td>
                 <td>${c.dataCompra ? c.dataCompra.split('-').reverse().join('/') : '-'}</td>
                 <td><input type="date" value="${c.vencimento}" onchange="atualizarDataVencimento('${dias}', ${c.id}, this.value)" style="padding:4px; font-size:0.85rem;"></td>
-                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? '🟢 Liberado' : '🔴 Bloqueado'}</span></td>
+                <td>${badgePrazo}</td>
+                <td><span style="color: ${c.ativo ? '#2ecc71' : '#e74c3c'}; font-weight:bold;">${c.ativo ? 'Liberado' : 'Bloqueado'}</span></td>
                 <td>
-                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? '🔒 Bloquear' : '🔓 Desbloquear'}</button>
+                    <button class="btn ${c.ativo ? 'btn-danger' : 'btn-success'}" onclick="alternarStatusComprador('${dias}', ${c.id})">${c.ativo ? '🔒 Bloquear' : '🔓 Liberar'}</button>
                     <button class="btn btn-danger" onclick="excluirComprador('${dias}', ${c.id})" style="margin-left:5px;">Excluir</button>
                 </td>
             `;
@@ -1002,22 +1019,24 @@
             lista30.push(compradorEncontrado);
             salvarCompradoresDB('30', lista30);
         } else {
-            // Valida se o cliente está bloqueado pelo administrador
+            // Se já existe, atualiza o nome e garante que está ativo e com validade em dia (ou renova caso tenha vencido)
             if (!compradorEncontrado.ativo) {
-                msgErro.innerText = 'Seu acesso foi BLOQUEADO pelo suporte técnico. Entre em contato.';
+                msgErro.innerText = 'Seu acesso está BLOQUEADO. Entre em contato com o suporte.';
                 msgErro.style.display = 'block';
                 return;
             }
 
-            // Valida se a licença venceu
             if (compradorEncontrado.vencimento < hojeStr) {
-                msgErro.innerText = 'Sua licença expirou. Entre em contato com o suporte para renovar.';
-                msgErro.style.display = 'block';
-                return;
+                // Auto-renovação de 30 dias caso estivesse vencido
+                const dVenc = new Date(hojeObj);
+                dVenc.setDate(dVenc.getDate() + 30);
+                compradorEncontrado.vencimento = dVenc.toISOString().split('T')[0];
+                compradorEncontrado.ativo = true;
             }
 
             compradorEncontrado.nome = nomeInput;
            
+            // Salva atualizações no banco correspondente
             let listaBanco = obterCompradoresDB(bancoEncontrado);
             listaBanco = listaBanco.map(c => c.id === compradorEncontrado.id ? compradorEncontrado : c);
             salvarCompradoresDB(bancoEncontrado, listaBanco);
@@ -1521,6 +1540,4 @@
     }
 </script>
 </body>
-</html>
-
- 
+</html> 
