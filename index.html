@@ -708,6 +708,27 @@
                 </form>
             </div>
 
+            <!-- NOVA SEÇÃO: AUTOMAÇÃO E APROVAÇÃO VIA WHATSAPP (n8n / Make / Evolution API) -->
+            <div class="card" style="border-top-color: #25d366; margin-bottom: 20px; background: #f4faf6;">
+                <h4 style="font-size: 1rem; color: #25d366; margin-bottom: 8px;">🤖 Automação de Aprovação via Botões no WhatsApp</h4>
+                <p style="font-size: 0.85rem; color: #555; margin-bottom: 12px;">
+                    Integre sua API de WhatsApp (Evolution API / Z-API) com o n8n ou Make para receber botões interativos <strong>[ 👍 Aprovar ]</strong> e <strong>[ 👎 Recusar ]</strong> sempre que um novo usuário se cadastrar.
+                </p>
+                <div class="form-grid">
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label>URL do Webhook do n8n / Make (Disparo de Cadastro)</label>
+                        <input type="text" id="config-webhook-url" placeholder="https://seu-n8n.com/webhook/taxify-novo-cadastro">
+                    </div>
+                    <div class="form-group">
+                        <label>Token Secreto / Chave de API de Admin</label>
+                        <input type="text" id="config-admin-token" placeholder="Ex: taxify_secret_token_9988">
+                    </div>
+                    <div class="form-group" style="display: flex; align-items: flex-end;">
+                        <button type="button" class="btn btn-wsp" style="width: 100%;" onclick="salvarConfigAutomacaoWsp()">💾 Salvar Configurações</button>
+                    </div>
+                </div>
+            </div>
+
             <!-- ABAS DE NAVEGAÇÃO DOS BANCOS DE DADOS -->
             <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #2c3e50;">📋 Bancos de Dados de Clientes Cadastrados</h4>
             <div class="admin-tabs">
@@ -889,6 +910,45 @@
         localStorage.setItem(chave, JSON.stringify(lista));
     }
 
+    // --- SALVAR CONFIGURAÇÕES DE AUTOMAÇÃO WHATSAPP ---
+    function salvarConfigAutomacaoWsp() {
+        const url = document.getElementById('config-webhook-url').value.trim();
+        const token = document.getElementById('config-admin-token').value.trim();
+        localStorage.setItem('taxify_n8n_webhook', url);
+        localStorage.setItem('taxify_admin_token', token);
+        alert('Configurações de automação via WhatsApp salvas com sucesso!');
+    }
+
+    function carregarConfigAutomacaoWsp() {
+        const url = localStorage.getItem('taxify_n8n_webhook') || '';
+        const token = localStorage.getItem('taxify_admin_token') || '';
+        const inputUrl = document.getElementById('config-webhook-url');
+        const inputToken = document.getElementById('config-admin-token');
+        if (inputUrl) inputUrl.value = url;
+        if (inputToken) inputToken.value = token;
+    }
+
+    function dispararWebhookNovoCadastro(cliente) {
+        const webhookUrl = localStorage.getItem('taxify_n8n_webhook');
+        if (!webhookUrl) return; // Se não configurado, segue fluxo normal
+
+        const payload = {
+            evento: 'novo_cadastro_pendente',
+            id: cliente.id,
+            nome: cliente.nome,
+            telefone: cliente.tel,
+            dataCadastro: cliente.dataCompra,
+            vencimento: cliente.vencimento,
+            tokenAdmin: localStorage.getItem('taxify_admin_token') || ''
+        };
+
+        fetch(webhookUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).catch(err => console.log('Erro ao disparar webhook para n8n/Make:', err));
+    }
+
     // --- CONTROLE DA ÁREA RESTRITA SUPORTE TÉCNICO ---
     function abrirModalAdmin() {
         document.getElementById('modal-admin').style.display = 'flex';
@@ -909,6 +969,7 @@
         if (senha === '312707') {
             document.getElementById('admin-login-box').style.display = 'none';
             document.getElementById('admin-painel-box').style.display = 'block';
+            carregarConfigAutomacaoWsp();
             renderizarTodasTabelasCompradores();
         } else {
             erro.style.display = 'block';
@@ -952,7 +1013,6 @@
         };
 
         let listaBanco = obterCompradoresDB(dias);
-        // Remove duplicado caso já exista o telefone no mesmo banco
         listaBanco = listaBanco.filter(c => limparTelefone(c.tel) !== tel);
         listaBanco.push(novoCliente);
         salvarCompradoresDB(dias, listaBanco);
@@ -1063,7 +1123,7 @@
         const hojeStr = hojeObj.toISOString().split('T')[0];
 
         if (!compradorEncontrado) {
-            // Auto-liberação: Se o telefone não existe, cadastra automaticamente no banco de 30 dias com acesso liberado
+            // Auto-liberação: Se o telefone não existe, cadastra automaticamente no banco de 30 dias
             const dVenc = new Date(hojeObj);
             dVenc.setDate(dVenc.getDate() + 30);
             const vencimentoStr = dVenc.toISOString().split('T')[0];
@@ -1080,8 +1140,10 @@
             let lista30 = obterCompradoresDB('30');
             lista30.push(compradorEncontrado);
             salvarCompradoresDB('30', lista30);
+
+            // Dispara webhook para notificar via WhatsApp com botões [Aprovar] / [Recusar] no n8n/Make
+            dispararWebhookNovoCadastro(compradorEncontrado);
         } else {
-            // Verifica se está bloqueado pelo administrador
             if (!compradorEncontrado.ativo) {
                 msgErro.innerText = 'Seu acesso está BLOQUEADO pelo suporte técnico.';
                 msgErro.style.display = 'block';
@@ -1089,7 +1151,6 @@
             }
 
             if (compradorEncontrado.vencimento < hojeStr) {
-                // Auto-renovação de 30 dias caso estivesse vencido
                 const dVenc = new Date(hojeObj);
                 dVenc.setDate(dVenc.getDate() + 30);
                 compradorEncontrado.vencimento = dVenc.toISOString().split('T')[0];
@@ -1544,7 +1605,7 @@
     }
 
     function gerarPDFRecibo(download = true) {
-        const { jsPDF } = window.jspdf;
+        const { jsPDF } = window.jsPDF;
         const doc = new jsPDF();
 
         const motorista = document.getElementById('rec-motorista').value || "Motorista / Empresa";
@@ -1552,54 +1613,63 @@
         const veiculo = document.getElementById('rec-veiculo').value || "N/A";
         const cliente = document.getElementById('cliente-nome').value || "Cliente";
         const valor = document.getElementById('corrida-valor').value || "0.00";
-        const obs = document.getElementById('corrida-obs').value || "Sem observações.";
+        const obs = document.getElementById('corrida-obs').value || "Serviço de Transporte Individual de Passageiros";
 
-        doc.setFillColor(44, 62, 80);
-        doc.rect(0, 0, 210, 30, 'F');
-       
-        doc.setTextColor(241, 196, 15);
         doc.setFontSize(18);
-        doc.text("RECIBO DE CORRIDA - TÁXIFY", 15, 20);
+        doc.text("RECIBO DE CORRIDA - TÁXIFY", 20, 20);
+        doc.setFontSize(11);
+        doc.text(`Data/Hora: ${new Date().toLocaleString('pt-BR')}`, 20, 28);
+        doc.line(20, 32, 190, 32);
 
-        doc.setTextColor(0, 0, 0);
+        doc.text(`Motorista: ${motorista}`, 20, 45);
+        doc.text(`Documento / Alvará: ${docMotorista}`, 20, 53);
+        doc.text(`Veículo: ${veiculo}`, 20, 61);
+
+        doc.line(20, 68, 190, 68);
+
+        doc.text(`Passageiro(a): ${cliente}`, 20, 80);
+        doc.setFontSize(14);
+        doc.text(`Valor Pago: R$ ${parseFloat(valor).toFixed(2)}`, 20, 92);
+       
+        doc.setFontSize(11);
+        doc.text(`Observações / Trajeto:`, 20, 106);
         doc.setFontSize(10);
-        doc.text(`Motorista/Empresa: ${motorista}`, 15, 42);
-        doc.text(`CPF/CNPJ: ${docMotorista}`, 15, 49);
-        doc.text(`Veículo (Modelo/Placa): ${veiculo}`, 15, 56);
-        doc.text(`Passageiro: ${cliente}`, 15, 63);
-        doc.text(`Valor da Corrida: R$ ${parseFloat(valor).toFixed(2)}`, 15, 70);
-        doc.text(`Trajeto / Obs: ${obs}`, 15, 77);
+        doc.text(obs, 20, 114, { maxWidth: 170 });
+
+        doc.line(20, 150, 100, 150);
+        doc.setFontSize(9);
+        doc.text("Assinatura do Motorista / Carimbo", 20, 156);
 
         if (fotoVeiculoBase64) {
-            doc.addImage(fotoVeiculoBase64, 'JPEG', 150, 40, 45, 35);
+            try {
+                doc.addImage(fotoVeiculoBase64, 'JPEG', 130, 75, 55, 40);
+            } catch(e) { console.log(e); }
         }
 
-        doc.line(15, 88, 195, 88);
-        doc.text("Obrigado pela preferência!", 15, 96);
-
         if (download) {
-            doc.save(`recibo_${cliente.replace(/\s+/g, '_')}.pdf`);
+            doc.save("recibo_taxify.pdf");
         }
         return doc;
     }
 
     function enviarReciboWspPDF() {
         const wsp = limparTelefone(document.getElementById('cliente-wsp').value);
-        if (!wsp) { alert('Informe o WhatsApp do cliente.'); return; }
-        gerarPDFRecibo(true);
-        const texto = encodeURIComponent("Olá! Aqui está o seu recibo de corrida emitido via Táxify.");
+        if (!wsp) { alert('Informe o número de WhatsApp do passageiro.'); return; }
+        const cliente = document.getElementById('cliente-nome').value || "Passageiro";
+        const valor = document.getElementById('corrida-valor').value || "0,00";
+        const texto = encodeURIComponent(`Olá, ${cliente}! Segue o comprovante da sua corrida no valor de R$ ${valor} emitido pelo Táxify.`);
         window.open(`https://api.whatsapp.com/send?phone=${wsp}&text=${texto}`, '_blank');
     }
 
     function enviarReciboEmailPDF() {
         const email = document.getElementById('cliente-email').value;
-        if (!email) { alert('Informe o e-mail do cliente.'); return; }
-        gerarPDFRecibo(true);
-        const assunto = encodeURIComponent("Seu Recibo de Corrida - Táxify");
-        const corpo = encodeURIComponent("Obrigado por utilizar nossos serviços! O seu recibo de corrida foi gerado.");
+        if (!email) { alert('Informe o e-mail do passageiro.'); return; }
+        const assunto = encodeURIComponent("Recibo de Corrida - Táxify");
+        const corpo = encodeURIComponent("Olá! Segue em anexo o recibo referente à sua corrida de táxi.");
         window.location.href = `mailto:${email}?subject=${assunto}&body=${corpo}`;
     }
 </script>
+
 </body>
 </html>
 
